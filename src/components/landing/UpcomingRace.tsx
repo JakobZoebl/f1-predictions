@@ -1,33 +1,33 @@
 "use client"
 
-import { useEffect, useState } from "react"
+import { useEffect, useState, useCallback } from "react"
 import { Calendar, Flag, Clock } from "lucide-react"
 
 function useCountdown(targetDate: Date) {
-  const [timeLeft, setTimeLeft] = useState({ days: 0, hours: 0, minutes: 0 })
+  const calculate = useCallback(() => {
+    const now = new Date()
+    const diff = targetDate.getTime() - now.getTime()
+    if (diff <= 0) return { days: 0, hours: 0, minutes: 0 }
+    return {
+      days: Math.floor(diff / (1000 * 60 * 60 * 24)),
+      hours: Math.floor((diff / (1000 * 60 * 60)) % 24),
+      minutes: Math.floor((diff / (1000 * 60)) % 60),
+    }
+  }, [targetDate])
+
+  const [timeLeft, setTimeLeft] = useState(calculate)
 
   useEffect(() => {
-    function calculate() {
-      const now = new Date()
-      const diff = targetDate.getTime() - now.getTime()
-      if (diff <= 0) return { days: 0, hours: 0, minutes: 0 }
-      return {
-        days: Math.floor(diff / (1000 * 60 * 60 * 24)),
-        hours: Math.floor((diff / (1000 * 60 * 60)) % 24),
-        minutes: Math.floor((diff / (1000 * 60)) % 60),
-      }
-    }
-
-    setTimeLeft(calculate())
     const interval = setInterval(() => setTimeLeft(calculate()), 60000)
     return () => clearInterval(interval)
-  }, [targetDate])
+  }, [calculate])
 
   return timeLeft
 }
 
+const predictionClose = new Date("2026-03-02T12:00:00Z")
+
 export function UpcomingRace() {
-  const predictionClose = new Date("2026-03-02T12:00:00Z")
   const { days, hours, minutes } = useCountdown(predictionClose)
 
   return (
