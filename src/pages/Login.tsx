@@ -1,5 +1,5 @@
 import { F1Background } from "@/components/f1/f1-background"
-import "./Login.css"
+import "@/styles/Login.css"
 import { F1Header } from "@/components/f1/f1-header"
 import { F1Footer } from "@/components/f1/f1-footer"
 import { LoginContainer } from "@/components/f1/login-container"

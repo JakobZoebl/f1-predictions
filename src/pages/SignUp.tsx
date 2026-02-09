@@ -1,5 +1,5 @@
 import { F1Background } from "@/components/f1/f1-background"
-import "./SignUp.css"
+import "@/styles/SignUp.css"
 import { F1Header } from "@/components/f1/f1-header"
 import { F1Footer } from "@/components/f1/f1-footer"
 import { SignupContainer } from "@/components/f1/signup-container"
