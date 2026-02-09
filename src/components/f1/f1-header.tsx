@@ -1,6 +1,6 @@
 "use client"
 
-import { ArrowLeft, Settings } from "lucide-react"
+import { ArrowLeft } from "lucide-react"
 import { Link } from "react-router-dom"
 import { cn } from "@/lib/utils"
 import "@/styles/F1Header.css"
@@ -10,21 +10,22 @@ type F1HeaderVariant = "back" | "landing" | "dashboard"
 interface F1HeaderProps {
   variant?: F1HeaderVariant
   backHref?: string
-  username?: string
   activeNav?: string
 }
 
 export function F1Header({
   variant = "back",
   backHref = "/",
-  username = "@username",
   activeNav = "Dashboard",
-}: F1HeaderProps) {
+  children,
+}: F1HeaderProps & { children?: React.ReactNode }) {
   return (
     <header
       className={cn(
         "header-base",
-        variant === "landing" ? "header-landing" : "header-relative"
+        variant === "landing" ? "header-landing" : "header-relative",
+        // Apply glass style to landing AND dashboard variants for consistency
+        (variant === "landing" || variant === "dashboard") && "header-glass"
       )}
     >
       <div className="header-container">
@@ -56,7 +57,7 @@ export function F1Header({
         {/* Center nav links (only for "dashboard" variant) */}
         {variant === "dashboard" && (
           <nav className="header-center-nav" aria-label="Main navigation">
-            {["Dashboard", "Predictions", "Leaderboard"].map((item) => (
+            {["Dashboard", "Predictions", "Leaderboard", "Test", "Template"].map((item) => (
               <Link
                 key={item}
                 to={
@@ -77,30 +78,14 @@ export function F1Header({
           </nav>
         )}
 
-        {/* Right side */}
-        {variant === "landing" ? (
-          <nav className="header-right-nav" aria-label="Auth navigation">
-            <Link to="/login" className="header-login-btn">
-              Login
-            </Link>
-            <Link to="/signup" className="header-signup-btn">
-              Sign Up
-            </Link>
-          </nav>
-        ) : variant === "dashboard" ? (
-          <div className="header-right-nav">
-            <span className="header-username">{username}</span>
-            <button
-              type="button"
-              className="header-settings-btn"
-              aria-label="Settings"
-            >
-              <Settings className="h-4 w-4" />
-            </button>
-          </div>
-        ) : (
-          <div className="header-spacer" />
-        )}
+        {/* Right side - Render children (actions) here */}
+        <div className="header-right-nav">
+          {children ? (
+            children
+          ) : (
+            <div className="header-spacer" />
+          )}
+        </div>
       </div>
 
       {/* Gradient line */}

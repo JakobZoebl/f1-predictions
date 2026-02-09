@@ -3,7 +3,7 @@
 }
 
 .footer-gradient-line {
-  @apply h-[1px] w-full bg-gradient-to-r from-transparent via-f1-neon to-transparent opacity-30;
+  @apply h-px w-full bg-gradient-to-r from-transparent via-f1-neon to-transparent opacity-30;
 }
 
 .footer-content {

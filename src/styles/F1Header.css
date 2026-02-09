@@ -3,7 +3,11 @@
 }
 
 .header-landing {
-  @apply absolute top-0 bg-background/60 backdrop-blur-md border-b border-white/5;
+  @apply absolute top-0;
+}
+
+.header-glass {
+  @apply bg-background/60 backdrop-blur-md border-b border-white/5;
 }
 
 .header-relative {
@@ -71,5 +75,5 @@
 }
 
 .header-gradient-line {
-  @apply h-[2px] w-full bg-gradient-to-r from-transparent via-f1-neon to-transparent opacity-60;
+  @apply h-0.5 w-full bg-gradient-to-r from-transparent via-f1-neon to-transparent opacity-60;
 }

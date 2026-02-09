@@ -1,5 +1,5 @@
 .hero-section {
-  @apply relative flex min-h-[520px] flex-col items-center justify-center overflow-hidden px-4 py-20 md:min-h-[570px];
+  @apply relative flex min-h-[60dvh] flex-col items-center justify-center overflow-hidden px-4 py-20 md:min-h-[65dvh];
 }
 
 .hero-bg-image {
