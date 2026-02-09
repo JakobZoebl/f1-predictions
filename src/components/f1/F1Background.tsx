@@ -97,26 +97,18 @@ export default function F1Background({
     return () => clearTimeout(timer)
   }, [])
 
-  // ── Center split with horizontal chevron notch ─────────────
+  // ── Center split with horizontal notch ─────────────
   const ct = 60 // center line x at top (shifted right so mid-screen is centered)
-  const notchY1 = 48
-  const notchY2 = 52
-  const cNotchTop = ct - SHIFT * (notchY1 / 100) // x at notchY1
+  const notchY = 50 // horizontal notch at exact vertical center
+  const cNotchTop = ct - SHIFT * (notchY / 100) // x at notch
   const notchStep = 4 // horizontal step (parallel to bottom)
   const cNotchBot = cNotchTop + notchStep
-  const cb = cNotchBot - SHIFT * ((100 - notchY2) / 100) // x at bottom
+  const cb = cNotchBot - SHIFT * ((100 - notchY) / 100) // x at bottom
 
-  const leftClip = `polygon(0 0, ${ct}% 0%, ${cNotchTop}% ${notchY1}%, ${cNotchBot}% ${notchY2}%, ${cb}% 100%, 0 100%)`
-  const rightClip = `polygon(${ct}% 0%, 100% 0%, 100% 100%, ${cb}% 100%, ${cNotchBot}% ${notchY2}%, ${cNotchTop}% ${notchY1}%)`
+  const leftClip = `polygon(0 0, ${ct}% 0%, ${cNotchTop}% ${notchY}%, ${cNotchBot}% ${notchY}%, ${cb}% 100%, 0 100%)`
+  const rightClip = `polygon(${ct}% 0%, 100% 0%, 100% 100%, ${cb}% 100%, ${cNotchBot}% ${notchY}%, ${cNotchTop}% ${notchY}%)`
 
-  // Thin glow line along center split
-  const gw = 0.5
-  const centerGlowClip = `polygon(
-    ${ct - gw}% 0%, ${ct + gw}% 0%,
-    ${cNotchTop + gw}% ${notchY1}%, ${cNotchBot + gw}% ${notchY2}%,
-    ${cb + gw}% 100%, ${cb - gw}% 100%,
-    ${cNotchBot - gw}% ${notchY2}%, ${cNotchTop - gw}% ${notchY1}%
-  )`
+
 
   // ── Left edge panel (solid team secondary) ─────────────────
   // Parallelogram from left screen edge to the outer stripe line.
@@ -177,17 +169,7 @@ export default function F1Background({
         />
       </div>
 
-      {/* ── CENTER GLOW LINE ─────────────────────────────────── */}
-      <div
-        className="absolute inset-0"
-        style={{
-          clipPath: centerGlowClip,
-          background:
-            "linear-gradient(180deg, rgba(255,255,255,0.15) 0%, rgba(255,255,255,0.05) 48%, rgba(255,255,255,0.18) 52%, rgba(255,255,255,0.08) 100%)",
-          opacity: mounted ? 1 : 0,
-          transition: "opacity 1.2s ease-out 0.6s",
-        }}
-      />
+
 
       {/* ── LEFT EDGE PANEL (solid team secondary) ───────────── */}
       <div

@@ -3,6 +3,7 @@
 import { ArrowLeft } from "lucide-react"
 import { Link } from "react-router-dom"
 import { cn } from "@/lib/utils"
+import emblem from "@/assets/emblem.png"
 import "@/styles/F1Header.css"
 
 type F1HeaderVariant = "back" | "landing" | "dashboard"
@@ -37,7 +38,7 @@ export function F1Header({
           </Link>
         ) : (
           <div className="header-logo-container">
-            <F1CarIcon />
+            <img src={emblem} alt="F1 Emblem" className="h-10 w-auto" />
             <span className="header-logo-text">
               F1 PREDICTIONS
             </span>
@@ -47,7 +48,7 @@ export function F1Header({
         {/* Center logo (only for "back" variant) */}
         {variant === "back" && (
           <div className="header-center-logo">
-            <F1CarIcon />
+            <img src={emblem} alt="F1 Emblem" className="h-10 w-auto" />
             <span className="header-logo-text">
               F1 PREDICTIONS
             </span>
@@ -91,35 +92,5 @@ export function F1Header({
       {/* Gradient line */}
       <div className="header-gradient-line" />
     </header>
-  )
-}
-
-function F1CarIcon() {
-  return (
-    <svg
-      width="28"
-      height="16"
-      viewBox="0 0 28 16"
-      fill="none"
-      aria-hidden="true"
-    >
-      {/* Car body */}
-      <path
-        d="M2 10L5 6L10 4L18 3L24 4L26 7L26 10L2 10Z"
-        fill="hsl(0 80% 45%)"
-      />
-      {/* Windshield */}
-      <path d="M12 4L15 3L16 6L12 6Z" fill="hsl(210 40% 20%)" />
-      {/* Front wing */}
-      <path d="M24 7L27 6L28 9L26 9Z" fill="hsl(0 80% 40%)" />
-      {/* Rear wing */}
-      <path d="M2 6L4 3L5 6Z" fill="hsl(0 80% 40%)" />
-      {/* Front wheel */}
-      <circle cx="22" cy="11" r="2.5" fill="hsl(210 10% 20%)" />
-      <circle cx="22" cy="11" r="1.5" fill="hsl(210 10% 35%)" />
-      {/* Rear wheel */}
-      <circle cx="7" cy="11" r="2.5" fill="hsl(210 10% 20%)" />
-      <circle cx="7" cy="11" r="1.5" fill="hsl(210 10% 35%)" />
-    </svg>
   )
 }
