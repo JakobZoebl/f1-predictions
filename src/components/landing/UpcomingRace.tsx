@@ -2,6 +2,7 @@
 
 import { useEffect, useState, useCallback } from "react"
 import { Calendar, Flag, Clock } from "lucide-react"
+import "@/styles/UpcomingRace.css"
 
 function useCountdown(targetDate: Date) {
   const calculate = useCallback(() => {
@@ -31,19 +32,19 @@ export function UpcomingRace() {
   const { days, hours, minutes } = useCountdown(predictionClose)
 
   return (
-    <section className="py-16">
-      <div className="mx-auto max-w-3xl px-6">
+    <section className="upcoming-race-section">
+      <div className="upcoming-race-container">
         {/* Outer glow wrapper */}
-        <div className="relative rounded-2xl p-[2px]">
+        <div className="race-card-outer">
           {/* Animated glow border */}
-          <div className="animate-glow-pulse absolute -inset-[1px] rounded-2xl bg-gradient-to-r from-primary/60 via-primary/30 to-primary/60 blur-sm" />
-          <div className="absolute -inset-[1px] rounded-2xl bg-gradient-to-r from-primary/50 via-primary/20 to-primary/50" />
+          <div className="glow-pulse-border" />
+          <div className="glow-border" />
 
           {/* Card content */}
-          <div className="relative overflow-hidden rounded-2xl bg-card">
+          <div className="race-card-inner">
             {/* Subtle track map background SVG */}
-            <div className="absolute inset-0 opacity-[0.06]">
-              <svg viewBox="0 0 800 400" className="h-full w-full" aria-hidden="true">
+            <div className="track-map-overlay">
+              <svg viewBox="0 0 800 400" className="track-map-svg" aria-hidden="true">
                 <path
                   d="M100,200 Q150,50 250,100 T400,80 Q500,60 550,150 T700,200 Q750,300 650,320 T400,340 Q250,350 200,280 T100,200"
                   fill="none"
@@ -54,48 +55,48 @@ export function UpcomingRace() {
             </div>
 
             {/* Top glow accent line */}
-            <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-primary/50 to-transparent" />
+            <div className="card-top-accent" />
 
-            <div className="relative z-10 flex flex-col items-center gap-5 p-8">
-              <h2 className="font-display text-sm font-bold uppercase tracking-widest text-muted-foreground">
+            <div className="card-content-wrapper">
+              <h2 className="section-title">
                 Upcoming Race
               </h2>
 
               {/* Inner race info card with its own blue glow border */}
-              <div className="relative w-full max-w-md rounded-xl p-[1px]">
+              <div className="race-info-card-outer">
                 {/* Inner glow border */}
-                <div className="animate-glow-pulse absolute -inset-[1px] rounded-xl bg-gradient-to-b from-primary/40 via-primary/20 to-primary/40 blur-[2px]" />
-                <div className="absolute -inset-[1px] rounded-xl bg-gradient-to-b from-primary/30 via-primary/10 to-primary/30" />
+                <div className="race-info-glow-pulse" />
+                <div className="race-info-glow" />
 
-                <div className="relative rounded-xl bg-secondary/80 p-6 text-center backdrop-blur-sm">
-                  <div className="flex items-center justify-center gap-3">
-                    <span className="text-2xl" role="img" aria-label="Bahrain flag">
+                <div className="race-info-card-inner">
+                  <div className="race-header">
+                    <span className="race-flag" role="img" aria-label="Bahrain flag">
                       {"\uD83C\uDDE7\uD83C\uDDED"}
                     </span>
-                    <h3 className="font-display text-xl font-bold text-foreground sm:text-2xl">
+                    <h3 className="race-title">
                       Bahrain Grand Prix
                     </h3>
                   </div>
 
-                  <div className="mt-4 flex flex-wrap items-center justify-center gap-4 text-sm text-muted-foreground">
-                    <span className="flex items-center gap-1.5">
-                      <Calendar className="h-4 w-4 text-primary" />
+                  <div className="race-details-wrapper">
+                    <span className="race-detail-item">
+                      <Calendar className="race-detail-icon" />
                       March 2, 2026
                     </span>
-                    <span className="flex items-center gap-1.5">
-                      <Flag className="h-4 w-4 text-primary" />
+                    <span className="race-detail-item">
+                      <Flag className="race-detail-icon" />
                       57 Laps
                     </span>
-                    <span className="flex items-center gap-1.5">
-                      <Clock className="h-4 w-4 text-primary" />
+                    <span className="race-detail-item">
+                      <Clock className="race-detail-icon" />
                       15:00 GMT
                     </span>
                   </div>
 
-                  <div className="mt-5 flex items-center justify-center gap-2 rounded-lg border border-primary/15 bg-background/60 px-4 py-3 text-sm">
-                    <Clock className="h-4 w-4 text-primary" />
-                    <span className="text-muted-foreground">Predictions close in:</span>
-                    <span className="font-display font-bold text-foreground">
+                  <div className="countdown-wrapper">
+                    <Clock className="race-detail-icon" />
+                    <span className="countdown-text">Predictions close in:</span>
+                    <span className="countdown-timer">
                       {days}d {hours}h {minutes}m
                     </span>
                   </div>
@@ -104,7 +105,7 @@ export function UpcomingRace() {
             </div>
 
             {/* Bottom glow accent line */}
-            <div className="absolute inset-x-0 bottom-0 h-px bg-gradient-to-r from-transparent via-primary/50 to-transparent" />
+            <div className="card-bottom-accent" />
           </div>
         </div>
       </div>

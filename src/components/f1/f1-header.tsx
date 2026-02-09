@@ -2,6 +2,8 @@
 
 import { ArrowLeft, Settings } from "lucide-react"
 import { Link } from "react-router-dom"
+import { cn } from "@/lib/utils"
+import "@/styles/F1Header.css"
 
 type F1HeaderVariant = "back" | "landing" | "dashboard"
 
@@ -19,21 +21,23 @@ export function F1Header({
   activeNav = "Dashboard",
 }: F1HeaderProps) {
   return (
-    <header className="relative z-50 w-full">
-      <div className="flex items-center justify-between px-6 py-4">
+    <header
+      className={cn(
+        "header-base",
+        variant === "landing" ? "header-landing" : "header-relative"
+      )}
+    >
+      <div className="header-container">
         {/* Left side - always logo for landing & dashboard, back for back */}
         {variant === "back" ? (
-          <Link
-            to={backHref}
-            className="flex items-center gap-2 text-sm font-medium text-foreground transition-colors hover:text-f1-neon"
-          >
+          <Link to={backHref} className="header-back-link">
             <ArrowLeft className="h-4 w-4" />
             <span>Back</span>
           </Link>
         ) : (
-          <div className="flex items-center gap-2">
+          <div className="header-logo-container">
             <F1CarIcon />
-            <span className="text-lg font-bold tracking-wide text-foreground">
+            <span className="header-logo-text">
               F1 PREDICTIONS
             </span>
           </div>
@@ -41,9 +45,9 @@ export function F1Header({
 
         {/* Center logo (only for "back" variant) */}
         {variant === "back" && (
-          <div className="absolute left-1/2 top-1/2 flex -translate-x-1/2 -translate-y-1/2 items-center gap-2">
+          <div className="header-center-logo">
             <F1CarIcon />
-            <span className="text-lg font-bold tracking-wide text-foreground">
+            <span className="header-logo-text">
               F1 PREDICTIONS
             </span>
           </div>
@@ -51,10 +55,7 @@ export function F1Header({
 
         {/* Center nav links (only for "dashboard" variant) */}
         {variant === "dashboard" && (
-          <nav
-            className="absolute left-1/2 top-1/2 flex -translate-x-1/2 -translate-y-1/2 items-center gap-8"
-            aria-label="Main navigation"
-          >
+          <nav className="header-center-nav" aria-label="Main navigation">
             {["Dashboard", "Predictions", "Leaderboard"].map((item) => (
               <Link
                 key={item}
@@ -63,11 +64,12 @@ export function F1Header({
                     ? "/dashboard"
                     : `/${item.toLowerCase()}`
                 }
-                className={`text-sm font-medium transition-colors ${
+                className={cn(
+                  "header-nav-link",
                   activeNav === item
-                    ? "text-f1-neon"
-                    : "text-muted-foreground hover:text-foreground"
-                }`}
+                    ? "header-nav-link-active"
+                    : "header-nav-link-inactive"
+                )}
               >
                 {item}
               </Link>
@@ -77,38 +79,32 @@ export function F1Header({
 
         {/* Right side */}
         {variant === "landing" ? (
-          <nav className="flex items-center gap-3" aria-label="Auth navigation">
-            <Link
-              to="/login"
-              className="inline-flex h-10 items-center rounded-full border border-f1-card-border bg-secondary px-6 text-sm font-medium text-foreground transition-colors hover:bg-secondary/80 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-f1-neon"
-            >
+          <nav className="header-right-nav" aria-label="Auth navigation">
+            <Link to="/login" className="header-login-btn">
               Login
             </Link>
-            <Link
-              to="/signup"
-              className="inline-flex h-10 items-center rounded-full bg-f1-neon px-6 text-sm font-bold text-white transition-all hover:brightness-110 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-f1-neon"
-            >
+            <Link to="/signup" className="header-signup-btn">
               Sign Up
             </Link>
           </nav>
         ) : variant === "dashboard" ? (
-          <div className="flex items-center gap-3">
-            <span className="text-sm text-muted-foreground">{username}</span>
+          <div className="header-right-nav">
+            <span className="header-username">{username}</span>
             <button
               type="button"
-              className="rounded-full p-1.5 text-muted-foreground transition-colors hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-f1-neon"
+              className="header-settings-btn"
               aria-label="Settings"
             >
               <Settings className="h-4 w-4" />
             </button>
           </div>
         ) : (
-          <div className="w-16" />
+          <div className="header-spacer" />
         )}
       </div>
 
       {/* Gradient line */}
-      <div className="h-[2px] w-full bg-gradient-to-r from-transparent via-f1-neon to-transparent opacity-60" />
+      <div className="header-gradient-line" />
     </header>
   )
 }

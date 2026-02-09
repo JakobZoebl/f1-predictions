@@ -1,0 +1,23 @@
+.footer-container {
+  @apply mt-auto w-full;
+}
+
+.footer-gradient-line {
+  @apply h-[1px] w-full bg-gradient-to-r from-transparent via-f1-neon to-transparent opacity-30;
+}
+
+.footer-content {
+  @apply flex flex-col items-center gap-4 px-6 py-6 md:flex-row md:justify-between;
+}
+
+.footer-copyright {
+  @apply text-xs text-muted-foreground;
+}
+
+.footer-nav {
+  @apply flex items-center gap-6;
+}
+
+.footer-link {
+  @apply text-xs text-muted-foreground transition-colors hover:text-foreground;
+}

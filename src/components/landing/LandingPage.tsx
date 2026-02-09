@@ -3,10 +3,11 @@ import { HeroSection } from "@/components/f1/hero-section"
 import { FeaturesSection } from "@/components/landing/FeaturesSection"
 import { UpcomingRace } from "@/components/landing/UpcomingRace"
 import { F1Footer } from "@/components/f1/f1-footer"
+import "@/styles/LandingPage.css"
 
 export default function LandingPage() {
   return (
-    <main className="min-h-screen">
+    <main className="landing-page-main">
       <F1Header variant="landing" />
       <HeroSection />
       <FeaturesSection />

@@ -1,0 +1,28 @@
+.hero-section {
+  @apply relative flex min-h-[520px] flex-col items-center justify-center overflow-hidden px-4 py-20 md:min-h-[570px];
+}
+
+.hero-bg-image {
+  @apply absolute inset-0 bg-cover bg-top bg-no-repeat;
+}
+
+.hero-overlay {
+  @apply pointer-events-none absolute inset-0 bg-background/40;
+}
+
+.hero-content {
+  @apply relative z-10 flex flex-col items-center gap-8 text-center;
+}
+
+.hero-title {
+  @apply text-4xl font-bold tracking-tight text-white md:text-5xl lg:text-7xl;
+  text-wrap: balance;
+}
+
+.hero-buttons {
+  @apply flex flex-col items-center gap-4 sm:flex-row;
+}
+
+.hero-bottom-fade {
+  @apply pointer-events-none absolute inset-x-0 bottom-0 h-16 bg-gradient-to-t from-background to-transparent;
+}

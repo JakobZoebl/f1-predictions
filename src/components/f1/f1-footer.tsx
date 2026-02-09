@@ -1,33 +1,25 @@
 import { Link } from "react-router-dom"
+import "@/styles/F1Footer.css"
 
 export function F1Footer() {
   return (
-    <footer className="mt-auto w-full">
+    <footer className="footer-container">
       {/* Gradient line */}
-      <div className="h-[1px] w-full bg-gradient-to-r from-transparent via-f1-neon to-transparent opacity-30" />
+      <div className="footer-gradient-line" />
 
-      <div className="flex flex-col items-center gap-4 px-6 py-6 md:flex-row md:justify-between">
-        <p className="text-xs text-muted-foreground">
+      <div className="footer-content">
+        <p className="footer-copyright">
           {"F1 Predictions. All rights reserved."}
         </p>
 
-        <nav className="flex items-center gap-6" aria-label="Footer navigation">
-          <Link
-            to="/terms"
-            className="text-xs text-muted-foreground transition-colors hover:text-foreground"
-          >
+        <nav className="footer-nav" aria-label="Footer navigation">
+          <Link to="/terms" className="footer-link">
             Terms
           </Link>
-          <Link
-            to="/privacy"
-            className="text-xs text-muted-foreground transition-colors hover:text-foreground"
-          >
+          <Link to="/privacy" className="footer-link">
             Privacy
           </Link>
-          <Link
-            to="/contact"
-            className="text-xs text-muted-foreground transition-colors hover:text-foreground"
-          >
+          <Link to="/contact" className="footer-link">
             Contact
           </Link>
         </nav>

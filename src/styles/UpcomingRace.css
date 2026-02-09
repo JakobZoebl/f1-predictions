@@ -1,0 +1,102 @@
+.upcoming-race-section {
+  @apply py-16;
+}
+
+.upcoming-race-container {
+  @apply mx-auto max-w-3xl px-6;
+}
+
+.race-card-outer {
+  @apply relative rounded-2xl p-[2px];
+}
+
+.glow-pulse-border {
+  @apply animate-glow-pulse absolute -inset-[1px] rounded-2xl bg-gradient-to-r from-primary/60 via-primary/30 to-primary/60 blur-sm;
+}
+
+.glow-border {
+  @apply absolute -inset-[1px] rounded-2xl bg-gradient-to-r from-primary/50 via-primary/20 to-primary/50;
+}
+
+.race-card-inner {
+  @apply relative overflow-hidden rounded-2xl bg-card;
+}
+
+.track-map-overlay {
+  @apply absolute inset-0 opacity-[0.06];
+}
+
+.track-map-svg {
+  @apply h-full w-full;
+}
+
+.card-top-accent {
+  @apply absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-primary/50 to-transparent;
+}
+
+.card-content-wrapper {
+  @apply relative z-10 flex flex-col items-center gap-5 p-8;
+}
+
+.section-title {
+  @apply text-sm font-bold uppercase tracking-widest text-muted-foreground;
+  font-family: var(--font-display);
+}
+
+.race-info-card-outer {
+  @apply relative w-full max-w-md rounded-xl p-[1px];
+}
+
+.race-info-glow-pulse {
+  @apply animate-glow-pulse absolute -inset-[1px] rounded-xl bg-gradient-to-b from-primary/40 via-primary/20 to-primary/40 blur-[2px];
+}
+
+.race-info-glow {
+  @apply absolute -inset-[1px] rounded-xl bg-gradient-to-b from-primary/30 via-primary/10 to-primary/30;
+}
+
+.race-info-card-inner {
+  @apply relative rounded-xl bg-secondary/80 p-6 text-center backdrop-blur-sm;
+}
+
+.race-header {
+  @apply flex items-center justify-center gap-3;
+}
+
+.race-flag {
+  @apply text-2xl;
+}
+
+.race-title {
+  @apply text-xl font-bold text-foreground sm:text-2xl;
+  font-family: var(--font-display);
+}
+
+.race-details-wrapper {
+  @apply mt-4 flex flex-wrap items-center justify-center gap-4 text-sm text-muted-foreground;
+}
+
+.race-detail-item {
+  @apply flex items-center gap-1.5;
+}
+
+.race-detail-icon {
+  @apply h-4 w-4 text-primary;
+}
+
+.countdown-wrapper {
+  @apply mt-5 flex items-center justify-center gap-2 rounded-lg border border-primary/15 bg-background/60 px-4 py-3 text-sm;
+}
+
+.countdown-text {
+  @apply text-muted-foreground;
+}
+
+.countdown-timer {
+  @apply font-bold text-foreground;
+  font-family: var(--font-display);
+}
+
+.card-bottom-accent {
+  @apply absolute inset-x-0 bottom-0 h-px bg-gradient-to-r from-transparent via-primary/50 to-transparent;
+}

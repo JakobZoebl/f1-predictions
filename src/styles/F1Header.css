@@ -1,0 +1,75 @@
+.header-base {
+  @apply z-50 w-full;
+}
+
+.header-landing {
+  @apply absolute top-0 bg-background/60 backdrop-blur-md border-b border-white/5;
+}
+
+.header-relative {
+  @apply relative;
+}
+
+.header-container {
+  @apply flex items-center justify-between px-6 py-4;
+}
+
+.header-back-link {
+  @apply flex items-center gap-2 text-sm font-medium text-foreground transition-colors hover:text-f1-neon;
+}
+
+.header-logo-container {
+  @apply flex items-center gap-2;
+}
+
+.header-logo-text {
+  @apply text-lg font-bold tracking-wide text-foreground;
+}
+
+.header-center-logo {
+  @apply absolute left-1/2 top-1/2 flex -translate-x-1/2 -translate-y-1/2 items-center gap-2;
+}
+
+.header-center-nav {
+  @apply absolute left-1/2 top-1/2 flex -translate-x-1/2 -translate-y-1/2 items-center gap-8;
+}
+
+.header-nav-link {
+  @apply text-sm font-medium transition-colors;
+}
+
+.header-nav-link-active {
+  @apply text-f1-neon;
+}
+
+.header-nav-link-inactive {
+  @apply text-muted-foreground hover:text-foreground;
+}
+
+.header-right-nav {
+  @apply flex items-center gap-3;
+}
+
+.header-login-btn {
+  @apply inline-flex h-10 items-center rounded-full border border-f1-card-border bg-secondary px-6 text-sm font-medium text-foreground transition-colors hover:bg-secondary/80 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-f1-neon;
+}
+
+.header-signup-btn {
+  @apply inline-flex h-10 items-center rounded-full bg-f1-neon px-6 text-sm font-bold text-white transition-all hover:brightness-110 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-f1-neon;
+}
+
+.header-username {
+  @apply text-sm text-muted-foreground;
+}
+
+.header-settings-btn {
+  @apply rounded-full p-1.5 text-muted-foreground transition-colors hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-f1-neon;
+}
+
+.header-spacer {
+  @apply w-16;
+}
+
+.header-gradient-line {
+  @apply h-[2px] w-full bg-gradient-to-r from-transparent via-f1-neon to-transparent opacity-60;
+}

@@ -1,5 +1,6 @@
 import { Card, CardContent } from "@/components/ui/card"
 import { Trophy, BarChart3, Target } from "lucide-react"
+import "@/styles/FeaturesSection.css"
 
 const features = [
   {
@@ -21,24 +22,24 @@ const features = [
 
 export function FeaturesSection() {
   return (
-    <section className="bg-secondary/40 py-16">
-      <div className="mx-auto max-w-5xl px-6">
-        <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
+    <section className="features-section">
+      <div className="features-container">
+        <div className="features-grid">
           {features.map((feature) => (
             <Card
               key={feature.title}
-              className="group border-primary/20 bg-card transition-all duration-300 hover:border-primary/50 hover:shadow-lg hover:shadow-primary/10"
+              className="group feature-card"
             >
-              <CardContent className="flex flex-col gap-3 p-6">
-                <div className="flex items-center gap-3">
-                  <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-primary/10">
-                    <feature.icon className="h-5 w-5 text-primary" />
+              <CardContent className="feature-card-content">
+                <div className="feature-header">
+                  <div className="feature-icon-wrapper">
+                    <feature.icon className="feature-icon" />
                   </div>
-                  <h3 className="font-display text-lg font-bold tracking-wide text-foreground">
+                  <h3 className="feature-title">
                     {feature.title}
                   </h3>
                 </div>
-                <p className="text-sm leading-relaxed text-muted-foreground">
+                <p className="feature-description">
                   {feature.description}
                 </p>
               </CardContent>
