@@ -1,17 +1,17 @@
-import { Navbar } from "@/components/landing/Navbar"
-import { HeroSection } from "@/components/landing/HeroSection"
+import { F1Header } from "@/components/f1/f1-header"
+import { HeroSection } from "@/components/f1/hero-section"
 import { FeaturesSection } from "@/components/landing/FeaturesSection"
 import { UpcomingRace } from "@/components/landing/UpcomingRace"
-import { Footer } from "@/components/landing/Footer"
+import { F1Footer } from "@/components/f1/f1-footer"
 
 export default function LandingPage() {
   return (
     <main className="min-h-screen">
-      <Navbar />
+      <F1Header variant="landing" />
       <HeroSection />
       <FeaturesSection />
       <UpcomingRace />
-      <Footer />
+      <F1Footer />
     </main>
   )
 }
