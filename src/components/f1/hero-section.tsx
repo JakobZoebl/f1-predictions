@@ -1,22 +1,14 @@
 import { Link } from "react-router-dom"
+import heroBg from "@/assets/template_files/landing_page_background.png"
 
 export function HeroSection() {
   return (
     <section className="relative flex min-h-[420px] flex-col items-center justify-center overflow-hidden px-4 py-20 md:min-h-[480px]">
-      {/* Background placeholder -- dark gradient simulating a track scene */}
+      {/* Background image */}
       <div
-        className="absolute inset-0"
+        className="absolute inset-0 bg-cover bg-top bg-no-repeat"
         style={{
-          background:
-            "linear-gradient(135deg, hsl(210 30% 8%) 0%, hsl(210 40% 14%) 30%, hsl(210 25% 10%) 70%, hsl(210 35% 6%) 100%)",
-        }}
-      />
-      {/* Simulated track lighting streaks */}
-      <div
-        className="pointer-events-none absolute inset-0 opacity-20"
-        style={{
-          background:
-            "linear-gradient(160deg, transparent 30%, hsl(210 20% 25%) 45%, transparent 55%), linear-gradient(200deg, transparent 40%, hsl(210 15% 20%) 55%, transparent 65%)",
+          backgroundImage: `url(${heroBg})`,
         }}
       />
       {/* Dark overlay for text legibility */}
