@@ -37,22 +37,22 @@ export function F1Header({
             <span>Back</span>
           </Link>
         ) : (
-          <div className="header-logo-container">
+          <Link to="/" className="header-logo-container">
             <img src={emblem} alt="F1 Emblem" className="h-10 w-auto" />
             <span className="header-logo-text">
               F1 PREDICTIONS
             </span>
-          </div>
+          </Link>
         )}
 
         {/* Center logo (only for "back" variant) */}
         {variant === "back" && (
-          <div className="header-center-logo">
+          <Link to="/" className="header-center-logo">
             <img src={emblem} alt="F1 Emblem" className="h-10 w-auto" />
             <span className="header-logo-text">
               F1 PREDICTIONS
             </span>
-          </div>
+          </Link>
         )}
 
         {/* Center nav links (only for "dashboard" variant) */}

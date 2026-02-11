@@ -1,0 +1,55 @@
+/* ── ProfilePage ─────────────────────────────────────── */
+
+.profile-main {
+  @apply relative min-h-screen bg-transparent text-foreground pb-20;
+}
+
+.profile-page-container {
+  @apply relative z-10 flex flex-col items-center;
+}
+
+/* ── Preset Switcher (floating bottom-right) ── */
+
+.preset-switcher {
+  @apply fixed bottom-6 right-6 z-50 flex flex-col gap-3;
+}
+
+.preset-selector-group {
+  @apply relative;
+}
+
+.preset-selector-label {
+  @apply block text-[10px] uppercase tracking-wider text-white/60 mb-1 font-medium;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
+}
+
+.preset-select-wrapper {
+  @apply relative;
+}
+
+.preset-select {
+  @apply appearance-none bg-[#0f1628]/80 backdrop-blur-md border border-white/10 text-white text-xs rounded-lg pl-3 pr-8 py-2 cursor-pointer min-w-[160px];
+  @apply hover:border-white/25 transition-colors duration-200;
+  @apply focus:outline-none focus:ring-1 focus:ring-[#e10600]/50;
+}
+
+.preset-chevron {
+  @apply absolute right-2.5 top-1/2 -translate-y-1/2 h-3 w-3 text-white/40 pointer-events-none;
+}
+
+/* ── Settings icon ── */
+
+.settings-icon {
+  @apply h-4 w-4;
+}
+
+/* ── Sparkle decoration ── */
+
+.sparkle-container {
+  @apply fixed bottom-6 left-1/2 -translate-x-1/2 z-40 pointer-events-none;
+}
+
+.sparkle-icon {
+  @apply h-6 w-6 text-white/20;
+  animation: pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}

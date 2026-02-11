@@ -24,23 +24,6 @@ export function F1Background({ children }: { children: ReactNode }) {
         }}
       />
 
-      {/* Decorative sparkle element - bottom right */}
-      <div className="pointer-events-none absolute right-8 bottom-8">
-        <svg
-          width="32"
-          height="32"
-          viewBox="0 0 32 32"
-          fill="none"
-          aria-hidden="true"
-        >
-          <path
-            d="M16 0L18.5 13.5L32 16L18.5 18.5L16 32L13.5 18.5L0 16L13.5 13.5L16 0Z"
-            fill="hsl(210 15% 55%)"
-            fillOpacity="0.5"
-          />
-        </svg>
-      </div>
-
       {/* Content */}
       <div className="relative z-10 flex min-h-screen flex-col">
         {children}

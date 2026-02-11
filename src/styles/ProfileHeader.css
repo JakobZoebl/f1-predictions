@@ -1,0 +1,45 @@
+/* ── ProfileHeader ───────────────────────────────────── */
+
+.profile-header {
+  @apply w-full flex flex-col items-center justify-center pt-8 pb-6 text-white relative z-10;
+}
+
+.profile-header-group {
+  @apply flex flex-col items-center gap-2 mb-4;
+}
+
+.profile-header-title {
+  @apply text-2xl font-bold tracking-tight;
+}
+
+.profile-header-username {
+  @apply opacity-70 font-normal;
+}
+
+.profile-header-stats-pill {
+  @apply flex items-center gap-4 px-6 py-2 border border-white/20 rounded-full bg-white/5 backdrop-blur-sm;
+}
+
+.profile-header-stat {
+  @apply text-sm text-white/80;
+}
+
+.profile-header-stat-value {
+  @apply text-white font-medium;
+}
+
+.profile-header-divider {
+  @apply w-px h-3 bg-white/20;
+}
+
+.profile-header-stat-bold {
+  @apply text-sm text-white font-bold;
+}
+
+.profile-header-actions {
+  @apply flex gap-4 mt-2 text-xs text-white/50 uppercase tracking-widest font-medium;
+}
+
+.profile-header-action-btn {
+  @apply hover:text-white transition-colors;
+}

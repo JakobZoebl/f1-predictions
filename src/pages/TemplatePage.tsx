@@ -1,6 +1,5 @@
 import { Settings } from "lucide-react"
 import { F1Header } from "@/components/f1/f1-header"
-import "@/styles/TestPage.css"
 
 export default function TemplatePage() {
   return (
@@ -17,10 +16,10 @@ export default function TemplatePage() {
           </button>
         </div>
       </F1Header>
-      <div className="test-page-container">
-        <h1 className="test-page-title">Template Canvas</h1>
-        <div className="test-page-card">
-          <p className="test-page-description">
+      <div className="container mx-auto py-10">
+        <h1 className="mb-6 text-3xl font-bold font-display">Template Canvas</h1>
+        <div className="rounded-lg border border-border bg-card p-8 shadow-sm">
+          <p className="text-muted-foreground">
             This is the template canvas for future implementations.
           </p>
           {/* Add components here to test them */}

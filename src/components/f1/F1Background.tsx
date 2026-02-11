@@ -279,7 +279,7 @@ export default function F1Background({
           <img
             src={teamLogoUrl || "/placeholder.svg"}
             alt="Team logo"
-            className="max-h-[45vh] max-w-[35vw] object-contain"
+            className="max-h-[67.5vh] max-w-[52.5vw] object-contain"
             crossOrigin="anonymous"
             style={{
               filter: `drop-shadow(0 0 40px ${teamColors.secondary}55)`,
@@ -308,7 +308,7 @@ export default function F1Background({
           <img
             src={driverLogoUrl || "/placeholder.svg"}
             alt="Driver logo"
-            className="max-h-[45vh] max-w-[35vw] object-contain"
+            className="max-h-[67.5vh] max-w-[52.5vw] object-contain"
             crossOrigin="anonymous"
             style={{
               filter: `drop-shadow(0 0 40px ${driverColors.primary}55)`,

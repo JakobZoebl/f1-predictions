@@ -1,0 +1,121 @@
+/* ── SeasonStats ─────────────────────────────────────── */
+
+.season-stats-wrapper {
+  @apply w-full max-w-6xl mx-auto px-4 mt-6 mb-12 relative z-10;
+}
+
+.season-stats-panel {
+  @apply bg-black/40 backdrop-blur-md border border-white/10 rounded-xl p-6;
+}
+
+.season-stats-title {
+  @apply text-center text-xs font-bold uppercase tracking-[0.2em] text-white/70 mb-6 border-b border-white/5 pb-4;
+}
+
+.season-stats-grid {
+  @apply grid grid-cols-1 md:grid-cols-2 gap-8;
+}
+
+/* ── Left column ── */
+
+.season-stats-column {
+  @apply space-y-4;
+}
+
+.stat-card {
+  @apply bg-white/5 rounded-lg p-4 flex justify-between items-center;
+}
+
+.stat-card-label {
+  @apply text-xs text-white/50 uppercase;
+}
+
+.stat-card-value {
+  @apply text-xl font-bold text-white;
+}
+
+.stat-card-value-sub {
+  @apply text-sm font-normal text-white/50;
+}
+
+.stat-card-right {
+  @apply text-right;
+}
+
+.stat-card-value-highlight {
+  @apply text-2xl font-bold text-[#e10600];
+}
+
+.stat-mini-cards {
+  @apply grid grid-cols-2 gap-4;
+}
+
+.stat-mini-card {
+  @apply bg-white/5 p-3 rounded;
+}
+
+.stat-mini-label {
+  @apply text-xs text-white/40 mb-1;
+}
+
+.stat-mini-value {
+  @apply font-mono text-lg;
+}
+
+.stat-highlights {
+  @apply grid grid-cols-2 gap-4 pt-2;
+}
+
+.stat-highlight-item {
+  @apply flex items-center gap-2 text-sm text-white/80;
+}
+
+.stat-highlight-icon-gold {
+  @apply text-yellow-500;
+}
+
+.stat-highlight-icon-blue {
+  @apply text-blue-400;
+}
+
+.stat-highlight-icon-orange {
+  @apply text-orange-500;
+}
+
+.stat-highlight-icon-purple {
+  @apply text-purple-400;
+}
+
+/* ── Right column: accuracy bars ── */
+
+.accuracy-section {
+  @apply space-y-3;
+}
+
+.accuracy-title {
+  @apply text-[10px] uppercase text-white/40 font-bold mb-2;
+}
+
+.accuracy-bar-group {
+  /* group class for hover effects */
+}
+
+.accuracy-bar-labels {
+  @apply flex justify-between text-xs mb-1;
+}
+
+.accuracy-bar-name {
+  @apply capitalize text-white/70;
+}
+
+.accuracy-bar-percent {
+  @apply text-white/40;
+}
+
+.accuracy-bar-track {
+  @apply h-1.5 w-full bg-white/10 rounded-full overflow-hidden;
+}
+
+.accuracy-bar-fill {
+  @apply h-full bg-gradient-to-r from-blue-500 to-cyan-400 transition-all duration-500 group-hover:from-blue-400 group-hover:to-cyan-300;
+}

@@ -1,114 +1,170 @@
 "use client"
 
-import { useEffect, useState, useCallback } from "react"
-import { Calendar, Flag, Clock } from "lucide-react"
+import { useEffect, useState, useCallback, useMemo } from "react"
+import { RACES } from "@/lib/f1-presets"
+import ReactCountryFlag from "react-country-flag"
 import "@/styles/UpcomingRace.css"
+
+// Helper to load track assets dynamically
+function getTrackAssetUrl(trackImage: string) {
+  return new URL(`../../assets/tracks/${trackImage}`, import.meta.url).href
+}
 
 function useCountdown(targetDate: Date) {
   const calculate = useCallback(() => {
     const now = new Date()
     const diff = targetDate.getTime() - now.getTime()
-    if (diff <= 0) return { days: 0, hours: 0, minutes: 0 }
+    if (diff <= 0) return { days: 0, hours: 0, minutes: 0, seconds: 0 }
     return {
       days: Math.floor(diff / (1000 * 60 * 60 * 24)),
       hours: Math.floor((diff / (1000 * 60 * 60)) % 24),
       minutes: Math.floor((diff / (1000 * 60)) % 60),
+      seconds: Math.floor((diff / 1000) % 60),
     }
   }, [targetDate])
 
   const [timeLeft, setTimeLeft] = useState(calculate)
 
   useEffect(() => {
-    const interval = setInterval(() => setTimeLeft(calculate()), 60000)
+    const interval = setInterval(() => setTimeLeft(calculate()), 1000)
     return () => clearInterval(interval)
   }, [calculate])
 
   return timeLeft
 }
 
-const predictionClose = new Date("2026-03-02T12:00:00Z")
-
 export function UpcomingRace() {
-  const { days, hours, minutes } = useCountdown(predictionClose)
+    // Logic to find the next upcoming race
+    const nextRace = useMemo(() => {
+        if (!RACES || RACES.length === 0) return null
+        // Find the first race in the future
+        const now = new Date()
+        const upcoming = RACES.find(r => {
+            const raceTime = new Date(`${r.date}T${r.time.split(' ')[0]}:00Z`)
+            return raceTime > now
+        })
+        return upcoming || RACES[0]
+    }, [])
+
+    const raceDate = useMemo(() => {
+        if (!nextRace) return new Date()
+        try {
+             const timePart = nextRace.time.split(' ')[0]
+             const timeWithSeconds = timePart.length === 5 ? `${timePart}:00` : timePart
+             return new Date(`${nextRace.date}T${timeWithSeconds}Z`)
+        } catch (e) {
+            console.error("Date parsing error", e)
+            return new Date()
+        }
+    }, [nextRace])
+
+    const { days, hours, minutes } = useCountdown(raceDate)
+
+    if (!nextRace) return <div className="p-8 text-center text-white">No upcoming races found</div>
 
   return (
     <section className="upcoming-race-section">
       <div className="upcoming-race-container">
-        {/* Outer glow wrapper */}
-        <div className="race-card-outer">
-          {/* Animated glow border */}
-          <div className="glow-pulse-border" />
-          <div className="glow-border" />
-
-          {/* Card content */}
-          <div className="race-card-inner">
-            {/* Subtle track map background SVG */}
-            <div className="track-map-overlay">
-              <svg viewBox="0 0 800 400" className="track-map-svg" aria-hidden="true">
-                <path
-                  d="M100,200 Q150,50 250,100 T400,80 Q500,60 550,150 T700,200 Q750,300 650,320 T400,340 Q250,350 200,280 T100,200"
-                  fill="none"
-                  stroke="hsl(var(--primary))"
-                  strokeWidth="3"
-                />
-              </svg>
-            </div>
-
-            {/* Top glow accent line */}
-            <div className="card-top-accent" />
-
-            <div className="card-content-wrapper">
-              <h2 className="section-title">
-                Upcoming Race
-              </h2>
-
-              {/* Inner race info card with its own blue glow border */}
-              <div className="race-info-card-outer">
-                {/* Inner glow border */}
-                <div className="race-info-glow-pulse" />
-                <div className="race-info-glow" />
-
-                <div className="race-info-card-inner">
-                  <div className="race-header">
-                    <span className="race-flag" role="img" aria-label="Bahrain flag">
-                      {"\uD83C\uDDE7\uD83C\uDDED"}
-                    </span>
-                    <h3 className="race-title">
-                      Bahrain Grand Prix
-                    </h3>
-                  </div>
-
-                  <div className="race-details-wrapper">
-                    <span className="race-detail-item">
-                      <Calendar className="race-detail-icon" />
-                      March 2, 2026
-                    </span>
-                    <span className="race-detail-item">
-                      <Flag className="race-detail-icon" />
-                      57 Laps
-                    </span>
-                    <span className="race-detail-item">
-                      <Clock className="race-detail-icon" />
-                      15:00 GMT
-                    </span>
-                  </div>
-
-                  <div className="countdown-wrapper">
-                    <Clock className="race-detail-icon" />
-                    <span className="countdown-text">Predictions close in:</span>
-                    <span className="countdown-timer">
-                      {days}d {hours}h {minutes}m
-                    </span>
-                  </div>
+        
+        <div 
+            className="race-card-container"
+            style={{
+                // @ts-expect-error - Custom CSS variables for dynamic colors
+                '--race-primary-color': nextRace.colors.primary,
+                '--race-secondary-color': nextRace.colors.secondary,
+                '--race-primary-color-dim': `${nextRace.colors.primary}40`,
+            }}
+        >
+            {/* Left Side: Information & Countdown */}
+            <div className="race-content-left">
+                <div className="race-content-top">
+                    <span className="upcoming-label whitespace-nowrap">Upcoming Race</span>
+                    
+                    {/* Meta Info Row */}
+                    <div className="flex items-center gap-3 text-sm font-medium text-white">
+                         <div className="flex items-center">
+                            <ReactCountryFlag 
+                                countryCode={nextRace.countryCode} 
+                                svg 
+                                style={{
+                                    width: '1.5em',
+                                    height: '1.1em',
+                                }}
+                                title={nextRace.country}
+                            />
+                        </div>
+                        <span className="font-bold uppercase tracking-wider whitespace-nowrap" style={{ color: nextRace.colors.primary }}>
+                            Round {nextRace.round}
+                        </span>
+                        <span className="text-white/30">•</span>
+                        <span className="whitespace-nowrap">
+                            {new Date(nextRace.date).toLocaleDateString('en-US', { day: 'numeric', month: 'long' })}
+                        </span>
+                         <span className="text-white/30">•</span>
+                        <span className="whitespace-nowrap">
+                            {nextRace.time}
+                        </span>
+                         <span className="text-white/30">•</span>
+                        <span className="whitespace-nowrap">
+                            {nextRace.laps} Laps
+                        </span>
+                    </div>
                 </div>
-              </div>
+                    
+                {/* Countdown */}
+                <div className="race-countdown-compact mb-4">
+                    <div className="countdown-grid">
+                        <div className="countdown-item">
+                            <span className="countdown-value">{days.toString().padStart(2, '0')}</span>
+                            <span className="countdown-unit" style={{ color: nextRace.colors.primary }}>D</span>
+                        </div>
+                        <div className="countdown-item">
+                            <span className="countdown-value">{hours.toString().padStart(2, '0')}</span>
+                            <span className="countdown-unit" style={{ color: nextRace.colors.primary }}>H</span>
+                        </div>
+                        <div className="countdown-item">
+                            <span className="countdown-value">{minutes.toString().padStart(2, '0')}</span>
+                            <span className="countdown-unit" style={{ color: nextRace.colors.primary }}>M</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div className="race-details-center">
+                    <h2 className="race-title-large leading-tight">
+                        {nextRace.country} <br/> Grand Prix
+                    </h2>
+                    
+                    <div className="race-meta-row mt-2">
+                        <span className="text-white/70 italic">{nextRace.circuit}</span>
+                    </div>
+                </div>
+
+                <div className="race-actions-bottom">
+                    <button 
+                        className="predict-button" 
+                        style={{ 
+                            backgroundColor: nextRace.colors.primary,
+                            color: '#ffffff',
+                            '--btn-glow': nextRace.colors.secondary 
+                        } as React.CSSProperties}
+                    >
+                        Make your predictions
+                    </button>
+                </div>
             </div>
 
-            {/* Bottom glow accent line */}
-            <div className="card-bottom-accent" />
-          </div>
+            {/* Right Side: Track Map */}
+            <div className="race-track-right">
+                <img 
+                    src={getTrackAssetUrl(nextRace.trackImage)} 
+                    alt={nextRace.circuit} 
+                    className="track-map-img" 
+                />
+            </div>
+
         </div>
       </div>
     </section>
   )
 }
+

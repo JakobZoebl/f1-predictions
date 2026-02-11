@@ -1,0 +1,181 @@
+/* ── ProfileCards ────────────────────────────────────── */
+
+.profile-cards-grid {
+  @apply grid grid-cols-1 lg:grid-cols-2 gap-6 w-full max-w-6xl mx-auto px-4 z-10 relative;
+}
+
+/* ── Shared card shell ── */
+
+.profile-card {
+  @apply relative overflow-hidden rounded-xl border border-white/10 bg-black/40 backdrop-blur-md p-6 flex flex-col items-center text-white transition-all duration-300 hover:border-white/20 hover:bg-black/50;
+}
+
+.profile-card-title {
+  @apply text-xl font-bold uppercase tracking-wider mb-6 text-white/90;
+}
+
+/* ── Logo / Photo bubble ── */
+
+.profile-card-logo-area {
+  @apply relative h-40 w-full flex items-center justify-center mb-6;
+}
+
+.profile-card-logo-bubble {
+  @apply relative h-40 w-40 rounded-full bg-white/5 border-2 border-white/10 flex items-center justify-center p-8 shadow-lg;
+}
+
+.profile-card-logo-img {
+  @apply w-full h-full object-contain filter drop-shadow-md;
+}
+
+.profile-card-logo-fallback {
+  @apply text-center font-bold text-white/20;
+}
+
+.profile-card-photo-bubble {
+  @apply relative h-40 w-40 mb-4 rounded-full overflow-hidden border-2 border-white/10 bg-white/5 shadow-lg;
+}
+
+.profile-card-photo-img {
+  @apply w-full h-full object-cover object-top;
+}
+
+.profile-card-photo-fallback {
+  @apply w-full h-full flex items-center justify-center text-white/20;
+}
+
+/* ── Name area ── */
+
+.profile-card-name-area {
+  @apply text-center mb-6;
+}
+
+.profile-card-name-row {
+  @apply flex items-center justify-center gap-2 mb-1;
+}
+
+.profile-card-name {
+  @apply text-lg font-bold;
+}
+
+.profile-card-driver-number {
+  @apply text-2xl font-bold italic;
+}
+
+.profile-card-name-divider {
+  @apply w-px h-4 bg-white/20;
+}
+
+/* ── Color bars ── */
+
+.profile-card-color-bars {
+  @apply flex gap-2 mb-6;
+}
+
+.profile-card-color-bar {
+  @apply h-2 w-16 rounded-full;
+}
+
+.profile-card-color-label {
+  @apply text-xs text-white/50 font-mono uppercase;
+}
+
+/* ── Stats grid ── */
+
+.profile-card-stats-grid {
+  @apply w-full grid grid-cols-2 gap-y-4 gap-x-8 text-sm border-t border-white/10 pt-6;
+}
+
+.profile-card-standings-row {
+  @apply col-span-2 flex justify-between items-center bg-white/5 p-2 rounded;
+}
+
+.profile-card-standings-label {
+  @apply text-white/60;
+}
+
+.profile-card-standings-value {
+  @apply font-bold;
+}
+
+.profile-card-standings-pos {
+  @apply text-[#e10600];
+}
+
+.profile-card-stats-summary {
+  @apply col-span-2 text-xs text-white/50 flex gap-3 justify-center;
+}
+
+.profile-card-stats-summary-wrap {
+  @apply col-span-2 text-xs text-white/50 flex flex-wrap gap-2 justify-center text-center;
+}
+
+/* ── Section label ── */
+
+.profile-card-section {
+  @apply col-span-2 mt-2;
+}
+
+.profile-card-section-label {
+  @apply text-[10px] uppercase tracking-widest text-white/40 mb-1;
+}
+
+.profile-card-section-label-mb {
+  @apply text-[10px] uppercase tracking-widest text-white/40 mb-2;
+}
+
+/* ── Result badges ── */
+
+.profile-card-result-badges {
+  @apply flex gap-2;
+}
+
+.profile-card-result-badge {
+  @apply px-2 py-0.5 rounded bg-white/10 text-white/90 text-xs font-medium;
+}
+
+.profile-card-result-badge-driver {
+  @apply px-2 py-0.5 rounded bg-white/10 text-xs font-medium border border-yellow-500/30 text-yellow-500;
+}
+
+/* ── Predictions section ── */
+
+.profile-card-predictions-section {
+  @apply col-span-2 mt-4 pt-4 border-t border-white/10;
+}
+
+.profile-card-predictions-list {
+  @apply space-y-1 text-xs;
+}
+
+.profile-card-prediction-row {
+  @apply flex justify-between;
+}
+
+.profile-card-prediction-label {
+  @apply text-white/60;
+}
+
+.profile-card-prediction-value {
+  @apply text-green-400;
+}
+
+.profile-card-prediction-value-neutral {
+  @apply text-white/90;
+}
+
+.profile-card-prediction-value-accent {
+  @apply text-blue-400;
+}
+
+.profile-card-prediction-total-row {
+  @apply flex justify-between font-bold pt-1;
+}
+
+.profile-card-prediction-total-label {
+  @apply text-white/80;
+}
+
+.profile-card-prediction-accuracy-row {
+  @apply flex justify-between pt-1 font-medium;
+}

@@ -11,8 +11,8 @@ export default function LandingPage() {
     <main className="landing-page-main">
       <F1Header variant="landing">
         <nav className="header-right-nav" aria-label="Auth navigation">
-          <Link to="/test" className="text-sm font-medium text-muted-foreground transition-colors hover:text-foreground">
-            Test
+          <Link to="/profile" className="text-sm font-medium text-muted-foreground transition-colors hover:text-foreground">
+            Profile
           </Link>
           <Link to="/login" className="header-login-btn">
             Login

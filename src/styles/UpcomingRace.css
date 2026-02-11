@@ -1,102 +1,136 @@
+/* ── Upcoming Race Section ───────────────────────────── */
+
 .upcoming-race-section {
-  @apply py-16;
+  @apply relative w-full py-24 px-4 overflow-hidden;
+  @apply bg-background;
 }
 
 .upcoming-race-container {
-  @apply mx-auto max-w-3xl px-6;
+  @apply max-w-6xl mx-auto relative z-10;
 }
 
-.race-card-outer {
-  @apply relative rounded-2xl p-0.5;
+/* ── Main Card Structure ── */
+
+.race-card-container {
+  @apply relative w-full rounded-3xl overflow-hidden text-white;
+  @apply shadow-2xl;
+  box-shadow: 0 0 50px -20px var(--race-primary-color);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  /* Horizontal layout wrapper */
+  @apply flex flex-col md:flex-row items-stretch;
 }
 
-.glow-pulse-border {
-  @apply animate-glow-pulse absolute -inset-px rounded-2xl bg-gradient-to-r from-primary/60 via-primary/30 to-primary/60 blur-sm;
+/* Neon Gradient Border */
+.race-card-container::before {
+  content: "";
+  @apply absolute inset-0 pointer-events-none rounded-3xl;
+  padding: 2px;
+  background: linear-gradient(
+    135deg,
+    var(--race-primary-color),
+    transparent 40%,
+    transparent 60%,
+    var(--race-secondary-color)
+  );
+  -webkit-mask:
+    linear-gradient(#fff 0 0) content-box,
+    linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  opacity: 0.8;
+  z-index: 30; /* Ensure border stays on top */
 }
 
-.glow-border {
-  @apply absolute -inset-px rounded-2xl bg-gradient-to-r from-primary/50 via-primary/20 to-primary/50;
+/* ── Left Side: Text Content ── */
+
+.race-content-left {
+  @apply flex-1 p-6 md:p-10 pb-6 flex flex-col relative z-20;
 }
 
-.race-card-inner {
-  @apply relative overflow-hidden rounded-2xl bg-card;
+.race-content-top {
+  @apply flex flex-row items-center gap-2 mb-4;
 }
 
-.track-map-overlay {
-  @apply absolute inset-0 opacity-[0.06];
+.upcoming-label {
+  @apply text-xs font-bold uppercase tracking-[0.3em] text-white;
 }
 
-.track-map-svg {
-  @apply h-full w-full;
+.race-countdown-compact {
+  @apply self-start;
 }
 
-.card-top-accent {
-  @apply absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-primary/50 to-transparent;
+.countdown-grid {
+  @apply flex flex-row gap-6;
 }
 
-.card-content-wrapper {
-  @apply relative z-10 flex flex-col items-center gap-5 p-8;
+.countdown-item {
+  @apply flex flex-row items-baseline gap-1;
 }
 
-.section-title {
-  @apply text-sm font-bold uppercase tracking-widest text-muted-foreground;
-  font-family: var(--font-display);
+.race-details-center {
+  @apply flex flex-col gap-1 mb-4;
 }
 
-.race-info-card-outer {
-  @apply relative w-full max-w-md rounded-xl p-px;
+.race-label-small {
+  @apply text-xs font-bold uppercase tracking-[0.2em];
 }
 
-.race-info-glow-pulse {
-  @apply animate-glow-pulse absolute -inset-px rounded-xl bg-gradient-to-b from-primary/40 via-primary/20 to-primary/40 blur-[2px];
+.race-meta-extra {
+  @apply text-xs font-medium text-white/40 uppercase tracking-wider;
 }
 
-.race-info-glow {
-  @apply absolute -inset-px rounded-xl bg-gradient-to-b from-primary/30 via-primary/10 to-primary/30;
+.race-title-large {
+  @apply text-4xl md:text-5xl font-display font-bold uppercase italic tracking-wide text-white;
+  text-shadow: 0 0 30px rgba(255, 255, 255, 0.1);
 }
 
-.race-info-card-inner {
-  @apply relative rounded-xl bg-secondary/80 p-6 text-center backdrop-blur-sm;
+.race-meta-row {
+  @apply flex items-center gap-4 text-sm text-white/50 font-medium;
 }
 
-.race-header {
-  @apply flex items-center justify-center gap-3;
+.race-actions-bottom {
+  @apply mt-2;
 }
 
-.race-flag {
-  @apply text-2xl;
+.predict-button {
+  @apply flex items-center justify-center gap-2 px-6 py-2.5 rounded-lg font-bold uppercase tracking-wider transition-all duration-300;
+  @apply bg-black text-white hover:scale-105 active:scale-95;
+  @apply text-sm;
+  box-shadow: 0 0 10px -2px var(--btn-glow);
 }
 
-.race-title {
-  @apply text-xl font-bold text-foreground sm:text-2xl;
-  font-family: var(--font-display);
+.predict-button:hover {
+  box-shadow: 0 0 20px -5px var(--btn-glow);
+  @apply bg-opacity-90;
 }
 
-.race-details-wrapper {
-  @apply mt-4 flex flex-wrap items-center justify-center gap-4 text-sm text-muted-foreground;
+.countdown-value {
+  @apply text-5xl font-display font-bold text-white leading-none;
 }
 
-.race-detail-item {
-  @apply flex items-center gap-1.5;
+.countdown-unit {
+  @apply text-lg font-bold;
 }
 
-.race-detail-icon {
-  @apply h-4 w-4 text-primary;
+/* ── Right Side: Track Map ── */
+
+.race-track-right {
+  @apply flex-1 relative min-h-[320px] flex items-center justify-center overflow-hidden;
 }
 
-.countdown-wrapper {
-  @apply mt-5 flex items-center justify-center gap-2 rounded-lg border border-primary/15 bg-background/60 px-4 py-3 text-sm;
+.track-map-img {
+  @apply w-[90%] h-[90%] object-contain relative z-10;
+  filter: drop-shadow(0 0 40px var(--race-primary-color-dim));
+  transition: transform 0.5s ease-out;
 }
 
-.countdown-text {
-  @apply text-muted-foreground;
+.race-track-right:hover .track-map-img {
+  transform: scale(1.05) rotate(0deg);
 }
 
-.countdown-timer {
-  @apply font-bold text-foreground;
-  font-family: var(--font-display);
-}
-
-.card-bottom-accent {
-  @apply absolute inset-x-0 bottom-0 h-px bg-gradient-to-r from-transparent via-primary/50 to-transparent;
+/* ── CSS Variables for dynamic colors ── */
+.race-card-container {
+  --race-primary-color: #ff0000;
+  --race-secondary-color: #ffffff;
+  --race-primary-color-dim: rgba(255, 0, 0, 0.3);
 }
