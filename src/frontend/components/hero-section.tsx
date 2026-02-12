@@ -1,5 +1,5 @@
 import { F1Button } from "@/frontend/components/f1-button"
-import heroBg from "@/assets/template_files/landing_page_background.png"
+import heroBg from "@/assets/landing_page_background.png"
 import "@/frontend/styles/HeroSection.css"
 
 export function HeroSection() {

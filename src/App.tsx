@@ -3,9 +3,11 @@ import LandingPage from "@/frontend/landing/LandingPage"
 import Login from "@/frontend/pages/Login"
 import SignUp from "@/frontend/pages/SignUp"
 import ProfilePage from "@/frontend/pages/ProfilePage"
-import TemplatePage from "@/frontend/pages/TemplatePage"
 import Leaderboard from "@/frontend/pages/Leaderboard"
 import RacePredictions from "@/frontend/pages/RacePredictions"
+import Home from "@/frontend/pages/Home"
+
+import SeasonOverview from "@/frontend/pages/SeasonOverview"
 
 function App() {
   return (
@@ -14,9 +16,10 @@ function App() {
       <Route path="/login" element={<Login />} />
       <Route path="/signup" element={<SignUp />} />
       <Route path="/profile" element={<ProfilePage />} />
-      <Route path="/template" element={<TemplatePage />} />
       <Route path="/leaderboard" element={<Leaderboard />} />
       <Route path="/race-predictions" element={<RacePredictions />} />
+      <Route path="/season-overview" element={<SeasonOverview />} />
+      <Route path="/home" element={<Home />} />
     </Routes>
   )
 }

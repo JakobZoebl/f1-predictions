@@ -275,9 +275,9 @@ export default function F1Background({
             "opacity 0.8s ease 0.8s, transform 0.8s cubic-bezier(0.16, 1, 0.3, 1) 0.8s",
         }}
       >
-        {teamLogoUrl ? (
+        {teamLogoUrl && (
           <img
-            src={teamLogoUrl || "/placeholder.svg"}
+            src={teamLogoUrl}
             alt="Team logo"
             className="max-h-[67.5vh] max-w-[52.5vw] object-contain"
             crossOrigin="anonymous"
@@ -285,8 +285,6 @@ export default function F1Background({
               filter: `drop-shadow(0 0 40px ${teamColors.secondary}55)`,
             }}
           />
-        ) : (
-          <TeamPlaceholderLogo color={teamColors.secondary} />
         )}
       </div>
 
@@ -304,9 +302,9 @@ export default function F1Background({
             "opacity 0.8s ease 0.8s, transform 0.8s cubic-bezier(0.16, 1, 0.3, 1) 0.8s",
         }}
       >
-        {driverLogoUrl ? (
+        {driverLogoUrl && (
           <img
-            src={driverLogoUrl || "/placeholder.svg"}
+            src={driverLogoUrl}
             alt="Driver logo"
             className="max-h-[67.5vh] max-w-[52.5vw] object-contain"
             crossOrigin="anonymous"
@@ -314,84 +312,10 @@ export default function F1Background({
               filter: `drop-shadow(0 0 40px ${driverColors.primary}55)`,
             }}
           />
-        ) : (
-          <DriverPlaceholderLogo color={driverColors.primary} />
         )}
       </div>
     </div>
   )
 }
 
-/* ═══════════════════════════════════════════════════════════════════
-   Placeholder logos
-   ═══════════════════════════════════════════════════════════════════ */
 
-function TeamPlaceholderLogo({ color }: { color: string }) {
-  return (
-    <svg
-      viewBox="0 0 200 160"
-      className="max-h-[40vh] max-w-[30vw]"
-      style={{ filter: `drop-shadow(0 0 30px ${color}44)` }}
-    >
-      <path
-        d="M100 10 L180 50 L180 100 Q180 150 100 155 Q20 150 20 100 L20 50 Z"
-        fill={color}
-        fillOpacity="0.22"
-        stroke={color}
-        strokeWidth="2"
-        strokeOpacity="0.5"
-      />
-      <path
-        d="M100 40 L145 70 L100 100 L55 70 Z"
-        fill={color}
-        fillOpacity="0.35"
-        stroke={color}
-        strokeWidth="1.5"
-        strokeOpacity="0.7"
-      />
-      <circle cx="100" cy="70" r="8" fill={color} fillOpacity="0.5" />
-    </svg>
-  )
-}
-
-function DriverPlaceholderLogo({ color }: { color: string }) {
-  return (
-    <svg
-      viewBox="0 0 200 200"
-      className="max-h-[40vh] max-w-[30vw]"
-      style={{ filter: `drop-shadow(0 0 30px ${color}44)` }}
-    >
-      <ellipse
-        cx="100"
-        cy="85"
-        rx="65"
-        ry="55"
-        fill={color}
-        fillOpacity="0.18"
-        stroke={color}
-        strokeWidth="2"
-        strokeOpacity="0.45"
-      />
-      <path
-        d="M55 85 Q100 60 145 85 Q130 95 100 95 Q70 95 55 85 Z"
-        fill={color}
-        fillOpacity="0.4"
-        stroke={color}
-        strokeWidth="1.5"
-        strokeOpacity="0.6"
-      />
-      <text
-        x="100"
-        y="150"
-        textAnchor="middle"
-        fontSize="36"
-        fontWeight="bold"
-        fill={color}
-        fillOpacity="0.45"
-        fontFamily="sans-serif"
-      >
-        01
-      </text>
-    </svg>
-  )
-}

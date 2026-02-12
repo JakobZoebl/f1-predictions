@@ -33,15 +33,19 @@ function useCountdown(targetDate: Date) {
   return timeLeft
 }
 
+import type { RaceEvent } from "@/lib/f1-presets"
+
 interface FeatureRaceProps {
   className?: string
   style?: React.CSSProperties
   renderActions?: (raceColors: { primary: string; secondary: string }) => React.ReactNode
+  race?: RaceEvent
 }
 
-export function FeatureRace({ className, style, renderActions }: FeatureRaceProps) {
-    // Logic to find the next upcoming race
+export function FeatureRace({ className, style, renderActions, race }: FeatureRaceProps) {
+    // Logic to find the next upcoming race (only if race prop is not provided)
     const nextRace = useMemo(() => {
+        if (race) return race
         if (!RACES || RACES.length === 0) return null
         // Find the first race in the future
         const now = new Date()
@@ -50,7 +54,7 @@ export function FeatureRace({ className, style, renderActions }: FeatureRaceProp
             return raceTime > now
         })
         return upcoming || RACES[0]
-    }, [])
+    }, [race])
 
     const raceDate = useMemo(() => {
         if (!nextRace) return new Date()
@@ -81,12 +85,15 @@ export function FeatureRace({ className, style, renderActions }: FeatureRaceProp
     >
         <div 
             className="race-card-container"
-            style={{ background: 'transparent' }} 
         >
             {/* Left Side: Information & Countdown */}
             <div className="race-content-left">
                 <div className="race-content-top">
-                    <span className="upcoming-label whitespace-nowrap">Upcoming Race</span>
+                    <span className="upcoming-label whitespace-nowrap">
+                        {race ? (
+                            nextRace.name.includes("Sprint") ? "Sprint Race" : "Grand Prix"
+                        ) : "Upcoming Race"}
+                    </span>
                     
                     {/* Meta Info Row */}
                     <div className="flex items-center gap-3 text-sm font-medium text-white">
@@ -108,11 +115,11 @@ export function FeatureRace({ className, style, renderActions }: FeatureRaceProp
                         <span className="whitespace-nowrap">
                             {new Date(nextRace.date).toLocaleDateString('en-US', { day: 'numeric', month: 'long' })}
                         </span>
-                         <span className="text-white/30">•</span>
+                        <span className="text-white/30">•</span>
                         <span className="whitespace-nowrap">
                             {nextRace.time}
                         </span>
-                         <span className="text-white/30">•</span>
+                        <span className="text-white/30">•</span>
                         <span className="whitespace-nowrap">
                             {nextRace.laps} Laps
                         </span>
@@ -139,7 +146,7 @@ export function FeatureRace({ className, style, renderActions }: FeatureRaceProp
 
                 <div className="race-details-center">
                     <h2 className="race-title-large leading-tight">
-                        {nextRace.country} <br/> Grand Prix
+                        {nextRace.country} <br/> {nextRace.name.includes("Sprint") ? "Sprint" : "Grand Prix"}
                     </h2>
                     
                     <div className="race-meta-row mt-2">
