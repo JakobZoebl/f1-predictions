@@ -1,4 +1,3 @@
-import { Avatar, AvatarFallback, AvatarImage } from "@/frontend/components/avatar"
 import { Card, CardContent, CardHeader, CardTitle } from "@/frontend/components/card"
 import {
   Table,
@@ -6,7 +5,7 @@ import {
   TableCell,
   TableRow,
 } from "@/frontend/components/table"
-import { ArrowDown, ArrowUp, Minus, Trophy } from "lucide-react"
+import { Trophy } from "lucide-react"
 import { Link } from "react-router-dom"
 
 export interface LeaderboardEntry {
@@ -26,12 +25,6 @@ interface MiniLeaderboardProps {
 }
 
 export function MiniLeaderboard({ data, currentUserId }: MiniLeaderboardProps) {
-  const getMovementIcon = (movement: number) => {
-    if (movement > 0) return <ArrowUp className="h-3 w-3 text-green-500" />
-    if (movement < 0) return <ArrowDown className="h-3 w-3 text-red-500" />
-    return <Minus className="h-3 w-3 text-muted-foreground" />
-  }
-
   const getRankIcon = (rank: number) => {
     if (rank === 1) return <Trophy className="h-4 w-4 text-yellow-500" />
     if (rank === 2) return <Trophy className="h-4 w-4 text-gray-400" />
