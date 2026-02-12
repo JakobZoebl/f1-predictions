@@ -1,6 +1,6 @@
 "use client"
 
-import { ArrowLeft } from "lucide-react"
+import { ArrowLeft, Settings } from "lucide-react"
 import { Link } from "react-router-dom"
 import { cn, hexToHsl, getAdaptiveDeepBackground } from "@/lib/utils"
 import emblem from "@/assets/emblem.png"
@@ -107,11 +107,14 @@ export function F1Header({
 
         {/* Right side - Render children (actions) here */}
         <div className="header-right-nav">
-          {children ? (
-            children
-          ) : (
-            <div className="header-spacer" />
-          )}
+          {children}
+          <Link 
+            to="/profile-settings" 
+            className="p-2 text-white/50 hover:text-white transition-colors"
+            aria-label="Profile Settings"
+          >
+            <Settings className="h-5 w-5" />
+          </Link>
         </div>
       </div>
 

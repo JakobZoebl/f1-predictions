@@ -33,7 +33,7 @@ export default function Home() {
       </div>
 
       {/* Content Layer */}
-      <div className="home-content-wrapper">
+      <div className="relative z-10 flex min-h-screen flex-col">
         <F1Header variant="Home" activeNav="Home" />
         
         <main className="home-main-content">
