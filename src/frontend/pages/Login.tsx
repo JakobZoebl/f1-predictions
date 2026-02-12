@@ -2,7 +2,7 @@ import { F1Background } from "@/frontend/components/blank-background"
 import "@/frontend/styles/Login.css"
 import { F1Header } from "@/frontend/components/f1-header"
 import { F1Footer } from "@/frontend/components/f1-footer"
-import { LoginContainer } from "@/frontend/components/login-container"
+import { LoginContainer } from "@/frontend/auth/LoginContainer"
 
 export default function Login() {
   return (

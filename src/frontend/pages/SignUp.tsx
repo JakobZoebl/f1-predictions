@@ -2,7 +2,7 @@ import { F1Background } from "@/frontend/components/blank-background"
 import "@/frontend/styles/SignUp.css"
 import { F1Header } from "@/frontend/components/f1-header"
 import { F1Footer } from "@/frontend/components/f1-footer"
-import { SignupContainer } from "@/frontend/components/signup-container"
+import { SignupContainer } from "@/frontend/auth/SignupContainer"
 
 export default function SignUp() {
   return (

@@ -1,6 +1,6 @@
 "use client"
 
-import React from "react"
+
 import "@/frontend/styles/ProfileSettings.css"
 import { User, Camera } from "lucide-react"
 

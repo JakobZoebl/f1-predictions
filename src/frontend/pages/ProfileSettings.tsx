@@ -3,9 +3,9 @@
 import { useState } from "react"
 
 
-import { ProfileDetails } from "@/frontend/components/profile-settings/ProfileDetails"
-import { ThemeCustomization } from "@/frontend/components/profile-settings/ThemeCustomization"
-import { SecuritySettings } from "@/frontend/components/profile-settings/SecuritySettings"
+import { ProfileDetails } from "@/frontend/profile-settings/ProfileDetails"
+import { ThemeCustomization } from "@/frontend/profile-settings/ThemeCustomization"
+import { SecuritySettings } from "@/frontend/profile-settings/SecuritySettings"
 import { F1Header } from "@/frontend/components/f1-header"
 import F1Background from "@/frontend/components/team-driver-background"
 import { TEAMS, DRIVERS } from "@/lib/f1-presets"
