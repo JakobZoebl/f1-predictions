@@ -1,9 +1,11 @@
 import { Routes, Route } from 'react-router-dom'
-import LandingPage from "@/components/landing/LandingPage"
-import Login from "@/pages/Login"
-import SignUp from "@/pages/SignUp"
-import ProfilePage from "@/pages/ProfilePage"
-import TemplatePage from "@/pages/TemplatePage"
+import LandingPage from "@/frontend/landing/LandingPage"
+import Login from "@/frontend/pages/Login"
+import SignUp from "@/frontend/pages/SignUp"
+import ProfilePage from "@/frontend/pages/ProfilePage"
+import TemplatePage from "@/frontend/pages/TemplatePage"
+import Leaderboard from "@/frontend/pages/Leaderboard"
+import RacePredictions from "@/frontend/pages/RacePredictions"
 
 function App() {
   return (
@@ -13,6 +15,8 @@ function App() {
       <Route path="/signup" element={<SignUp />} />
       <Route path="/profile" element={<ProfilePage />} />
       <Route path="/template" element={<TemplatePage />} />
+      <Route path="/leaderboard" element={<Leaderboard />} />
+      <Route path="/race-predictions" element={<RacePredictions />} />
     </Routes>
   )
 }

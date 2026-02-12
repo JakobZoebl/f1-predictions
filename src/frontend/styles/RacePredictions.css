@@ -1,0 +1,303 @@
+/* ── Race Predictions Page ───────────────────────────── */
+
+/* ── Section Cards ── */
+
+.prediction-section {
+  @apply rounded-2xl border border-white/10 p-5 sm:p-8;
+  background: rgba(255, 255, 255, 0.03);
+  backdrop-filter: blur(12px);
+}
+
+.prediction-section-title {
+  @apply flex items-center justify-between mb-6;
+}
+
+.prediction-section-title h2 {
+  @apply text-lg sm:text-xl font-display font-bold uppercase tracking-wider text-white;
+}
+
+.prediction-section-title .max-pts {
+  @apply text-xs sm:text-sm font-medium text-white/40;
+}
+
+/* ── Drag & Drop Shared ── */
+
+.dnd-slots-container {
+  @apply flex flex-col gap-2 mb-6;
+}
+
+.dnd-slot {
+  @apply flex items-center gap-3 rounded-xl px-4 py-3 transition-all duration-200;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.dnd-slot:hover {
+  border-color: rgba(255, 255, 255, 0.15);
+  background: rgba(255, 255, 255, 0.06);
+}
+
+.dnd-slot.drag-over {
+  border-color: hsl(211 100% 50%);
+  background: rgba(59, 130, 246, 0.1);
+  box-shadow: 0 0 15px -5px rgba(59, 130, 246, 0.4);
+}
+
+.dnd-slot-position {
+  @apply text-sm font-display font-bold text-white/50 w-8 flex-shrink-0;
+}
+
+.dnd-slot-driver {
+  @apply flex-1 flex items-center gap-3;
+}
+
+.dnd-slot-empty {
+  @apply text-sm text-white/25 italic;
+}
+
+.dnd-slot-points {
+  @apply text-xs font-bold text-white/30 flex-shrink-0;
+}
+
+.dnd-slot .team-accent {
+  @apply w-1 h-8 rounded-full flex-shrink-0;
+}
+
+.dnd-slot .driver-info {
+  @apply flex flex-col;
+}
+
+.dnd-slot .driver-name {
+  @apply text-sm font-medium text-white;
+}
+
+.dnd-slot .driver-team {
+  @apply text-xs text-white/40;
+}
+
+.dnd-slot .remove-btn {
+  @apply text-white/30 hover:text-red-400 transition-colors cursor-pointer text-lg leading-none;
+}
+
+/* ── Driver Pool ── */
+
+.dnd-pool-label {
+  @apply text-xs font-bold uppercase tracking-widest text-white/40 mb-3;
+}
+
+.dnd-pool {
+  @apply grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-2;
+}
+
+.dnd-pool-item {
+  @apply flex items-center gap-2.5 rounded-lg px-3 py-2.5 cursor-grab transition-all duration-200;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.dnd-pool-item:hover {
+  background: rgba(255, 255, 255, 0.08);
+  border-color: rgba(255, 255, 255, 0.12);
+  @apply scale-[1.02];
+}
+
+.dnd-pool-item.dragging {
+  @apply opacity-50;
+}
+
+.dnd-pool-item .team-accent {
+  @apply w-0.5 h-6 rounded-full flex-shrink-0;
+}
+
+.dnd-pool-item .driver-number {
+  @apply text-xs font-display font-bold text-white/30 w-5 text-right flex-shrink-0;
+}
+
+.dnd-pool-item .driver-name {
+  @apply text-sm text-white font-medium;
+}
+
+/* ── Bonus Predictions ── */
+
+.bonus-grid {
+  @apply grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4;
+}
+
+.bonus-item {
+  @apply rounded-xl p-4;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.bonus-item-header {
+  @apply flex items-center justify-between mb-3;
+}
+
+.bonus-item-label {
+  @apply text-sm font-display font-bold uppercase tracking-wider text-white;
+}
+
+.bonus-item-pts {
+  @apply text-xs font-medium text-white/30;
+}
+
+.bonus-select {
+  @apply w-full rounded-lg px-3 py-2.5 text-sm font-medium;
+  @apply bg-white/5 text-white border border-white/10;
+  @apply focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500/30;
+  @apply appearance-none cursor-pointer;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='rgba(255,255,255,0.4)' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 12px center;
+  padding-right: 36px;
+}
+
+.bonus-select option {
+  @apply bg-gray-900 text-white;
+}
+
+/* Toggle Switch */
+.toggle-container {
+  @apply flex items-center justify-between;
+}
+
+.toggle-labels {
+  @apply flex items-center gap-3 text-sm;
+}
+
+.toggle-label-no,
+.toggle-label-yes {
+  @apply font-medium transition-colors duration-200;
+}
+
+.toggle-label-no.active {
+  @apply text-white;
+}
+
+.toggle-label-no:not(.active) {
+  @apply text-white/30;
+}
+
+.toggle-label-yes.active {
+  @apply text-white;
+}
+
+.toggle-label-yes:not(.active) {
+  @apply text-white/30;
+}
+
+.toggle-switch {
+  @apply relative w-12 h-6 rounded-full cursor-pointer transition-all duration-300;
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.toggle-switch.active {
+  background: hsl(211 100% 50%);
+}
+
+.toggle-switch .toggle-knob {
+  @apply absolute top-0.5 w-5 h-5 rounded-full transition-all duration-300;
+  background: white;
+  left: 2px;
+}
+
+.toggle-switch.active .toggle-knob {
+  left: calc(100% - 22px);
+}
+
+/* ── Prediction Summary ── */
+
+.prediction-summary {
+  @apply rounded-2xl border border-white/10 p-5 sm:p-8;
+  background: rgba(255, 255, 255, 0.03);
+  backdrop-filter: blur(12px);
+}
+
+.summary-title {
+  @apply text-lg font-display font-bold uppercase tracking-wider text-white mb-4;
+}
+
+.summary-breakdown {
+  @apply flex flex-col gap-2 mb-6;
+}
+
+.summary-row {
+  @apply flex items-center justify-between text-sm;
+}
+
+.summary-row .label {
+  @apply text-white/60;
+}
+
+.summary-row .value {
+  @apply font-display font-bold text-white;
+}
+
+.summary-divider {
+  @apply border-t border-white/10 my-3;
+}
+
+.summary-total {
+  @apply flex items-center justify-between text-lg;
+}
+
+.summary-total .label {
+  @apply font-display font-bold uppercase tracking-wider text-white;
+}
+
+.summary-total .value {
+  @apply font-display font-bold text-2xl;
+  color: hsl(211 100% 50%);
+}
+
+.summary-actions {
+  @apply flex flex-col sm:flex-row gap-3 mt-6;
+}
+
+.btn-save-draft {
+  @apply flex-1 px-6 py-3 rounded-xl font-bold uppercase tracking-wider text-sm;
+  @apply border border-white/20 text-white/70 hover:text-white hover:border-white/40;
+  @apply transition-all duration-200;
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.btn-submit {
+  @apply flex-1 px-6 py-3 rounded-xl font-bold uppercase tracking-wider text-sm;
+  @apply text-white;
+  @apply transition-all duration-200 hover:scale-[1.02] active:scale-[0.98];
+  background: hsl(211 100% 50%);
+  box-shadow: 0 0 20px -5px hsl(211 100% 50% / 0.5);
+}
+
+.btn-submit:hover {
+  box-shadow: 0 0 30px -5px hsl(211 100% 50% / 0.7);
+}
+
+/* ── Completion Bar ── */
+
+.completion-bar-container {
+  @apply mb-8;
+}
+
+.completion-bar-header {
+  @apply flex items-center justify-between mb-2;
+}
+
+.completion-bar-label {
+  @apply text-xs font-bold uppercase tracking-widest text-white/40;
+}
+
+.completion-bar-pct {
+  @apply text-xs font-display font-bold;
+  color: hsl(211 100% 50%);
+}
+
+.completion-bar-track {
+  @apply w-full h-1.5 rounded-full overflow-hidden;
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.completion-bar-fill {
+  @apply h-full rounded-full transition-all duration-500 ease-out;
+  background: linear-gradient(90deg, hsl(211 100% 50%), hsl(211 100% 65%));
+}
