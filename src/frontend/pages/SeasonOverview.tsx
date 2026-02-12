@@ -5,6 +5,7 @@ import { F1Background } from "@/frontend/components/blank-background"
 import { FeatureRace } from "@/frontend/components/FeatureRace"
 import { Button } from "@/frontend/components/button"
 import { Link } from "react-router-dom"
+import "@/frontend/styles/SeasonOverview.css"
 
 export default function SeasonOverview() {
   const allRaces = useMemo(() => {
@@ -17,16 +18,16 @@ export default function SeasonOverview() {
   }, [])
 
   return (
-    <div className="min-h-screen w-full relative overflow-x-hidden">
+    <div className="season-overview-container">
       <F1Background>
       <F1Header variant="Home" activeNav="Season" />
       
-      <main className="relative z-10 pt-24 pb-12 px-4 md:px-8 container mx-auto">
-        <h1 className="text-4xl font-bold text-white mb-8 text-center uppercase tracking-wider">
+      <main className="season-overview-main">
+        <h1 className="season-overview-title">
           2026 Season Overview
         </h1>
         
-        <div className="flex flex-col gap-8 max-w-4xl mx-auto">
+        <div className="season-overview-races-container">
           {(() => {
              const now = new Date()
              // Find the index of the next upcoming race once
@@ -44,13 +45,13 @@ export default function SeasonOverview() {
               <FeatureRace 
                 key={race.id} 
                 race={race}
-                className="w-full transform transition-transform hover:scale-[1.01]"
+                className="season-overview-feature-race"
                 renderActions={(raceColors) => (
-                  <div className="mt-4 flex justify-start">
+                  <div className="season-overview-actions">
                     {isNext && (
                       <Link to="/race-predictions">
                         <Button 
-                          className="font-bold uppercase tracking-wider text-white border-none px-8 shadow-lg"
+                          className="season-overview-btn-predict"
                           style={{ 
                             backgroundColor: raceColors.primary,
                             boxShadow: `0 10px 25px -5px ${raceColors.primary}40`
@@ -63,11 +64,9 @@ export default function SeasonOverview() {
                     {isFinished && (
                       <Button 
                         disabled 
-                        className="font-bold uppercase tracking-wider bg-transparent px-8 cursor-default hover:bg-transparent"
+                        className="season-overview-btn-finished"
                         style={{ 
                           borderColor: raceColors.primary,
-                          borderWidth: '2px',
-                          borderStyle: 'solid',
                           color: raceColors.primary,
                           opacity: 0.6
                         }}
@@ -78,11 +77,9 @@ export default function SeasonOverview() {
                     {isLocked && (
                       <Button 
                         disabled 
-                        className="font-bold uppercase tracking-wider bg-transparent px-8 cursor-default hover:bg-transparent"
+                        className="season-overview-btn-locked"
                         style={{ 
                           borderColor: raceColors.primary,
-                          borderWidth: '2px',
-                          borderStyle: 'solid',
                           color: raceColors.primary,
                           opacity: 0.4
                         }}

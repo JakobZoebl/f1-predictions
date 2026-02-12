@@ -1,0 +1,42 @@
+/* ── Season Overview Page Styles ── */
+
+.season-overview-container {
+  @apply min-h-screen w-full relative overflow-x-hidden;
+}
+
+.season-overview-main {
+  @apply relative z-10 pt-24 pb-12 px-4 md:px-8 container mx-auto;
+}
+
+.season-overview-title {
+  @apply text-4xl font-bold text-white mb-8 text-center uppercase tracking-wider;
+}
+
+.season-overview-races-container {
+  @apply flex flex-col gap-8 mx-auto;
+}
+
+.season-overview-feature-race {
+  @apply w-full transform transition-transform hover:scale-[1.01];
+}
+
+.season-overview-actions {
+  @apply mt-4 flex justify-start;
+}
+
+/* Button Styles */
+.season-overview-btn-predict {
+  @apply font-bold uppercase tracking-wider text-white border-none px-8 shadow-lg;
+}
+
+.season-overview-btn-finished {
+  @apply font-bold uppercase tracking-wider bg-transparent px-8 cursor-default hover:bg-transparent;
+  border-width: 2px;
+  border-style: solid;
+}
+
+.season-overview-btn-locked {
+  @apply font-bold uppercase tracking-wider bg-transparent px-8 cursor-default hover:bg-transparent;
+  border-width: 2px;
+  border-style: solid;
+}
