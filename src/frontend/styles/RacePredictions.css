@@ -17,7 +17,8 @@
 }
 
 .prediction-section-title .max-pts {
-  @apply text-xs sm:text-sm font-medium text-white/40;
+  @apply text-xs sm:text-sm font-medium;
+  color: hsl(var(--prediction-accent, 211 100% 50%));
 }
 
 /* ── Drag & Drop Shared ── */
@@ -38,9 +39,9 @@
 }
 
 .dnd-slot.drag-over {
-  border-color: hsl(211 100% 50%);
-  background: rgba(59, 130, 246, 0.1);
-  box-shadow: 0 0 15px -5px rgba(59, 130, 246, 0.4);
+  border-color: hsl(var(--prediction-accent, 211 100% 50%));
+  background: hsl(var(--prediction-accent, 211 100% 50%) / 0.1);
+  box-shadow: 0 0 15px -5px hsl(var(--prediction-accent, 211 100% 50%) / 0.4);
 }
 
 .dnd-slot-position {
@@ -192,7 +193,7 @@
 }
 
 .toggle-switch.active {
-  background: hsl(211 100% 50%);
+  background: hsl(var(--prediction-accent, 211 100% 50%));
 }
 
 .toggle-switch .toggle-knob {
@@ -247,7 +248,7 @@
 
 .summary-total .value {
   @apply font-display font-bold text-2xl;
-  color: hsl(211 100% 50%);
+  color: hsl(var(--prediction-accent, 211 100% 50%));
 }
 
 .summary-actions {
@@ -265,12 +266,12 @@
   @apply flex-1 px-6 py-3 rounded-xl font-bold uppercase tracking-wider text-sm;
   @apply text-white;
   @apply transition-all duration-200 hover:scale-[1.02] active:scale-[0.98];
-  background: hsl(211 100% 50%);
-  box-shadow: 0 0 20px -5px hsl(211 100% 50% / 0.5);
+  background: hsl(var(--prediction-accent, 211 100% 50%));
+  box-shadow: 0 0 20px -5px hsl(var(--prediction-accent, 211 100% 50%) / 0.5);
 }
 
 .btn-submit:hover {
-  box-shadow: 0 0 30px -5px hsl(211 100% 50% / 0.7);
+  box-shadow: 0 0 30px -5px hsl(var(--prediction-accent, 211 100% 50%) / 0.7);
 }
 
 /* ── Completion Bar ── */
@@ -289,7 +290,7 @@
 
 .completion-bar-pct {
   @apply text-xs font-display font-bold;
-  color: hsl(211 100% 50%);
+  color: hsl(var(--prediction-accent, 211 100% 50%));
 }
 
 .completion-bar-track {
@@ -299,5 +300,9 @@
 
 .completion-bar-fill {
   @apply h-full rounded-full transition-all duration-500 ease-out;
-  background: linear-gradient(90deg, hsl(211 100% 50%), hsl(211 100% 65%));
+  background: linear-gradient(
+    90deg,
+    hsl(var(--prediction-accent, 211 100% 50%)),
+    hsl(var(--prediction-accent, 211 100% 50%) / 0.6)
+  );
 }

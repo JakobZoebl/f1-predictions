@@ -2,7 +2,7 @@
 
 import { ArrowLeft } from "lucide-react"
 import { Link } from "react-router-dom"
-import { cn, hexToHsl } from "@/lib/utils"
+import { cn, hexToHsl, getAdaptiveDeepBackground } from "@/lib/utils"
 import emblem from "@/assets/emblem.png"
 import "@/frontend/styles/F1Header.css"
 
@@ -26,11 +26,18 @@ export function F1Header({
   // Calculate dynamic style if primaryColor is provided
   const headerStyle = primaryColor 
     ? (() => {
+        const style: React.CSSProperties & Record<string, any> = {};
         const hsl = hexToHsl(primaryColor);
         if (hsl) {
-          return { '--f1-neon': `${hsl.h} ${hsl.s}% ${hsl.l}%` } as React.CSSProperties;
+          style['--f1-neon'] = `${hsl.h} ${hsl.s}% ${hsl.l}%`;
+          
+          // Apply adaptive background tint with 60% opacity to match glass effect
+          const activeBg = getAdaptiveDeepBackground(primaryColor, 0.6);
+          if (activeBg) {
+             style.backgroundColor = activeBg;
+          }
         }
-        return {};
+        return style;
       })()
     : {};
 

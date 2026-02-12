@@ -1,14 +1,13 @@
 "use client"
 
 import type { ReactNode } from "react"
-import { hexToHsl } from "@/lib/utils"
+import { hexToHsl, getAdaptiveDeepBackground } from "@/lib/utils"
 
 interface F1BackgroundProps {
   children: ReactNode
   primaryColor?: string
 }
 
-export function F1Background({ children, primaryColor }: F1BackgroundProps) {
   // Configurable values
   // Default blue: hsl(211 100% 50%)
   // Default radial dark: hsl(211 60% 15% / 0.4)
@@ -30,16 +29,23 @@ export function F1Background({ children, primaryColor }: F1BackgroundProps) {
       radialGradient = `radial-gradient(ellipse 80% 60% at 50% 0%, ${darkColor}, transparent)`
       gridGradient = `linear-gradient(${neonColor} 1px, transparent 1px), linear-gradient(90deg, ${neonColor} 1px, transparent 1px)`
       
-      // We also update the grid gradient opacity to 0.3 implicitly by appending / 0.3 to the color variable? 
-      // Wait, in the string above: `hsl(211 100% 50% / 0.3)`.
-      // So I should add `/ 0.3` to the neonColor usages in gridGradient.
       const gridColor = `hsl(${hsl.h} ${hsl.s}% ${hsl.l}% / 0.3)`
       gridGradient = `linear-gradient(${gridColor} 1px, transparent 1px), linear-gradient(90deg, ${gridColor} 1px, transparent 1px)`
     }
   }
 
+  // Calculate base background color using helper
+  const adaptiveBgColor = primaryColor ? getAdaptiveDeepBackground(primaryColor) : undefined;
+  
+  // Need to ensure the return type matches, getAdaptiveDeepBackground returns string | null.
+  // Style expects string | undefined.
+  const bgStyle = adaptiveBgColor || undefined;
+
   return (
-    <div className="relative min-h-screen overflow-hidden bg-background">
+    <div 
+      className="relative min-h-screen overflow-hidden bg-background transition-colors duration-500"
+      style={{ backgroundColor: bgStyle }}
+    >
       {/* Subtle radial gradient overlay */}
       <div
         className="pointer-events-none absolute inset-0"

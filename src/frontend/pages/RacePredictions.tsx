@@ -10,6 +10,7 @@ import { ConstructorDragDrop } from "@/frontend/predictions/ConstructorDragDrop"
 import { BonusPredictions, type BonusValues } from "@/frontend/predictions/BonusPredictions"
 import { PredictionSummary } from "@/frontend/predictions/PredictionSummary"
 import { useNextRace } from "@/lib/hooks/useNextRace"
+import { hexToHsl } from "@/lib/utils"
 import "@/frontend/styles/RacePredictions.css"
 
 const INITIAL_BONUS: BonusValues = {
@@ -51,11 +52,26 @@ export default function RacePredictions() {
   const filledDriversCount = selectedDrivers.filter(Boolean).length
   const filledConstructorsCount = selectedConstructors.filter(Boolean).length
 
+  // Calculate dynamic style for prediction elements
+  const accentStyle = primaryColor 
+    ? (() => {
+        const hsl = hexToHsl(primaryColor);
+        if (hsl) {
+          // Define the H S L values for the CSS variable
+          return { '--prediction-accent': `${hsl.h} ${hsl.s}% ${hsl.l}%` } as React.CSSProperties;
+        }
+        return {};
+      })()
+    : {};
+
   return (
     <F1Background primaryColor={primaryColor}>
       <F1Header variant="dashboard" activeNav="Predictions" primaryColor={primaryColor} />
 
-      <main className="container mx-auto px-4 py-8 space-y-8 flex-1">
+      <main 
+        className="container mx-auto px-4 py-8 space-y-8 flex-1"
+        style={accentStyle}
+      >
         {/* Race Info Banner */}
         <FeatureRace />
 

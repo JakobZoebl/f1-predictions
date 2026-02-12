@@ -55,3 +55,17 @@ export function hexToHsl(hex: string): { h: number; s: number; l: number } | nul
     l: Math.round(l * 100)
   };
 }
+
+/**
+ * Calculates a deep, tinted background color based on a primary hex color.
+ * Maintains a consistent "distance" from the primary color (S=25%, L=6%).
+ */
+export function getAdaptiveDeepBackground(hex: string, alpha: number = 1): string | null {
+  const hsl = hexToHsl(hex);
+  if (!hsl) return null;
+  
+  if (alpha === 1) {
+    return `hsl(${hsl.h} 25% 6%)`;
+  }
+  return `hsl(${hsl.h} 25% 6% / ${alpha})`;
+}
