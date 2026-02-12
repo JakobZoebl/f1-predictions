@@ -6,7 +6,7 @@ import { cn, hexToHsl, getAdaptiveDeepBackground } from "@/lib/utils"
 import emblem from "@/assets/emblem.png"
 import "@/frontend/styles/F1Header.css"
 
-type F1HeaderVariant = "back" | "landing" | "dashboard"
+type F1HeaderVariant = "back" | "landing" | "Home"
 
 interface F1HeaderProps {
   variant?: F1HeaderVariant
@@ -18,7 +18,7 @@ interface F1HeaderProps {
 export function F1Header({
   variant = "back",
   backHref = "/",
-  activeNav = "Dashboard",
+  activeNav = "Home",
   primaryColor,
   children,
 }: F1HeaderProps & { children?: React.ReactNode }) {
@@ -46,13 +46,13 @@ export function F1Header({
       className={cn(
         "header-base",
         variant === "landing" ? "header-landing" : "header-relative",
-        // Apply glass style to landing AND dashboard variants for consistency
-        (variant === "landing" || variant === "dashboard") && "header-glass"
+        // Apply glass style to landing AND Home variants for consistency
+        (variant === "landing" || variant === "Home") && "header-glass"
       )}
       style={headerStyle}
     >
       <div className="header-container">
-        {/* Left side - always logo for landing & dashboard, back for back */}
+        {/* Left side - always logo for landing & Home, back for back */}
         {variant === "back" ? (
           <Link to={backHref} className="header-back-link">
             <ArrowLeft className="h-4 w-4" />
@@ -77,15 +77,15 @@ export function F1Header({
           </Link>
         )}
 
-        {/* Center nav links (only for "dashboard" variant) */}
-        {variant === "dashboard" && (
+        {/* Center nav links (only for "Home" variant) */}
+        {variant === "Home" && (
           <nav className="header-center-nav" aria-label="Main navigation">
-            {["Dashboard", "Predictions", "Leaderboard", "Template"].map((item) => (
+            {["Home", "Predictions", "Leaderboard", "Template"].map((item) => (
               <Link
                 key={item}
                 to={
-                  item === "Dashboard"
-                    ? "/dashboard"
+                  item === "Home"
+                    ? "/Home"
                     : item === "Predictions"
                     ? "/race-predictions"
                     : `/${item.toLowerCase()}`

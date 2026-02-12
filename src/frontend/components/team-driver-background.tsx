@@ -147,7 +147,7 @@ export default function F1Background({
         <div
           className="absolute inset-0"
           style={{
-            background: `linear-gradient(180deg, ${teamColors.primary} 0%, ${teamColors.secondary} 100%)`,
+            background: `linear-gradient(180deg, ${teamColors.secondary} 0%, ${teamColors.primary} 100%)`,
           }}
         />
       </div>
@@ -198,7 +198,7 @@ export default function F1Background({
         <div
           className="absolute inset-0"
           style={{
-            background: `linear-gradient(180deg, ${teamColors.secondary} 0%, ${teamColors.primary} 100%)`,
+            background: `linear-gradient(180deg, ${teamColors.primary} 0%, ${teamColors.secondary} 100%)`,
           }}
         />
       </div>

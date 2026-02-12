@@ -4,7 +4,7 @@ import { F1Header } from "@/frontend/components/f1-header"
 export default function TemplatePage() {
   return (
     <main className="min-h-screen bg-background text-foreground">
-      <F1Header variant="dashboard" activeNav="Template">
+      <F1Header variant="Home" activeNav="Template">
         <div className="header-right-nav">
           <span className="header-username">@username</span>
           <button

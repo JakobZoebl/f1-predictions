@@ -33,7 +33,7 @@ export default function ProfilePage() {
         teamLogoUrl={TEAM_EMBLEMS[teamKey]}
       />
 
-      <F1Header variant="dashboard" activeNav="Profile">
+      <F1Header variant="Home" activeNav="Profile">
         <div className="header-right-nav">
           <span className="header-username">@{MOCK_PROFILE.user.username}</span>
           <button

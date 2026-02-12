@@ -127,10 +127,3 @@
 .race-track-right:hover .track-map-img {
   transform: scale(1.05) rotate(0deg);
 }
-
-/* ── CSS Variables for dynamic colors ── */
-.race-card-container {
-  --race-primary-color: #ff0000;
-  --race-secondary-color: #ffffff;
-  --race-primary-color-dim: rgba(255, 0, 0, 0.3);
-}

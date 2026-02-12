@@ -9,9 +9,11 @@ Your F1 project documentation has been split into **6 specialized sections** tha
 ## 📚 SECTION FILES
 
 ### Section 1: Project Overview & Scoring System
+
 **File:** `01_project_overview_scoring.md`
 
 **Contains:**
+
 - Complete project description
 - Race prediction scoring rules
 - Sprint prediction scoring rules
@@ -21,6 +23,7 @@ Your F1 project documentation has been split into **6 specialized sections** tha
 - Maximum possible points per category
 
 **Use when:**
+
 - Starting the project (give full context to Gemini)
 - Implementing scoring calculation functions
 - Building prediction forms
@@ -30,9 +33,11 @@ Your F1 project documentation has been split into **6 specialized sections** tha
 ---
 
 ### Section 2: Database Schema
+
 **File:** `02_database_schema.md`
 
 **Contains:**
+
 - Complete SQL schema for all tables
 - Table relationships and foreign keys
 - Indexes for performance
@@ -41,6 +46,7 @@ Your F1 project documentation has been split into **6 specialized sections** tha
 - Database constraints and validations
 
 **Use when:**
+
 - Setting up Supabase database
 - Creating migration files
 - Writing TypeScript types for database entities
@@ -51,9 +57,11 @@ Your F1 project documentation has been split into **6 specialized sections** tha
 ---
 
 ### Section 3: Stats & Visualization
+
 **File:** `03_stats_visualization.md`
 
 **Contains:**
+
 - Profile stats specifications
 - Leaderboard table requirements
 - Interactive chart specifications (Recharts)
@@ -63,19 +71,22 @@ Your F1 project documentation has been split into **6 specialized sections** tha
 - Color schemes
 
 **Use when:**
+
 - Building leaderboard page
 - Creating profile stats display
 - Implementing Recharts visualizations
-- Designing stats dashboard
+- Designing stats Home
 - Building comparison tools
 - Writing aggregation queries
 
 ---
 
 ### Section 4: Authentication & Security
+
 **File:** `04_authentication_security.md`
 
 **Contains:**
+
 - Supabase Auth setup
 - Login/signup flows
 - Password requirements (minimal for friends)
@@ -87,6 +98,7 @@ Your F1 project documentation has been split into **6 specialized sections** tha
 - Security best practices
 
 **Use when:**
+
 - Setting up authentication system
 - Building login/signup pages
 - Protecting routes
@@ -98,9 +110,11 @@ Your F1 project documentation has been split into **6 specialized sections** tha
 ---
 
 ### Section 5: API Endpoints
+
 **File:** `05_api_endpoints.md`
 
 **Contains:**
+
 - All internal API routes (Next.js)
 - Request/response formats
 - Validation requirements
@@ -111,6 +125,7 @@ Your F1 project documentation has been split into **6 specialized sections** tha
 - Caching strategies
 
 **Use when:**
+
 - Building Next.js API routes
 - Integrating F1 data from Jolpica API
 - Setting up Vercel Cron jobs
@@ -122,9 +137,11 @@ Your F1 project documentation has been split into **6 specialized sections** tha
 ---
 
 ### Section 6: Component Specifications
+
 **File:** `06_components.md`
 
 **Contains:**
+
 - React component specifications
 - Drag & drop implementation (@dnd-kit)
 - Form components with validation
@@ -135,6 +152,7 @@ Your F1 project documentation has been split into **6 specialized sections** tha
 - shadcn/ui component usage
 
 **Use when:**
+
 - Building React components
 - Implementing drag-and-drop
 - Creating prediction forms
@@ -156,10 +174,11 @@ Your F1 project documentation has been split into **6 specialized sections** tha
 ### Step 2: Give Context
 
 **Copy-paste Section 1 into Gemini:**
+
 ```
 [Paste entire content of 01_project_overview_scoring.md]
 
-I'm building this F1 prediction platform. Please acknowledge 
+I'm building this F1 prediction platform. Please acknowledge
 that you understand the project scope and scoring system.
 ```
 
@@ -168,14 +187,16 @@ Gemini will understand your entire project context.
 ### Step 3: Build Feature by Feature
 
 **Example: Setting up Database**
+
 ```
 [Paste 02_database_schema.md into Gemini]
 
-Based on this schema, create the Supabase migration file 
+Based on this schema, create the Supabase migration file
 for all tables with proper constraints and indexes.
 ```
 
 **Example: Building Login Page**
+
 ```
 [Paste relevant parts of 04_authentication_security.md]
 
@@ -187,6 +208,7 @@ Create app/(auth)/login/page.tsx with:
 ```
 
 **Example: Creating Drag & Drop**
+
 ```
 [Paste DriverDragDrop section from 06_components.md]
 
@@ -200,6 +222,7 @@ Implement components/predictions/DriverDragDrop.tsx using:
 ### Step 4: Combine Sections When Needed
 
 **Example: Building Complete Prediction Page**
+
 ```
 Context from these sections:
 [Paste scoring rules from Section 1]
@@ -220,6 +243,7 @@ Now create the complete race prediction page that:
 ### Week 1: Foundation
 
 **Day 1: Setup**
+
 - [ ] Initialize Next.js project
 - [ ] Install dependencies
 - [ ] Set up Supabase
@@ -227,20 +251,23 @@ Now create the complete race prediction page that:
 - [ ] Configure environment variables
 
 **Day 2-3: Authentication**
+
 - [ ] Use Section 4 for auth context
 - [ ] Build login page
 - [ ] Build signup page
 - [ ] Implement middleware
 - [ ] Test auth flow
 
-**Day 4: Landing & Dashboard**
+**Day 4: Landing & Home**
+
 - [ ] Create landing page
-- [ ] Build dashboard layout
+- [ ] Build Home layout
 - [ ] Add navigation
 
 ### Week 2: Core Features
 
 **Day 5-7: Race Predictions**
+
 - [ ] Use Section 1 for scoring logic
 - [ ] Use Section 6 for components
 - [ ] Build DriverDragDrop
@@ -251,6 +278,7 @@ Now create the complete race prediction page that:
 - [ ] Test full flow
 
 **Day 8-9: Season Predictions**
+
 - [ ] Similar to race but all 20 drivers
 - [ ] Add locking logic
 - [ ] Test
@@ -258,6 +286,7 @@ Now create the complete race prediction page that:
 ### Week 3: Display & Stats
 
 **Day 10-11: Leaderboard**
+
 - [ ] Use Section 3 for specs
 - [ ] Build leaderboard table
 - [ ] Add Recharts line chart
@@ -265,6 +294,7 @@ Now create the complete race prediction page that:
 - [ ] Test chart interactions
 
 **Day 12-13: Profile**
+
 - [ ] Use Section 3 for stats
 - [ ] Use Section 6 for layout
 - [ ] Implement team theming
@@ -274,6 +304,7 @@ Now create the complete race prediction page that:
 ### Week 4: Admin & Deploy
 
 **Day 14-15: Admin Panel**
+
 - [ ] Use Section 5 for endpoints
 - [ ] Build race management
 - [ ] Build results entry
@@ -281,11 +312,13 @@ Now create the complete race prediction page that:
 - [ ] Test points calculation
 
 **Day 16-17: Automation**
+
 - [ ] Use Section 5 for cron job
 - [ ] Set up Vercel Cron
 - [ ] Test automated fetching
 
 **Day 18-21: Testing & Deploy**
+
 - [ ] Test all features
 - [ ] Fix bugs
 - [ ] Mobile testing
@@ -298,6 +331,7 @@ Now create the complete race prediction page that:
 ### For Each Feature
 
 **Authentication:**
+
 ```
 Use Section 4 (Authentication & Security):
 [paste content]
@@ -313,6 +347,7 @@ Follow the exact specifications in the document.
 ```
 
 **Drag & Drop:**
+
 ```
 Use Section 6 (Components):
 [paste DriverDragDrop spec]
@@ -328,6 +363,7 @@ Create components/predictions/DriverDragDrop.tsx that:
 ```
 
 **API Routes:**
+
 ```
 Use Section 5 (API Endpoints):
 [paste predictions endpoint spec]
@@ -343,6 +379,7 @@ Create app/api/predictions/race/route.ts with:
 ```
 
 **Charts:**
+
 ```
 Use Section 3 (Stats & Visualization):
 [paste line chart spec]
@@ -360,15 +397,20 @@ Create components/leaderboard/PointsProgressionChart.tsx with:
 ## 💡 TIPS FOR USING WITH GEMINI
 
 ### 1. Provide Context First
+
 Always paste the relevant section **before** asking Gemini to generate code.
 
 ### 2. Be Specific
+
 Combine specs from multiple sections when needed:
+
 - Section 1 (what) + Section 6 (how) = complete component
 - Section 2 (data) + Section 5 (API) = complete endpoint
 
 ### 3. Iterate
+
 Start with basic implementation, then refine:
+
 ```
 "Now add TypeScript types"
 "Add error handling"
@@ -377,18 +419,22 @@ Start with basic implementation, then refine:
 ```
 
 ### 4. Reference Files
+
 Use @ to reference files in Antigravity:
+
 ```
 "Update @DriverDragDrop.tsx to prevent duplicates"
 ```
 
 ### 5. Ask for Explanations
+
 ```
 "Explain how this drag and drop code works"
 "Why did you structure it this way?"
 ```
 
 ### 6. Request Reviews
+
 ```
 "Review this component for performance issues"
 "Check if this follows the spec from Section 6"
@@ -399,6 +445,7 @@ Use @ to reference files in Antigravity:
 ## ✅ QUICK CHECKLIST
 
 Before starting, have:
+
 - [ ] All 6 section files ready
 - [ ] Google Antigravity installed and open
 - [ ] Supabase account created
@@ -406,6 +453,7 @@ Before starting, have:
 - [ ] Project initialized (Next.js)
 
 During development:
+
 - [ ] Paste relevant section before each feature
 - [ ] Follow the build order
 - [ ] Test each feature before moving on
@@ -416,6 +464,7 @@ During development:
 ## 🚨 COMMON PATTERNS
 
 ### Pattern 1: Building a New Page
+
 1. Paste Section 1 (context) + Section 6 (component spec)
 2. Ask Gemini to create the page
 3. Paste Section 5 (API spec) for data fetching
@@ -423,6 +472,7 @@ During development:
 5. Connect page to API
 
 ### Pattern 2: Adding a Feature
+
 1. Find relevant section(s)
 2. Paste into Gemini
 3. Ask for implementation
@@ -430,6 +480,7 @@ During development:
 5. Iterate with refinements
 
 ### Pattern 3: Fixing Bugs
+
 1. Describe error to Gemini
 2. Reference the section with correct spec
 3. Ask Gemini to fix based on spec
@@ -440,8 +491,9 @@ During development:
 ## 📞 GETTING HELP FROM GEMINI
 
 **If stuck:**
+
 ```
-"I'm trying to implement [feature]. 
+"I'm trying to implement [feature].
 Here's the spec from Section X:
 [paste spec]
 
@@ -455,6 +507,7 @@ What's wrong and how do I fix it?"
 ```
 
 **If confused:**
+
 ```
 "I need to build [feature] but I'm not sure where to start.
 Here are the relevant specs:
@@ -464,6 +517,7 @@ Give me a step-by-step plan."
 ```
 
 **If refactoring:**
+
 ```
 "Review this code:
 [paste code]

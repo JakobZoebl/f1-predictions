@@ -43,7 +43,7 @@ export default function Leaderboard() {
         />
         
         <div className="relative z-10 flex min-h-screen flex-col">
-            <F1Header variant="dashboard" activeNav="Leaderboard" />
+            <F1Header variant="Home" activeNav="Leaderboard" />
             <div className="container mx-auto px-4 py-8 space-y-8">
                 <LeaderboardTable data={leaderboardData} />
                 <PointsHistoryChart data={historyData} />
