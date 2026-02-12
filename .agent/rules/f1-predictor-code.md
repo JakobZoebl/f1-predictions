@@ -13,3 +13,4 @@ trigger: always_on
 "Always handle loading and error states",
 "Use server components by default, client only when needed",
 "Follow the database schema from project specification"
+"Never use css in classnames, always create dedicated css files for styling"
