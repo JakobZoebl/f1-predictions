@@ -26,7 +26,7 @@ export function F1Header({
   // Calculate dynamic style if primaryColor is provided
   const headerStyle = primaryColor 
     ? (() => {
-        const style: React.CSSProperties & Record<string, any> = {};
+        const style: Record<string, string | undefined> = {};
         const hsl = hexToHsl(primaryColor);
         if (hsl) {
           style['--f1-neon'] = `${hsl.h} ${hsl.s}% ${hsl.l}%`;
@@ -37,7 +37,7 @@ export function F1Header({
              style.backgroundColor = activeBg;
           }
         }
-        return style;
+        return style as React.CSSProperties;
       })()
     : {};
 

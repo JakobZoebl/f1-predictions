@@ -8,6 +8,7 @@ interface F1BackgroundProps {
   primaryColor?: string
 }
 
+export function F1Background({ children, primaryColor }: F1BackgroundProps) {
   // Configurable values
   // Default blue: hsl(211 100% 50%)
   // Default radial dark: hsl(211 60% 15% / 0.4)

@@ -103,7 +103,9 @@ export function ConstructorDragDrop({ selected, onChange }: ConstructorDragDropP
                     className="remove-btn"
                     onClick={(e) => {
                       e.stopPropagation()
-                      handleRemoveFromSlot(teamKey)
+                      if (teamKey) {
+                        handleRemoveFromSlot(teamKey)
+                      }
                     }}
                     onMouseDown={(e) => e.stopPropagation()}
                     aria-label={`Remove ${team.name}`}

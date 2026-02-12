@@ -108,7 +108,9 @@ export function DriverDragDrop({ selected, onChange }: DriverDragDropProps) {
                     className="remove-btn"
                     onClick={(e) => {
                       e.stopPropagation() // prevent drag start on remove click
-                      handleRemoveFromSlot(driverKey)
+                      if (driverKey) {
+                        handleRemoveFromSlot(driverKey)
+                      }
                     }}
                     onMouseDown={(e) => e.stopPropagation()} 
                     aria-label={`Remove ${driver.name}`}
