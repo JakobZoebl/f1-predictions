@@ -96,11 +96,9 @@
   @apply flex items-center justify-center gap-2 px-6 py-2.5 rounded-lg font-bold uppercase tracking-wider transition-all duration-300;
   @apply bg-black text-white hover:scale-105 active:scale-95;
   @apply text-sm;
-  box-shadow: 0 0 10px -2px var(--btn-glow);
 }
 
 .predict-button:hover {
-  box-shadow: 0 0 20px -5px var(--btn-glow);
   @apply bg-opacity-90;
 }
 

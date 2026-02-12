@@ -41,10 +41,15 @@ export default function Home() {
           {/* Feature Race Section */}
           <section>
             <FeatureRace 
-                 renderActions={() => (
+                 renderActions={(raceColors) => (
                     <div className="home-action-buttons">
                         <Link to="/race-predictions">
-                            <Button className="btn-predict">
+                            <Button 
+                                className="btn-predict"
+                                style={{ 
+                                    backgroundColor: raceColors.primary,
+                                }}
+                            >
                                 Make Your Predictions
                             </Button>
                         </Link>

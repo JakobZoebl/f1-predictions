@@ -21,7 +21,7 @@
 }
 
 .btn-predict {
-  @apply font-bold uppercase tracking-wider bg-blue-600 hover:bg-blue-700 text-white border-none px-8;
+  @apply font-bold uppercase tracking-wider text-white border-none px-8;
 }
 
 .btn-view-details {
