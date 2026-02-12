@@ -1,0 +1,40 @@
+.features-section {
+  @apply bg-secondary/40 py-16;
+}
+
+.features-container {
+  @apply mx-auto max-w-5xl px-6;
+}
+
+.features-grid {
+  @apply grid grid-cols-1 gap-6 md:grid-cols-3;
+}
+
+.feature-card {
+  @apply border-primary/20 bg-card transition-all duration-300 hover:border-primary/50 hover:shadow-lg hover:shadow-primary/10;
+}
+
+.feature-card-content {
+  @apply flex flex-col gap-3 p-6;
+}
+
+.feature-header {
+  @apply flex items-center gap-3;
+}
+
+.feature-icon-wrapper {
+  @apply flex h-10 w-10 items-center justify-center rounded-lg bg-primary/10;
+}
+
+.feature-icon {
+  @apply h-5 w-5 text-primary;
+}
+
+.feature-title {
+  @apply text-lg font-bold tracking-wide text-foreground;
+  font-family: var(--font-display);
+}
+
+.feature-description {
+  @apply text-sm leading-relaxed text-muted-foreground;
+}
