@@ -20,7 +20,7 @@ export default function SeasonOverview() {
   return (
     <div className="season-overview-container">
       <F1Background>
-      <F1Header variant="Home" activeNav="Season" />
+      <F1Header variant="Home" activeNav="Season" isAuthenticated={true} username="max_verstappen" />
       
       <main className="season-overview-main">
         <h1 className="season-overview-title">

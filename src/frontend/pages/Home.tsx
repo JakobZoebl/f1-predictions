@@ -34,7 +34,7 @@ export default function Home() {
 
       {/* Content Layer */}
       <div className="relative z-10 flex min-h-screen flex-col">
-        <F1Header variant="Home" activeNav="Home" />
+        <F1Header variant="Home" activeNav="Home" isAuthenticated={true} username="max_verstappen" />
         
         <main className="home-main-content">
           

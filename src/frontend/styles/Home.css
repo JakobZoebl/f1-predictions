@@ -43,7 +43,12 @@
 }
 
 .summary-title {
-  @apply text-sm font-bold tracking-wider text-white uppercase;
+  @apply text-xl font-bold uppercase tracking-wider text-white italic shadow-sm flex-1;
+  text-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
+}
+
+.summary-header {
+  @apply border-b border-white/10 pb-4 mb-4;
 }
 
 .summary-username {
@@ -101,7 +106,8 @@
 }
 
 .leaderboard-title {
-  @apply text-sm font-bold tracking-wider text-white uppercase;
+  @apply text-xl font-bold uppercase tracking-wider text-white italic shadow-sm p-4 border-b border-white/10;
+  text-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
 }
 
 .leaderboard-row {

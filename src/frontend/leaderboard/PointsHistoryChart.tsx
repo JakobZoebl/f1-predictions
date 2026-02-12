@@ -164,7 +164,7 @@ export function PointsHistoryChart({ data }: PointsHistoryChartProps) {
   return (
     <Card className="border-white/10 bg-black/40 backdrop-blur-md relative">
       <CardHeader>
-        <CardTitle className="text-xl font-bold tracking-tight text-white">Season Progress</CardTitle>
+        <CardTitle className="text-xl font-bold uppercase tracking-wider text-white italic shadow-sm border-b border-white/10 pb-4 mb-4 select-none" style={{ textShadow: "0 2px 10px rgba(0, 0, 0, 0.5)" }}>Season Progress</CardTitle>
       </CardHeader>
       <CardContent>
         <div ref={containerRef} className="w-full relative">

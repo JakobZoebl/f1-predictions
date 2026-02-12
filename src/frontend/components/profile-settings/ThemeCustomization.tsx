@@ -1,77 +1,103 @@
 "use client"
 
-import React from "react"
 import "@/frontend/styles/ProfileSettings.css"
-import { Sun, Bell, Eye } from "lucide-react"
+import { TEAMS, DRIVERS } from "@/lib/f1-presets"
 
-export function ThemeCustomization() {
+interface ThemeCustomizationProps {
+  selectedTeam: string
+  selectedDriver: string
+  onTeamChange: (team: string) => void
+  onDriverChange: (driver: string) => void
+}
+
+export function ThemeCustomization({ 
+  selectedTeam, 
+  selectedDriver, 
+  onTeamChange, 
+  onDriverChange 
+}: ThemeCustomizationProps) {
+  
+  const teamColors = TEAMS[selectedTeam]?.colors || { primary: "#E10600", secondary: "#000000" }
+  const driverColors = DRIVERS[selectedDriver]?.colors || { primary: "#FF8700", secondary: "#000000" }
+
   return (
     <div className="settings-container">
       <h2>Theme & Preferences</h2>
       
-      <div className="theme-toggle-row">
-        <div className="flex items-center gap-3">
-            <div className="p-2 bg-white/5 rounded-lg">
-                <Sun className="h-5 w-5" />
-            </div>
-            <div>
-                <p className="font-medium">Appearance</p>
-                <p className="text-xs text-white/50">Customize interface theme</p>
-            </div>
-        </div>
-        <select className="settings-input py-1 px-3 bg-white/5 border-white/10">
-            <option value="dark">Dark</option>
-            <option value="light">Light</option>
-            <option value="system">System</option>
+      {/* Team Dropdown */}
+      <div className="settings-field">
+        <label className="settings-label">Favourite Team</label>
+        <select 
+          className="settings-input"
+          value={selectedTeam}
+          onChange={(e) => onTeamChange(e.target.value)}
+        >
+          {Object.entries(TEAMS).map(([key, team]) => (
+            <option key={key} value={key}>
+              {team.name}
+            </option>
+          ))}
         </select>
-      </div>
-
-       <div className="theme-toggle-row border-t border-white/10 pt-4 mt-2">
-        <div className="flex items-center gap-3">
-            <div className="p-2 bg-white/5 rounded-lg">
-                <Bell className="h-5 w-5" />
-            </div>
-            <div>
-                <p className="font-medium">Notifications</p>
-                <p className="text-xs text-white/50">Race start alerts</p>
-            </div>
+        
+        {/* Team Color Preview */}
+        <div className="flex items-center gap-3 mt-3">
+          <div className="flex items-center gap-2">
+            <div 
+              className="w-8 h-8 rounded-md border border-white/20"
+              style={{ backgroundColor: teamColors.primary }}
+            />
+            <span className="text-xs text-white/60">Primary</span>
+          </div>
+          <div className="flex items-center gap-2">
+            <div 
+              className="w-8 h-8 rounded-md border border-white/20"
+              style={{ backgroundColor: teamColors.secondary }}
+            />
+            <span className="text-xs text-white/60">Secondary</span>
+          </div>
         </div>
-         <label className="relative inline-flex items-center cursor-pointer">
-            <input type="checkbox" className="sr-only peer" defaultChecked />
-            <div className="w-11 h-6 bg-white/10 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-red-600"></div>
-        </label>
       </div>
 
-       <div className="theme-toggle-row border-t border-white/10 pt-4 mt-2">
-        <div className="flex items-center gap-3">
-            <div className="p-2 bg-white/5 rounded-lg">
-                <Eye className="h-5 w-5" />
-            </div>
-            <div>
-                <p className="font-medium">Spoilers</p>
-                <p className="text-xs text-white/50">Hide results before watching</p>
-            </div>
+      {/* Driver Dropdown */}
+      <div className="settings-field">
+        <label className="settings-label">Favourite Driver</label>
+        <select 
+          className="settings-input"
+          value={selectedDriver}
+          onChange={(e) => onDriverChange(e.target.value)}
+        >
+          {Object.entries(DRIVERS).map(([key, driver]) => (
+            <option key={key} value={key}>
+              {driver.name}
+            </option>
+          ))}
+        </select>
+        
+        {/* Driver Color Preview */}
+        <div className="flex items-center gap-3 mt-3">
+          <div className="flex items-center gap-2">
+            <div 
+              className="w-8 h-8 rounded-md border border-white/20"
+              style={{ backgroundColor: driverColors.primary }}
+            />
+            <span className="text-xs text-white/60">Primary</span>
+          </div>
+          <div className="flex items-center gap-2">
+            <div 
+              className="w-8 h-8 rounded-md border border-white/20"
+              style={{ backgroundColor: driverColors.secondary }}
+            />
+            <span className="text-xs text-white/60">Secondary</span>
+          </div>
         </div>
-         <label className="relative inline-flex items-center cursor-pointer">
-            <input type="checkbox" className="sr-only peer" />
-            <div className="w-11 h-6 bg-white/10 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-red-600"></div>
-        </label>
       </div>
 
-       <div className="theme-toggle-row border-t border-white/10 pt-4 mt-2">
-           <div className="w-full">
-               <p className="font-medium mb-2">Accent Color</p>
-               <div className="flex gap-2">
-                   {['#E10600', '#FF8700', '#00D2BE', '#0090D0', '#ffffff'].map(color => (
-                       <button 
-                        key={color}
-                        className="w-8 h-8 rounded-full border border-white/20 transition-transform hover:scale-110"
-                        style={{ backgroundColor: color }}
-                       />
-                   ))}
-               </div>
-           </div>
-       </div>
+      {/* Apply Theme Button */}
+      <button 
+        className="mt-4 w-full bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white font-bold uppercase tracking-wider py-3 px-6 rounded-lg transition-all duration-300 shadow-lg hover:shadow-blue-500/50"
+      >
+        Apply Theme
+      </button>
     </div>
   )
 }

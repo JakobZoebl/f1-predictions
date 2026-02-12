@@ -21,17 +21,18 @@ export function ProfileDetails() {
 
       <div className="settings-field">
         <label className="settings-label">Username</label>
-        <input type="text" className="settings-input" defaultValue="JakobZoebl" />
+        <input type="text" className="settings-input" defaultValue="JakobZoebl" disabled />
+        <span className="text-xs text-white/40 italic mt-1">This cannot be changed</span>
+      </div>
+
+      <div className="settings-field">
+        <label className="settings-label">Display Name</label>
+        <input type="text" className="settings-input" defaultValue="Jakob Zoebl" />
       </div>
 
       <div className="settings-field">
         <label className="settings-label">Email</label>
         <input type="email" className="settings-input" defaultValue="jakob@example.com" />
-      </div>
-
-       <div className="settings-field">
-        <label className="settings-label">Bio</label>
-        <textarea className="settings-input resize-none h-24" defaultValue="F1 enthusiast." />
       </div>
     </div>
   )

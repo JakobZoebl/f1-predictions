@@ -1,4 +1,4 @@
-import { Link } from "react-router-dom"
+
 import { F1Header } from "@/frontend/components/f1-header"
 import { HeroSection } from "@/frontend/components/hero-section"
 import { FeaturesSection } from "@/frontend/landing/FeaturesSection"
@@ -9,19 +9,7 @@ import "@/frontend/styles/LandingPage.css"
 export default function LandingPage() {
   return (
     <main className="landing-page-main">
-      <F1Header variant="landing">
-        <nav className="header-right-nav" aria-label="Auth navigation">
-          <Link to="/profile" className="text-sm font-medium text-muted-foreground transition-colors hover:text-foreground">
-            Profile
-          </Link>
-          <Link to="/login" className="header-login-btn">
-            Login
-          </Link>
-          <Link to="/signup" className="header-signup-btn">
-            Sign Up
-          </Link>
-        </nav>
-      </F1Header>
+      <F1Header variant="landing" isAuthenticated={false} />
       <HeroSection />
       <FeaturesSection />
       <UpcomingRaceSection />

@@ -13,6 +13,8 @@ interface F1HeaderProps {
   backHref?: string
   activeNav?: string
   primaryColor?: string
+  isAuthenticated?: boolean
+  username?: string
 }
 
 export function F1Header({
@@ -20,8 +22,9 @@ export function F1Header({
   backHref = "/",
   activeNav = "Home",
   primaryColor,
-  children,
-}: F1HeaderProps & { children?: React.ReactNode }) {
+  isAuthenticated = false,
+  username = "User",
+}: F1HeaderProps) {
   
   // Calculate dynamic style if primaryColor is provided
   const headerStyle = primaryColor 
@@ -105,16 +108,34 @@ export function F1Header({
           </nav>
         )}
 
-        {/* Right side - Render children (actions) here */}
+        {/* Right side - Auth-aware navigation */}
         <div className="header-right-nav">
-          {children}
-          <Link 
-            to="/profile-settings" 
-            className="p-2 text-white/50 hover:text-white transition-colors"
-            aria-label="Profile Settings"
-          >
-            <Settings className="h-5 w-5" />
-          </Link>
+          {isAuthenticated ? (
+            <>
+              <Link 
+                to="/profile" 
+                className="text-sm font-medium text-white/70 hover:text-white transition-colors"
+              >
+                @{username}
+              </Link>
+              <Link 
+                to="/profile-settings" 
+                className="p-2 text-white/50 hover:text-white transition-colors"
+                aria-label="Profile Settings"
+              >
+                <Settings className="h-5 w-5" />
+              </Link>
+            </>
+          ) : (
+            <>
+              <Link to="/login" className="header-login-btn">
+                Login
+              </Link>
+              <Link to="/signup" className="header-signup-btn">
+                Sign Up
+              </Link>
+            </>
+          )}
         </div>
       </div>
 
