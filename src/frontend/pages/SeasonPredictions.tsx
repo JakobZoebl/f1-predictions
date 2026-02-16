@@ -69,9 +69,16 @@ export default function SeasonPredictions() {
   // Auto-fill for testing/convenience (Optional, maybe remove later)
   const handleAutoFill = () => {
     if (isLocked) return
+    
+    // Randomize drivers
     const drivers = Object.keys(DRIVERS)
-    setSelectedDrivers(drivers)
-    setSelectedConstructors(Object.keys(TEAMS))
+    const shuffledDrivers = [...drivers].sort(() => Math.random() - 0.5)
+    setSelectedDrivers(shuffledDrivers)
+    
+    // Randomize constructors
+    const teams = Object.keys(TEAMS)
+    const shuffledTeams = [...teams].sort(() => Math.random() - 0.5)
+    setSelectedConstructors(shuffledTeams)
     
     // Randomly select bonus values
     const randomDriver = () => drivers[Math.floor(Math.random() * drivers.length)]

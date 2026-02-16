@@ -43,9 +43,15 @@ export default function RacePredictions() {
   }, [])
 
   const handleAutoFill = useCallback(() => {
+    // Randomize and select top 10 drivers
     const drivers = Object.keys(DRIVERS)
-    setSelectedDrivers(drivers.slice(0, 10))
-    setSelectedConstructors(Object.keys(TEAMS).slice(0, 5))
+    const shuffledDrivers = [...drivers].sort(() => Math.random() - 0.5)
+    setSelectedDrivers(shuffledDrivers.slice(0, 10))
+
+    // Randomize and select top 5 constructors
+    const teams = Object.keys(TEAMS)
+    const shuffledTeams = [...teams].sort(() => Math.random() - 0.5)
+    setSelectedConstructors(shuffledTeams.slice(0, 5))
     
     // Randomly select bonus values
     const randomDriver = () => drivers[Math.floor(Math.random() * drivers.length)]
