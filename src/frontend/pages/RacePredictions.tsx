@@ -10,6 +10,7 @@ import { ConstructorDragDrop } from "@/frontend/predictions/ConstructorDragDrop"
 import { BonusPredictions, type BonusValues } from "@/frontend/predictions/BonusPredictions"
 import { PredictionSummary } from "@/frontend/predictions/PredictionSummary"
 import { useNextRace } from "@/lib/hooks/useNextRace"
+import { DRIVERS, TEAMS } from "@/lib/f1-presets"
 import { hexToHsl } from "@/lib/utils"
 import "@/frontend/styles/RacePredictions.css"
 
@@ -39,6 +40,22 @@ export default function RacePredictions() {
 
   const handleBonusChange = useCallback((values: BonusValues) => {
     setBonusValues(values)
+  }, [])
+
+  const handleAutoFill = useCallback(() => {
+    const drivers = Object.keys(DRIVERS)
+    setSelectedDrivers(drivers.slice(0, 10))
+    setSelectedConstructors(Object.keys(TEAMS).slice(0, 5))
+    
+    // Randomly select bonus values
+    const randomDriver = () => drivers[Math.floor(Math.random() * drivers.length)]
+    setBonusValues({
+      pole_position: randomDriver(),
+      fastest_lap: randomDriver(),
+      first_retirement: randomDriver(),
+      safety_car: Math.random() > 0.5,
+      red_flag: Math.random() > 0.5,
+    })
   }, [])
 
   // Count filled bonus fields
@@ -117,6 +134,8 @@ export default function RacePredictions() {
           constructorCount={filledConstructorsCount}
           bonusCount={bonusFilledCount}
           totalBonusFields={3}
+          onAutoFill={handleAutoFill}
+          onSubmit={() => console.log('Submit Race Prediction')}
         />
       </main>
 

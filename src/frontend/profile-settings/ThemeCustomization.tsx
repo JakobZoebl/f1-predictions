@@ -2,6 +2,13 @@
 
 import "@/frontend/styles/ProfileSettings.css"
 import { TEAMS, DRIVERS } from "@/lib/f1-presets"
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/frontend/components/ui/select"
 
 interface ThemeCustomizationProps {
   selectedTeam: string
@@ -27,17 +34,20 @@ export function ThemeCustomization({
       {/* Team Dropdown */}
       <div className="settings-field">
         <label className="settings-label">Favourite Team</label>
-        <select 
-          className="settings-input"
-          value={selectedTeam}
-          onChange={(e) => onTeamChange(e.target.value)}
-        >
-          {Object.entries(TEAMS).map(([key, team]) => (
-            <option key={key} value={key}>
-              {team.name}
-            </option>
-          ))}
-        </select>
+        <div className="settings-select-wrapper">
+          <Select value={selectedTeam} onValueChange={onTeamChange}>
+            <SelectTrigger className="w-full">
+              <SelectValue placeholder="Select a team" />
+            </SelectTrigger>
+            <SelectContent>
+              {Object.entries(TEAMS).map(([key, team]) => (
+                <SelectItem key={key} value={key}>
+                  {team.name}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </div>
         
         {/* Team Color Preview */}
         <div className="flex items-center gap-3 mt-3">
@@ -61,17 +71,20 @@ export function ThemeCustomization({
       {/* Driver Dropdown */}
       <div className="settings-field">
         <label className="settings-label">Favourite Driver</label>
-        <select 
-          className="settings-input"
-          value={selectedDriver}
-          onChange={(e) => onDriverChange(e.target.value)}
-        >
-          {Object.entries(DRIVERS).map(([key, driver]) => (
-            <option key={key} value={key}>
-              {driver.name}
-            </option>
-          ))}
-        </select>
+        <div className="settings-select-wrapper">
+          <Select value={selectedDriver} onValueChange={onDriverChange}>
+            <SelectTrigger className="w-full">
+              <SelectValue placeholder="Select a driver" />
+            </SelectTrigger>
+            <SelectContent>
+              {Object.entries(DRIVERS).map(([key, driver]) => (
+                <SelectItem key={key} value={key}>
+                  {driver.name}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </div>
         
         {/* Driver Color Preview */}
         <div className="flex items-center gap-3 mt-3">

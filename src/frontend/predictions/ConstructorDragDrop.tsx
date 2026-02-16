@@ -8,9 +8,18 @@ const POINTS = [25, 18, 15, 12, 10]
 interface ConstructorDragDropProps {
   selected: (string | null)[]
   onChange: (selected: (string | null)[]) => void
+  slotCount?: number
+  points?: number[]
+  poolLabel?: string
 }
 
-export function ConstructorDragDrop({ selected, onChange }: ConstructorDragDropProps) {
+export function ConstructorDragDrop({ 
+  selected, 
+  onChange,
+  slotCount = 5,
+  points = POINTS,
+  poolLabel = "Remaining Constructors — 10 pts each if in top 5" 
+}: ConstructorDragDropProps) {
   const [draggedTeam, setDraggedTeam] = useState<string | null>(null)
   const [dragOverSlot, setDragOverSlot] = useState<number | null>(null)
 
@@ -63,9 +72,9 @@ export function ConstructorDragDrop({ selected, onChange }: ConstructorDragDropP
 
   return (
     <div>
-      {/* Top 5 Slots */}
+      {/* Slots */}
       <div className="dnd-slots-container">
-        {Array.from({ length: 5 }, (_, i) => {
+        {Array.from({ length: slotCount }, (_, i) => {
           const teamKey = selected[i]
           const team = teamKey ? TEAMS[teamKey] : null
 
@@ -119,7 +128,7 @@ export function ConstructorDragDrop({ selected, onChange }: ConstructorDragDropP
                 </span>
               )}
 
-              <span className="dnd-slot-points">{POINTS[i]} pts</span>
+              <span className="dnd-slot-points">{points[i] ?? 0} pts</span>
             </div>
           )
         })}
@@ -129,8 +138,7 @@ export function ConstructorDragDrop({ selected, onChange }: ConstructorDragDropP
       {poolTeams.length > 0 && (
         <>
           <p className="dnd-pool-label">
-            Remaining Constructors ({poolTeams.length}) — 10 pts each if in top
-            5
+            {poolLabel.replace("{count}", poolTeams.length.toString())}
           </p>
           <div className="dnd-pool">
             {poolTeams.map((key) => {

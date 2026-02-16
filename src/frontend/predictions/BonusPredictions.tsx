@@ -1,6 +1,13 @@
 "use client"
 
 import { DRIVERS } from "@/lib/f1-presets"
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/frontend/components/ui/select"
 
 export interface BonusValues {
   pole_position: string
@@ -77,18 +84,21 @@ export function BonusPredictions({ values, onChange }: BonusPredictionsProps) {
           <span className="bonus-item-label">🏁 Pole Position</span>
           <span className="bonus-item-pts">10 pts</span>
         </div>
-        <select
-          className="bonus-select"
+        <Select
           value={values.pole_position}
-          onChange={(e) => updateField("pole_position", e.target.value)}
+          onValueChange={(val) => updateField("pole_position", val)}
         >
-          <option value="">Select a driver...</option>
-          {allDrivers.map((d) => (
-            <option key={d.key} value={d.key}>
-              {d.name}
-            </option>
-          ))}
-        </select>
+          <SelectTrigger className="w-full">
+            <SelectValue placeholder="Select a driver..." />
+          </SelectTrigger>
+          <SelectContent>
+            {allDrivers.map((d) => (
+              <SelectItem key={d.key} value={d.key}>
+                {d.name}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
       </div>
 
       {/* Fastest Lap */}
@@ -97,18 +107,21 @@ export function BonusPredictions({ values, onChange }: BonusPredictionsProps) {
           <span className="bonus-item-label">⚡ Fastest Lap</span>
           <span className="bonus-item-pts">10 pts</span>
         </div>
-        <select
-          className="bonus-select"
+        <Select
           value={values.fastest_lap}
-          onChange={(e) => updateField("fastest_lap", e.target.value)}
+          onValueChange={(val) => updateField("fastest_lap", val)}
         >
-          <option value="">Select a driver...</option>
-          {allDrivers.map((d) => (
-            <option key={d.key} value={d.key}>
-              {d.name}
-            </option>
-          ))}
-        </select>
+          <SelectTrigger className="w-full">
+            <SelectValue placeholder="Select a driver..." />
+          </SelectTrigger>
+          <SelectContent>
+            {allDrivers.map((d) => (
+              <SelectItem key={d.key} value={d.key}>
+                {d.name}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
       </div>
 
       {/* First Retirement */}
@@ -117,19 +130,22 @@ export function BonusPredictions({ values, onChange }: BonusPredictionsProps) {
           <span className="bonus-item-label">❌ First Retirement</span>
           <span className="bonus-item-pts">10 pts</span>
         </div>
-        <select
-          className="bonus-select"
+        <Select
           value={values.first_retirement}
-          onChange={(e) => updateField("first_retirement", e.target.value)}
+          onValueChange={(val) => updateField("first_retirement", val)}
         >
-          <option value="">Select a driver...</option>
-          <option value="no_retirement">No retirements</option>
-          {allDrivers.map((d) => (
-            <option key={d.key} value={d.key}>
-              {d.name}
-            </option>
-          ))}
-        </select>
+          <SelectTrigger className="w-full">
+            <SelectValue placeholder="Select a driver..." />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="no_retirement">No retirements</SelectItem>
+            {allDrivers.map((d) => (
+              <SelectItem key={d.key} value={d.key}>
+                {d.name}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
       </div>
 
       {/* Safety Car */}

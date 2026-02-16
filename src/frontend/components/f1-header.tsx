@@ -83,7 +83,7 @@ export function F1Header({
         {/* Center nav links (only for "Home" variant) */}
         {variant === "Home" && (
           <nav className="header-center-nav" aria-label="Main navigation">
-            {["Home", "Predictions", "Season", "Leaderboard"].map((item) => (
+            {["Home", "Predictions", "Season Preds", "Season", "Leaderboard"].map((item) => (
               <Link
                 key={item}
                 to={
@@ -91,6 +91,8 @@ export function F1Header({
                     ? "/Home"
                     : item === "Predictions"
                     ? "/race-predictions"
+                    : item === "Season Preds"
+                    ? "/season-predictions"
                     : item === "Season"
                     ? "/season-overview"
                     : `/${item.toLowerCase()}`

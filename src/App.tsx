@@ -8,6 +8,7 @@ import RacePredictions from "@/frontend/pages/RacePredictions"
 import Home from "@/frontend/pages/Home"
 
 import SeasonOverview from "@/frontend/pages/SeasonOverview"
+import SeasonPredictions from "@/frontend/pages/SeasonPredictions"
 import ProfileSettings from "@/frontend/pages/ProfileSettings"
 
 function App() {
@@ -19,6 +20,7 @@ function App() {
       <Route path="/profile" element={<ProfilePage />} />
       <Route path="/leaderboard" element={<Leaderboard />} />
       <Route path="/race-predictions" element={<RacePredictions />} />
+      <Route path="/season-predictions" element={<SeasonPredictions />} />
       <Route path="/season-overview" element={<SeasonOverview />} />
       <Route path="/home" element={<Home />} />
       <Route path="/profile-settings" element={<ProfileSettings />} />

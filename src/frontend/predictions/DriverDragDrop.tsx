@@ -8,9 +8,20 @@ const POINTS = [25, 18, 15, 12, 10, 8, 6, 4, 2, 1]
 interface DriverDragDropProps {
   selected: (string | null)[]
   onChange: (selected: (string | null)[]) => void
+  slotCount?: number
+  points?: number[]
+  poolLabel?: string
+  twoColumns?: boolean
 }
 
-export function DriverDragDrop({ selected, onChange }: DriverDragDropProps) {
+export function DriverDragDrop({ 
+  selected, 
+  onChange,
+  slotCount = 10,
+  points = POINTS,
+  poolLabel = "Remaining Drivers — 2 pts each if in top 10",
+  twoColumns = false
+}: DriverDragDropProps) {
   const [draggedDriver, setDraggedDriver] = useState<string | null>(null)
   const [dragOverSlot, setDragOverSlot] = useState<number | null>(null)
 
@@ -66,9 +77,9 @@ export function DriverDragDrop({ selected, onChange }: DriverDragDropProps) {
 
   return (
     <div>
-      {/* Top 10 Slots */}
-      <div className="dnd-slots-container">
-        {Array.from({ length: 10 }, (_, i) => {
+      {/* Slots */}
+      <div className={`dnd-slots-container ${twoColumns ? 'two-columns' : ''}`}>
+        {Array.from({ length: slotCount }, (_, i) => {
           const driverKey = selected[i]
           const driver = driverKey ? DRIVERS[driverKey] : null
           const team = driver ? TEAMS[driver.team] : null
@@ -124,7 +135,7 @@ export function DriverDragDrop({ selected, onChange }: DriverDragDropProps) {
                 </span>
               )}
 
-              <span className="dnd-slot-points">{POINTS[i]} pts</span>
+              <span className="dnd-slot-points">{points[i] ?? 0} pts</span>
             </div>
           )
         })}
@@ -134,7 +145,7 @@ export function DriverDragDrop({ selected, onChange }: DriverDragDropProps) {
       {poolDrivers.length > 0 && (
         <>
           <p className="dnd-pool-label">
-            Remaining Drivers ({poolDrivers.length}) — 2 pts each if in top 10
+            {poolLabel.replace("{count}", poolDrivers.length.toString())}
           </p>
           <div className="dnd-pool">
             {poolDrivers.map((key) => {

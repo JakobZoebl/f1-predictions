@@ -5,6 +5,21 @@ interface PredictionSummaryProps {
   constructorCount: number
   bonusCount: number
   totalBonusFields: number
+  onAutoFill?: () => void
+  onSubmit?: () => void
+  // Optional customizations for Season Predictions
+  labels?: {
+    drivers?: string
+    constructors?: string
+    bonus?: string
+  }
+  maxPoints?: {
+    drivers?: number
+    constructors?: number
+    bonus?: number
+  }
+  totalDrivers?: number
+  totalConstructors?: number
 }
 
 export function PredictionSummary({
@@ -12,15 +27,29 @@ export function PredictionSummary({
   constructorCount,
   bonusCount,
   totalBonusFields,
+  onAutoFill,
+  onSubmit,
+  labels = {
+    drivers: "Top 10 Drivers",
+    constructors: "Top 5 Constructors",
+    bonus: "Bonus Predictions"
+  },
+  maxPoints = {
+    drivers: 152,
+    constructors: 70,
+    bonus: 41
+  },
+  totalDrivers = 10,
+  totalConstructors = 5,
 }: PredictionSummaryProps) {
   // Calculate potential max points based on filled fields
-  const driverMaxPoints = driverCount > 0 ? 152 : 0
-  const constructorMaxPoints = constructorCount > 0 ? 70 : 0
-  const bonusMaxPoints = bonusCount > 0 ? 41 : 0
+  const driverMaxPoints = driverCount > 0 ? maxPoints.drivers ?? 152 : 0
+  const constructorMaxPoints = constructorCount > 0 ? maxPoints.constructors ?? 70 : 0
+  const bonusMaxPoints = bonusCount > 0 ? maxPoints.bonus ?? 41 : 0
   const totalMaxPoints = driverMaxPoints + constructorMaxPoints + bonusMaxPoints
 
   // Calculate completion
-  const totalFields = 10 + 5 + totalBonusFields // 10 drivers + 5 constructors + bonus fields
+  const totalFields = totalDrivers + totalConstructors + totalBonusFields
   const filledFields = driverCount + constructorCount + bonusCount
   const completionPct = totalFields > 0 ? Math.round((filledFields / totalFields) * 100) : 0
 
@@ -47,19 +76,19 @@ export function PredictionSummary({
         <div className="summary-breakdown">
           <div className="summary-row">
             <span className="label">
-              Top 10 Drivers ({driverCount}/10 filled)
+              {labels.drivers} ({driverCount}/{totalDrivers} filled)
             </span>
             <span className="value">max {driverMaxPoints} pts</span>
           </div>
           <div className="summary-row">
             <span className="label">
-              Top 5 Constructors ({constructorCount}/5 filled)
+              {labels.constructors} ({constructorCount}/{totalConstructors} filled)
             </span>
             <span className="value">max {constructorMaxPoints} pts</span>
           </div>
           <div className="summary-row">
             <span className="label">
-              Bonus Predictions ({bonusCount}/{totalBonusFields} filled)
+              {labels.bonus} ({bonusCount}/{totalBonusFields} filled)
             </span>
             <span className="value">max {bonusMaxPoints} pts</span>
           </div>
@@ -73,13 +102,20 @@ export function PredictionSummary({
         </div>
 
         <div className="summary-actions">
-          <button type="button" className="btn-save-draft">
-            Save Draft
-          </button>
+          {onAutoFill && (
+            <button 
+              type="button" 
+              className="btn-save-draft"
+              onClick={onAutoFill}
+            >
+              Auto-Fill
+            </button>
+          )}
           <button
             type="button"
             className="btn-submit"
             disabled={completionPct < 100}
+            onClick={onSubmit}
           >
             Submit Prediction
           </button>
