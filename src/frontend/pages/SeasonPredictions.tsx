@@ -148,10 +148,10 @@ export default function SeasonPredictions() {
           />
         </section>
 
-        {/* Season Statistics */}
+        {/* Season Bonus */}
         <section className="prediction-section">
           <div className="prediction-section-title">
-            <h2>Season Statistics</h2>
+            <h2>Season Bonus</h2>
             <span className="max-pts">max 300 pts</span>
           </div>
           <SeasonBonusPredictions

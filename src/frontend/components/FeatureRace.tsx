@@ -40,9 +40,14 @@ interface FeatureRaceProps {
   style?: React.CSSProperties
   renderActions?: (raceColors: { primary: string; secondary: string }) => React.ReactNode
   race?: RaceEvent
+  /** When true, hides the countdown and shows score/rank instead */
+  resultsMode?: boolean
+  userScore?: number
+  userMaxScore?: number
+  userRank?: number
 }
 
-export function FeatureRace({ className, style, renderActions, race }: FeatureRaceProps) {
+export function FeatureRace({ className, style, renderActions, race, resultsMode, userScore, userMaxScore, userRank }: FeatureRaceProps) {
     // Logic to find the next upcoming race (only if race prop is not provided)
     const nextRace = useMemo(() => {
         if (race) return race
@@ -126,27 +131,45 @@ export function FeatureRace({ className, style, renderActions, race }: FeatureRa
                     </div>
                 </div>
                     
-                {/* Countdown */}
-                <div className="race-countdown-compact mb-4">
-                    <div className="countdown-grid">
-                        <div className="countdown-item">
-                            <span className="countdown-value">{days.toString().padStart(2, '0')}</span>
-                            <span className="countdown-unit" style={{ color: nextRace.colors.primary }}>D</span>
+                {/* Countdown OR Results Score */}
+                {resultsMode ? (
+                    <div className="race-results-score mb-4">
+                        <div className="race-results-score-item">
+                            <span className="race-results-score-value" style={{ color: nextRace.colors.primary }}>
+                                {userScore ?? 0}
+                            </span>
+                            <span className="race-results-score-label">
+                                {userMaxScore !== undefined ? `/ ${userMaxScore} pts` : 'pts'}
+                            </span>
                         </div>
-                        <div className="countdown-item">
-                            <span className="countdown-value">{hours.toString().padStart(2, '0')}</span>
-                            <span className="countdown-unit" style={{ color: nextRace.colors.primary }}>H</span>
-                        </div>
-                        <div className="countdown-item">
-                            <span className="countdown-value">{minutes.toString().padStart(2, '0')}</span>
-                            <span className="countdown-unit" style={{ color: nextRace.colors.primary }}>M</span>
+                        {userRank !== undefined && (
+                            <div className="race-results-rank-badge" style={{ borderColor: `${nextRace.colors.primary}60`, color: nextRace.colors.primary }}>
+                                #{userRank} this race
+                            </div>
+                        )}
+                    </div>
+                ) : (
+                    <div className="race-countdown-compact mb-4">
+                        <div className="countdown-grid">
+                            <div className="countdown-item">
+                                <span className="countdown-value">{days.toString().padStart(2, '0')}</span>
+                                <span className="countdown-unit" style={{ color: nextRace.colors.primary }}>D</span>
+                            </div>
+                            <div className="countdown-item">
+                                <span className="countdown-value">{hours.toString().padStart(2, '0')}</span>
+                                <span className="countdown-unit" style={{ color: nextRace.colors.primary }}>H</span>
+                            </div>
+                            <div className="countdown-item">
+                                <span className="countdown-value">{minutes.toString().padStart(2, '0')}</span>
+                                <span className="countdown-unit" style={{ color: nextRace.colors.primary }}>M</span>
+                            </div>
                         </div>
                     </div>
-                </div>
+                )}
 
                 <div className="race-details-center">
                     <h2 className="race-title-large leading-tight">
-                        {nextRace.country} <br/> {nextRace.name.includes("Sprint") ? "Sprint" : "Grand Prix"}
+                        {nextRace.country} <br/> {nextRace.name.includes("Sprint") ? "Sprint" : "Grand Prix"}{resultsMode ? " - Results" : ""}
                     </h2>
                     
                     <div className="race-meta-row mt-2">

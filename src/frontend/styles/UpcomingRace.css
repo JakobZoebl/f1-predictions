@@ -125,3 +125,26 @@
 .race-track-right:hover .track-map-img {
   transform: scale(1.05) rotate(0deg);
 }
+
+/* ── Results Mode: Score / Rank Display ── */
+
+.race-results-score {
+  @apply flex flex-row items-center gap-6;
+}
+
+.race-results-score-item {
+  @apply flex flex-row items-baseline gap-2;
+}
+
+.race-results-score-value {
+  @apply text-5xl font-display font-bold leading-none;
+}
+
+.race-results-score-label {
+  @apply text-lg font-bold text-white/60;
+}
+
+.race-results-rank-badge {
+  @apply text-sm font-bold uppercase tracking-wider px-3 py-1 rounded-full border;
+  background: rgba(0, 0, 0, 0.25);
+}

@@ -62,19 +62,23 @@
   @apply text-xs font-bold text-white/30 flex-shrink-0;
 }
 
-.dnd-slot .team-accent {
+.dnd-slot .team-accent,
+.dnd-slot-driver .team-accent {
   @apply w-1 h-8 rounded-full flex-shrink-0;
 }
 
-.dnd-slot .driver-info {
+.dnd-slot .driver-info,
+.dnd-slot-driver .driver-info {
   @apply flex flex-col;
 }
 
-.dnd-slot .driver-name {
+.dnd-slot .driver-name,
+.dnd-slot-driver .driver-name {
   @apply text-sm font-medium text-white;
 }
 
-.dnd-slot .driver-team {
+.dnd-slot .driver-team,
+.dnd-slot-driver .driver-team {
   @apply text-xs text-white/40;
 }
 

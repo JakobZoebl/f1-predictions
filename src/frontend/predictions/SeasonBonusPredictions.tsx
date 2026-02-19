@@ -38,7 +38,7 @@ export function SeasonBonusPredictions({ values, onChange }: SeasonBonusPredicti
       {/* Most Pole Positions */}
       <div className="bonus-item">
         <div className="bonus-item-header">
-          <span className="bonus-item-label">🏁 Most Pole Positions</span>
+          <span className="bonus-item-label">Most Pole Positions</span>
           <span className="bonus-item-pts">100 pts</span>
         </div>
         <Select
@@ -61,7 +61,7 @@ export function SeasonBonusPredictions({ values, onChange }: SeasonBonusPredicti
       {/* Most Fastest Laps */}
       <div className="bonus-item">
         <div className="bonus-item-header">
-          <span className="bonus-item-label">⚡ Most Fastest Laps</span>
+          <span className="bonus-item-label">Most Fastest Laps</span>
           <span className="bonus-item-pts">100 pts</span>
         </div>
         <Select
@@ -84,7 +84,7 @@ export function SeasonBonusPredictions({ values, onChange }: SeasonBonusPredicti
       {/* Most Retirements */}
       <div className="bonus-item">
         <div className="bonus-item-header">
-          <span className="bonus-item-label">❌ Most Retirements</span>
+          <span className="bonus-item-label">Most Retirements</span>
           <span className="bonus-item-pts">100 pts</span>
         </div>
         <Select

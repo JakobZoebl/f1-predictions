@@ -23,9 +23,10 @@ export interface LeaderboardEntry {
 interface LeaderboardTableProps {
   data: LeaderboardEntry[]
   currentUserId?: string
+  title?: string
 }
 
-export function LeaderboardTable({ data, currentUserId }: LeaderboardTableProps) {
+export function LeaderboardTable({ data, currentUserId, title = "Current Standings" }: LeaderboardTableProps) {
   const getMovementIcon = (movement: number) => {
     if (movement > 0) return <ArrowUp className="h-4 w-4 text-green-500" />
     if (movement < 0) return <ArrowDown className="h-4 w-4 text-red-500" />
@@ -40,11 +41,11 @@ export function LeaderboardTable({ data, currentUserId }: LeaderboardTableProps)
   }
 
   return (
-    <Card className="border-white/10 bg-black/40 backdrop-blur-md">
-      <CardHeader>
-        <CardTitle className="text-xl font-bold uppercase tracking-wider text-white italic shadow-sm border-b border-white/10 pb-4 mb-4 select-none" style={{ textShadow: "0 2px 10px rgba(0, 0, 0, 0.5)" }}>Current Standings</CardTitle>
+    <Card className="border-white/10 bg-black/40 backdrop-blur-md p-6">
+      <CardHeader className="p-0">
+        <CardTitle className="text-xl font-bold uppercase tracking-wider text-white italic shadow-sm border-b border-white/10 pb-4 mb-4 select-none" style={{ textShadow: "0 2px 10px rgba(0, 0, 0, 0.5)" }}>{title}</CardTitle>
       </CardHeader>
-      <CardContent>
+      <CardContent className="p-0">
         <Table>
           <TableHeader>
             <TableRow className="border-white/10 hover:bg-transparent">

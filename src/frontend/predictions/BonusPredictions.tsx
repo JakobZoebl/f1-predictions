@@ -81,7 +81,7 @@ export function BonusPredictions({ values, onChange }: BonusPredictionsProps) {
       {/* Pole Position */}
       <div className="bonus-item">
         <div className="bonus-item-header">
-          <span className="bonus-item-label">🏁 Pole Position</span>
+          <span className="bonus-item-label">Pole Position</span>
           <span className="bonus-item-pts">10 pts</span>
         </div>
         <Select
@@ -104,7 +104,7 @@ export function BonusPredictions({ values, onChange }: BonusPredictionsProps) {
       {/* Fastest Lap */}
       <div className="bonus-item">
         <div className="bonus-item-header">
-          <span className="bonus-item-label">⚡ Fastest Lap</span>
+          <span className="bonus-item-label">Fastest Lap</span>
           <span className="bonus-item-pts">10 pts</span>
         </div>
         <Select
@@ -127,7 +127,7 @@ export function BonusPredictions({ values, onChange }: BonusPredictionsProps) {
       {/* First Retirement */}
       <div className="bonus-item">
         <div className="bonus-item-header">
-          <span className="bonus-item-label">❌ First Retirement</span>
+          <span className="bonus-item-label">First Retirement</span>
           <span className="bonus-item-pts">10 pts</span>
         </div>
         <Select
@@ -150,7 +150,7 @@ export function BonusPredictions({ values, onChange }: BonusPredictionsProps) {
 
       {/* Safety Car */}
       <ToggleSwitch
-        label="🚗 Safety Car"
+        label="Safety Car"
         value={values.safety_car}
         onChange={(v) => updateField("safety_car", v)}
         pointsLabel="5 pts"
@@ -158,7 +158,7 @@ export function BonusPredictions({ values, onChange }: BonusPredictionsProps) {
 
       {/* Red Flag */}
       <ToggleSwitch
-        label="🚨 Red Flag"
+        label="Red Flag"
         value={values.red_flag}
         onChange={(v) => updateField("red_flag", v)}
         pointsLabel="1pt No / 5pts Yes"
