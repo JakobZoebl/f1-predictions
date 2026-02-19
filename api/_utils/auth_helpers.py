@@ -8,66 +8,131 @@ Environment variables required:
   - SUPABASE_JWT_SECRET
 """
 
+import os
+from functools import wraps
 
-def verify_jwt(token: str) -> dict:
+import jwt
+from flask import request, jsonify, g
+
+from api._utils.supabase_client import get_supabase_client
+
+
+
+def get_current_user(req) -> dict:
     """
-    Verify and decode a Supabase JWT access token.
+    Extract and verify the current authenticated user from a Flask request.
+    
+    Verifies the token by calling the Supabase Auth API's getUser endpoint.
+    This ensures the token is valid, not expired, and not revoked (if using RLS).
     
     Args:
-        token: The Bearer token from the Authorization header.
+        req: Flask request object with Authorization header.
         
     Returns:
-        dict: Decoded JWT payload containing user info.
+        dict: User info dict with 'id', 'email', 'role', etc.
         
     Raises:
-        ValueError: If token is invalid or expired.
+        ValueError: If no valid auth token is present or verification fails.
     """
-    # TODO: Decode and verify JWT using PyJWT
-    # TODO: Check expiration, issuer, etc.
-    pass
+    auth_header = req.headers.get("Authorization", "")
 
+    if not auth_header.startswith("Bearer "):
+        raise ValueError("Missing or malformed Authorization header.")
 
-def get_current_user(request) -> dict:
-    """
-    Extract the current authenticated user from a Flask request.
+    token = auth_header[7:]  # Strip "Bearer "
     
-    Args:
-        request: Flask request object with Authorization header.
+    try:
+        # Create a temporary client or use the library's verification method
+        # Using get_supabase_client() which uses the service role key is okay 
+        # for admin tasks, but for verification we strictly want to check the *token*.
+        # The supabase-py client allows checking a token directly.
         
-    Returns:
-        dict: User info dict with at minimum 'id' (UUID).
+        supabase = get_supabase_client()
         
-    Raises:
-        ValueError: If no valid auth token is present.
-    """
-    # TODO: Extract Bearer token from request headers
-    # TODO: Call verify_jwt and return user payload
-    pass
+        # Verify user by calling the Auth server
+        # This checks signature, expiration, and revocation
+        response = supabase.auth.get_user(token)
+        
+        if not response.user:
+             raise ValueError("Invalid or expired token.")
+             
+        user = response.user
+        
+        # Map Supabase User object to a simple dict for the app
+        return {
+            "id": user.id,
+            "email": user.email,
+            "role": user.role or "authenticated",
+            "app_metadata": user.app_metadata,
+            "user_metadata": user.user_metadata
+        }
+        
+    except Exception as e:
+        raise ValueError(f"Token verification failed: {str(e)}")
+
 
 
 def require_auth(f):
     """
     Decorator to protect endpoints — returns 401 if not authenticated.
     
+    Sets `g.current_user` on the Flask request context so the endpoint
+    handler can access the authenticated user.
+    
     Usage:
         @require_auth
         def my_endpoint():
+            user = g.current_user
             ...
     """
-    # TODO: Implement as a Flask/function decorator
-    # TODO: Call get_current_user, return 401 JSON on failure
-    pass
+    @wraps(f)
+    def decorated(*args, **kwargs):
+        try:
+            g.current_user = get_current_user(request)
+        except ValueError as e:
+            return jsonify({"success": False, "error": str(e)}), 401
+        return f(*args, **kwargs)
+    return decorated
 
 
 def require_admin(f):
     """
     Decorator to protect admin-only endpoints — returns 403 if not admin.
     
+    Must be used after @require_auth (or calls get_current_user itself).
+    Checks the user's role in the Supabase `users` table.
+    
     Usage:
+        @require_auth
         @require_admin
         def admin_endpoint():
             ...
     """
-    # TODO: Check user role from Supabase users table
-    # TODO: Return 403 if role != 'admin'
-    pass
+    @wraps(f)
+    def decorated(*args, **kwargs):
+        # Ensure user is authenticated first
+        user = getattr(g, "current_user", None)
+        if not user:
+            try:
+                user = get_current_user(request)
+                g.current_user = user
+            except ValueError as e:
+                return jsonify({"success": False, "error": str(e)}), 401
+
+        # Check admin role in the database
+        try:
+            supabase = get_supabase_client()
+            result = (
+                supabase.table("users")
+                .select("role")
+                .eq("id", user["id"])
+                .single()
+                .execute()
+            )
+            if not result.data or result.data.get("role") != "admin":
+                return jsonify({"success": False, "error": "Admin access required."}), 403
+        except Exception:
+            return jsonify({"success": False, "error": "Failed to verify admin status."}), 500
+
+        return f(*args, **kwargs)
+    return decorated

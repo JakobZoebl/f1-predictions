@@ -3,8 +3,33 @@
 import React from "react"
 
 import { useState } from "react"
-import { Link } from "react-router-dom"
+import { Link, useNavigate } from "react-router-dom"
 import { Input } from "@/frontend/components/input"
+import { useAuth } from "@/frontend/auth/AuthContext"
+import { z } from "zod"
+
+// Zod validation schema matching project spec
+const signupSchema = z
+  .object({
+    email: z.string().email("Valid email required"),
+    username: z
+      .string()
+      .min(3, "Username must be at least 3 characters")
+      .max(30, "Username must be at most 30 characters")
+      .regex(
+        /^[a-zA-Z0-9_-]+$/,
+        "Username can only contain letters, numbers, _ and -"
+      ),
+    display_name: z.string().min(1, "Display name required").max(50, "Display name must be at most 50 characters"),
+    password: z.string().min(8, "Password must be at least 8 characters"),
+    confirm_password: z.string(),
+  })
+  .refine((data) => data.password === data.confirm_password, {
+    message: "Passwords don't match",
+    path: ["confirm_password"],
+  })
+
+type FieldErrors = Partial<Record<keyof z.infer<typeof signupSchema>, string>>
 
 export function SignupContainer() {
   const [email, setEmail] = useState("")
@@ -12,9 +37,57 @@ export function SignupContainer() {
   const [displayName, setDisplayName] = useState("")
   const [password, setPassword] = useState("")
   const [confirmPassword, setConfirmPassword] = useState("")
+  const [error, setError] = useState<string | null>(null)
+  const [fieldErrors, setFieldErrors] = useState<FieldErrors>({})
+  const [isLoading, setIsLoading] = useState(false)
 
-  function handleSubmit(e: React.FormEvent) {
+  const { signUp, signInWithGoogle } = useAuth()
+  const navigate = useNavigate()
+
+  async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
+    setError(null)
+    setFieldErrors({})
+
+    // Client-side validation with Zod
+    const result = signupSchema.safeParse({
+      email,
+      username,
+      display_name: displayName,
+      password,
+      confirm_password: confirmPassword,
+    })
+
+    if (!result.success) {
+      const errors: FieldErrors = {}
+      for (const issue of result.error.issues) {
+        const field = issue.path[0] as keyof FieldErrors
+        if (!errors[field]) {
+          errors[field] = issue.message
+        }
+      }
+      setFieldErrors(errors)
+      return
+    }
+
+    setIsLoading(true)
+
+    const { error } = await signUp(email, password, username, displayName)
+
+    if (error) {
+      setError(error)
+      setIsLoading(false)
+    } else {
+      navigate("/home")
+    }
+  }
+
+  async function handleGoogleSignUp() {
+    setError(null)
+    const { error } = await signInWithGoogle()
+    if (error) {
+      setError(error)
+    }
   }
 
   return (
@@ -24,52 +97,98 @@ export function SignupContainer() {
           CREATE ACCOUNT
         </h2>
 
+        {error && (
+          <div className="mb-4 rounded-lg border border-red-500/30 bg-red-500/10 px-4 py-3 text-sm text-red-400">
+            {error}
+          </div>
+        )}
+
         <form onSubmit={handleSubmit} className="flex flex-col gap-5">
-          <Input
-            type="email"
-            placeholder="Email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            className="h-12 rounded-lg border-f1-card-border bg-secondary text-foreground placeholder:text-muted-foreground focus-visible:ring-f1-neon"
-          />
+          <div>
+            <Input
+              type="email"
+              placeholder="Email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              disabled={isLoading}
+              className="h-12 rounded-lg border-f1-card-border bg-secondary text-foreground placeholder:text-muted-foreground focus-visible:ring-f1-neon"
+            />
+            {fieldErrors.email && (
+              <p className="mt-1 text-xs text-red-400">{fieldErrors.email}</p>
+            )}
+          </div>
 
-          <Input
-            type="text"
-            placeholder="Username"
-            value={username}
-            onChange={(e) => setUsername(e.target.value)}
-            className="h-12 rounded-lg border-f1-card-border bg-secondary text-foreground placeholder:text-muted-foreground focus-visible:ring-f1-neon"
-          />
+          <div>
+            <Input
+              type="text"
+              placeholder="Username"
+              value={username}
+              onChange={(e) => setUsername(e.target.value)}
+              disabled={isLoading}
+              className="h-12 rounded-lg border-f1-card-border bg-secondary text-foreground placeholder:text-muted-foreground focus-visible:ring-f1-neon"
+            />
+            {fieldErrors.username && (
+              <p className="mt-1 text-xs text-red-400">{fieldErrors.username}</p>
+            )}
+          </div>
 
-          <Input
-            type="text"
-            placeholder="Display Name"
-            value={displayName}
-            onChange={(e) => setDisplayName(e.target.value)}
-            className="h-12 rounded-lg border-f1-card-border bg-secondary text-foreground placeholder:text-muted-foreground focus-visible:ring-f1-neon"
-          />
+          <div>
+            <Input
+              type="text"
+              placeholder="Display Name"
+              value={displayName}
+              onChange={(e) => setDisplayName(e.target.value)}
+              disabled={isLoading}
+              className="h-12 rounded-lg border-f1-card-border bg-secondary text-foreground placeholder:text-muted-foreground focus-visible:ring-f1-neon"
+            />
+            {fieldErrors.display_name && (
+              <p className="mt-1 text-xs text-red-400">{fieldErrors.display_name}</p>
+            )}
+          </div>
 
-          <Input
-            type="password"
-            placeholder="Password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            className="h-12 rounded-lg border-f1-card-border bg-secondary text-foreground placeholder:text-muted-foreground focus-visible:ring-f1-neon"
-          />
+          <div>
+            <Input
+              type="password"
+              placeholder="Password"
+              autoComplete="new-password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              disabled={isLoading}
+              className="h-12 rounded-lg border-f1-card-border bg-secondary text-foreground placeholder:text-muted-foreground focus-visible:ring-f1-neon"
+            />
+            {fieldErrors.password && (
+              <p className="mt-1 text-xs text-red-400">{fieldErrors.password}</p>
+            )}
+          </div>
 
-          <Input
-            type="password"
-            placeholder="Confirm Password"
-            value={confirmPassword}
-            onChange={(e) => setConfirmPassword(e.target.value)}
-            className="h-12 rounded-lg border-f1-card-border bg-secondary text-foreground placeholder:text-muted-foreground focus-visible:ring-f1-neon"
-          />
+          <div>
+            <Input
+              type="password"
+              placeholder="Confirm Password"
+              autoComplete="new-password"
+              value={confirmPassword}
+              onChange={(e) => setConfirmPassword(e.target.value)}
+              disabled={isLoading}
+              className="h-12 rounded-lg border-f1-card-border bg-secondary text-foreground placeholder:text-muted-foreground focus-visible:ring-f1-neon"
+            />
+            {fieldErrors.confirm_password && (
+              <p className="mt-1 text-xs text-red-400">{fieldErrors.confirm_password}</p>
+            )}
+          </div>
 
           <button
             type="submit"
-            className="h-12 w-full rounded-full bg-f1-neon font-bold tracking-wider text-white transition-all hover:brightness-110 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-f1-neon focus-visible:ring-offset-2 focus-visible:ring-offset-background"
+            disabled={isLoading}
+            className="h-12 w-full rounded-full bg-f1-neon font-bold tracking-wider text-white transition-all hover:brightness-110 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-f1-neon focus-visible:ring-offset-2 focus-visible:ring-offset-background disabled:opacity-50 disabled:cursor-not-allowed"
           >
-            SIGN UP
+            {isLoading ? (
+              <span className="flex items-center justify-center gap-2">
+                <span className="h-4 w-4 animate-spin rounded-full border-2 border-white border-t-transparent" />
+                CREATING ACCOUNT...
+              </span>
+            ) : (
+              "SIGN UP"
+            )}
           </button>
         </form>
 
@@ -84,7 +203,9 @@ export function SignupContainer() {
         <div className="flex justify-center">
           <button
             type="button"
-            className="flex h-12 items-center gap-3 rounded-full border border-f1-card-border bg-secondary px-8 font-medium text-foreground transition-colors hover:bg-secondary/80 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-f1-neon focus-visible:ring-offset-2 focus-visible:ring-offset-background"
+            onClick={handleGoogleSignUp}
+            disabled={isLoading}
+            className="flex h-12 items-center gap-3 rounded-full border border-f1-card-border bg-secondary px-8 font-medium text-foreground transition-colors hover:bg-secondary/80 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-f1-neon focus-visible:ring-offset-2 focus-visible:ring-offset-background disabled:opacity-50 disabled:cursor-not-allowed"
           >
             <GoogleIcon />
             <span>Google</span>

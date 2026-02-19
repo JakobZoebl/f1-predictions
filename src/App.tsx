@@ -1,4 +1,6 @@
 import { Routes, Route } from 'react-router-dom'
+import { AuthProvider } from "@/frontend/auth/AuthContext"
+import { AuthCallback } from "@/frontend/auth/AuthCallback"
 import LandingPage from "@/frontend/pages/LandingPage"
 import Login from "@/frontend/pages/Login"
 import SignUp from "@/frontend/pages/SignUp"
@@ -14,19 +16,22 @@ import RaceResults from "@/frontend/pages/RaceResults"
 
 function App() {
   return (
-    <Routes>
-      <Route path="/" element={<LandingPage />} />
-      <Route path="/login" element={<Login />} />
-      <Route path="/signup" element={<SignUp />} />
-      <Route path="/profile" element={<ProfilePage />} />
-      <Route path="/leaderboard" element={<Leaderboard />} />
-      <Route path="/race-predictions" element={<RacePredictions />} />
-      <Route path="/season-predictions" element={<SeasonPredictions />} />
-      <Route path="/season-overview" element={<SeasonOverview />} />
-      <Route path="/home" element={<Home />} />
-      <Route path="/profile-settings" element={<ProfileSettings />} />
-      <Route path="/race-results" element={<RaceResults />} />
-    </Routes>
+    <AuthProvider>
+      <Routes>
+        <Route path="/" element={<LandingPage />} />
+        <Route path="/login" element={<Login />} />
+        <Route path="/signup" element={<SignUp />} />
+        <Route path="/auth/callback" element={<AuthCallback />} />
+        <Route path="/profile" element={<ProfilePage />} />
+        <Route path="/leaderboard" element={<Leaderboard />} />
+        <Route path="/race-predictions" element={<RacePredictions />} />
+        <Route path="/season-predictions" element={<SeasonPredictions />} />
+        <Route path="/season-overview" element={<SeasonOverview />} />
+        <Route path="/home" element={<Home />} />
+        <Route path="/profile-settings" element={<ProfileSettings />} />
+        <Route path="/race-results" element={<RaceResults />} />
+      </Routes>
+    </AuthProvider>
   )
 }
 

@@ -3,18 +3,43 @@
 import React from "react"
 
 import { useState } from "react"
-import { Link } from "react-router-dom"
+import { Link, useNavigate } from "react-router-dom"
 import { Input } from "@/frontend/components/input"
 import { Checkbox } from "@/frontend/components/checkbox"
 import { Label } from "@/frontend/components/label"
+import { useAuth } from "@/frontend/auth/AuthContext"
 
 export function LoginContainer() {
-  const [username, setUsername] = useState("")
+  const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
   const [remember, setRemember] = useState(false)
+  const [error, setError] = useState<string | null>(null)
+  const [isLoading, setIsLoading] = useState(false)
 
-  function handleSubmit(e: React.FormEvent) {
+  const { signIn, signInWithGoogle } = useAuth()
+  const navigate = useNavigate()
+
+  async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
+    setError(null)
+    setIsLoading(true)
+
+    const { error } = await signIn(email, password)
+
+    if (error) {
+      setError(error)
+      setIsLoading(false)
+    } else {
+      navigate("/home")
+    }
+  }
+
+  async function handleGoogleSignIn() {
+    setError(null)
+    const { error } = await signInWithGoogle()
+    if (error) {
+      setError(error)
+    }
   }
 
   return (
@@ -24,12 +49,19 @@ export function LoginContainer() {
           WELCOME BACK
         </h2>
 
+        {error && (
+          <div className="mb-4 rounded-lg border border-red-500/30 bg-red-500/10 px-4 py-3 text-sm text-red-400">
+            {error}
+          </div>
+        )}
+
         <form onSubmit={handleSubmit} className="flex flex-col gap-5">
           <Input
-            type="text"
-            placeholder="Username"
-            value={username}
-            onChange={(e) => setUsername(e.target.value)}
+            type="email"
+            placeholder="Email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            disabled={isLoading}
             className="h-12 rounded-lg border-f1-card-border bg-secondary text-foreground placeholder:text-muted-foreground focus-visible:ring-f1-neon"
           />
 
@@ -38,6 +70,7 @@ export function LoginContainer() {
             placeholder="Password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
+            disabled={isLoading}
             className="h-12 rounded-lg border-f1-card-border bg-secondary text-foreground placeholder:text-muted-foreground focus-visible:ring-f1-neon"
           />
 
@@ -67,9 +100,17 @@ export function LoginContainer() {
 
           <button
             type="submit"
-            className="h-12 w-full rounded-full bg-f1-neon font-bold tracking-wider text-white transition-all hover:brightness-110 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-f1-neon focus-visible:ring-offset-2 focus-visible:ring-offset-background"
+            disabled={isLoading}
+            className="h-12 w-full rounded-full bg-f1-neon font-bold tracking-wider text-white transition-all hover:brightness-110 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-f1-neon focus-visible:ring-offset-2 focus-visible:ring-offset-background disabled:opacity-50 disabled:cursor-not-allowed"
           >
-            LOGIN
+            {isLoading ? (
+              <span className="flex items-center justify-center gap-2">
+                <span className="h-4 w-4 animate-spin rounded-full border-2 border-white border-t-transparent" />
+                LOGGING IN...
+              </span>
+            ) : (
+              "LOGIN"
+            )}
           </button>
         </form>
 
@@ -83,7 +124,9 @@ export function LoginContainer() {
         {/* Google sign-in */}
         <button
           type="button"
-          className="flex h-12 w-full items-center justify-center gap-3 rounded-full border border-f1-card-border bg-secondary font-medium text-foreground transition-colors hover:bg-secondary/80 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-f1-neon focus-visible:ring-offset-2 focus-visible:ring-offset-background"
+          onClick={handleGoogleSignIn}
+          disabled={isLoading}
+          className="flex h-12 w-full items-center justify-center gap-3 rounded-full border border-f1-card-border bg-secondary font-medium text-foreground transition-colors hover:bg-secondary/80 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-f1-neon focus-visible:ring-offset-2 focus-visible:ring-offset-background disabled:opacity-50 disabled:cursor-not-allowed"
         >
           <GoogleIcon />
           <span>Google</span>

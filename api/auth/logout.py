@@ -15,6 +15,8 @@ Error responses:
 """
 
 from flask import Flask, request, jsonify
+from api._utils.supabase_client import get_supabase_client
+from api._utils.auth_helpers import get_current_user
 
 app = Flask(__name__)
 
@@ -26,8 +28,23 @@ def logout():
     
     Steps:
         1. Extract access token from Authorization header
-        2. Call supabase.auth.sign_out() / admin.sign_out()
-        3. Return success
+        2. Verify the user is authenticated
+        3. Call supabase.auth.admin.sign_out() to invalidate the session
+        4. Return success
     """
-    # TODO: Implement logout logic
-    pass
+    try:
+        # Verify the user is authenticated
+        try:
+            user = get_current_user(request)
+        except ValueError as e:
+            return jsonify({"success": False, "error": str(e)}), 401
+
+        supabase = get_supabase_client()
+
+        # Sign out the user using admin API (invalidates all sessions)
+        supabase.auth.admin.sign_out(user["id"])
+
+        return jsonify({"success": True}), 200
+
+    except Exception as e:
+        return jsonify({"success": False, "error": f"Server error: {str(e)}"}), 500

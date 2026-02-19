@@ -17,12 +17,13 @@ Response:
     }
     
 Error responses:
+    400 - Missing fields
     401 - Invalid credentials
-    429 - Too many login attempts
     500 - Server error
 """
 
 from flask import Flask, request, jsonify
+from api._utils.supabase_client import get_supabase_client
 
 app = Flask(__name__)
 
@@ -34,9 +35,53 @@ def login():
     
     Steps:
         1. Validate request body (email, password)
-        2. Check rate limiting (5 attempts/hour per email)
-        3. Call supabase.auth.sign_in_with_password()
-        4. Return session tokens on success
+        2. Call supabase.auth.sign_in_with_password()
+        3. Return session tokens on success
     """
-    # TODO: Implement login logic
-    pass
+    try:
+        data = request.get_json()
+        if not data:
+            return jsonify({"success": False, "error": "Request body is required."}), 400
+
+        email = data.get("email", "").strip()
+        password = data.get("password", "")
+
+        if not email:
+            return jsonify({"success": False, "error": "Email is required."}), 400
+        if not password:
+            return jsonify({"success": False, "error": "Password is required."}), 400
+
+        supabase = get_supabase_client()
+
+        # Authenticate via Supabase Auth
+        auth_response = supabase.auth.sign_in_with_password({
+            "email": email,
+            "password": password,
+        })
+
+        if not auth_response.session:
+            return jsonify({"success": False, "error": "Invalid credentials."}), 401
+
+        session = auth_response.session
+        user = auth_response.user
+
+        return jsonify({
+            "success": True,
+            "session": {
+                "access_token": session.access_token,
+                "refresh_token": session.refresh_token,
+                "expires_in": session.expires_in,
+                "token_type": "bearer",
+            },
+            "user": {
+                "id": user.id,
+                "email": user.email,
+            },
+        }), 200
+
+    except Exception as e:
+        error_msg = str(e)
+        # Supabase returns specific error messages for invalid credentials
+        if "Invalid login credentials" in error_msg:
+            return jsonify({"success": False, "error": "Email or password is incorrect."}), 401
+        return jsonify({"success": False, "error": f"Server error: {error_msg}"}), 500
