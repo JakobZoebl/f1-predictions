@@ -91,7 +91,7 @@ export default function SeasonPredictions() {
 
   return (
     <F1Background>
-      <F1Header variant="Home" activeNav="Season Preds" isAuthenticated={true} username="max_verstappen" />
+      <F1Header variant="Home" activeNav="SeasonPredictions" isAuthenticated={true} username="max_verstappen" />
 
       <main className="container mx-auto px-4 py-8 space-y-8 flex-1">
         <div className="prediction-header-card flex flex-col md:flex-row justify-between items-start md:items-center gap-6">

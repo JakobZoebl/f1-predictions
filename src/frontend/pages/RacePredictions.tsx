@@ -89,7 +89,7 @@ export default function RacePredictions() {
 
   return (
     <F1Background primaryColor={primaryColor}>
-      <F1Header variant="Home" activeNav="Predictions" primaryColor={primaryColor} isAuthenticated={true} username="max_verstappen" />
+      <F1Header variant="Home" activeNav="RacePredictions" primaryColor={primaryColor} isAuthenticated={true} username="max_verstappen" />
 
       <main 
         className="container mx-auto px-4 py-8 space-y-8 flex-1"

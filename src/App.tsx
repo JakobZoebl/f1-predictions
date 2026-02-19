@@ -10,6 +10,7 @@ import Home from "@/frontend/pages/Home"
 import SeasonOverview from "@/frontend/pages/SeasonOverview"
 import SeasonPredictions from "@/frontend/pages/SeasonPredictions"
 import ProfileSettings from "@/frontend/pages/ProfileSettings"
+import RaceResults from "@/frontend/pages/RaceResults"
 
 function App() {
   return (
@@ -24,6 +25,7 @@ function App() {
       <Route path="/season-overview" element={<SeasonOverview />} />
       <Route path="/home" element={<Home />} />
       <Route path="/profile-settings" element={<ProfileSettings />} />
+      <Route path="/race-results" element={<RaceResults />} />
     </Routes>
   )
 }

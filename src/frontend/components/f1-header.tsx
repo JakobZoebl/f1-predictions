@@ -1,6 +1,6 @@
 "use client"
 
-import { ArrowLeft, Settings } from "lucide-react"
+import { ArrowLeft, Settings, ChevronDown } from "lucide-react"
 import { Link } from "react-router-dom"
 import { cn, hexToHsl, getAdaptiveDeepBackground } from "@/lib/utils"
 import emblem from "@/assets/emblem.png"
@@ -83,30 +83,84 @@ export function F1Header({
         {/* Center nav links (only for "Home" variant) */}
         {variant === "Home" && (
           <nav className="header-center-nav" aria-label="Main navigation">
-            {["Home", "Predictions", "Season Preds", "Season", "Leaderboard"].map((item) => (
-              <Link
-                key={item}
-                to={
-                  item === "Home"
-                    ? "/Home"
-                    : item === "Predictions"
-                    ? "/race-predictions"
-                    : item === "Season Preds"
-                    ? "/season-predictions"
-                    : item === "Season"
-                    ? "/season-overview"
-                    : `/${item.toLowerCase()}`
-                }
+            <Link
+              to="/Home"
+              className={cn(
+                "header-nav-link",
+                activeNav === "Home" ? "header-nav-link-active" : "header-nav-link-inactive"
+              )}
+            >
+              Home
+            </Link>
+
+            {/* Predictions Dropdown */}
+            <div className="header-dropdown-container group">
+              <button
                 className={cn(
-                  "header-nav-link",
-                  activeNav === item
-                    ? "header-nav-link-active"
+                  "header-dropdown-trigger",
+                  (activeNav === "RacePredictions" || activeNav === "SeasonPredictions") 
+                    ? "header-nav-link-active" 
                     : "header-nav-link-inactive"
                 )}
               >
-                {item}
-              </Link>
-            ))}
+                Predictions
+                <ChevronDown className="header-dropdown-icon" />
+              </button>
+              
+              {/* Dropdown Menu */}
+              <div className="header-dropdown-menu">
+                <div className="header-dropdown-content">
+                  <Link
+                    to="/race-predictions"
+                    className={cn(
+                      "header-dropdown-item",
+                      activeNav === "RacePredictions" ? "text-f1-neon" : "text-white/80"
+                    )}
+                  >
+                    Race
+                  </Link>
+                  <Link
+                    to="/season-predictions"
+                    className={cn(
+                      "header-dropdown-item",
+                      activeNav === "SeasonPredictions" ? "text-f1-neon" : "text-white/80"
+                    )}
+                  >
+                    Season
+                  </Link>
+                </div>
+              </div>
+            </div>
+
+            <Link
+              to="/season-overview"
+              className={cn(
+                "header-nav-link",
+                activeNav === "Season" ? "header-nav-link-active" : "header-nav-link-inactive"
+              )}
+            >
+              Calendar
+            </Link>
+
+            <Link
+              to="/race-results"
+              className={cn(
+                "header-nav-link",
+                activeNav === "Results" ? "header-nav-link-active" : "header-nav-link-inactive"
+              )}
+            >
+              Results
+            </Link>
+
+            <Link
+              to="/leaderboard"
+              className={cn(
+                "header-nav-link",
+                activeNav === "Leaderboard" ? "header-nav-link-active" : "header-nav-link-inactive"
+              )}
+            >
+              Leaderboard
+            </Link>
           </nav>
         )}
 
