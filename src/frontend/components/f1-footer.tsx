@@ -1,4 +1,5 @@
 import { Link } from "react-router-dom"
+import { useBackground } from "@/frontend/components/BackgroundContext"
 import "@/frontend/styles/F1Footer.css"
 import { hexToHsl } from "@/lib/utils"
 
@@ -7,6 +8,8 @@ interface F1FooterProps {
 }
 
 export function F1Footer({ primaryColor }: F1FooterProps) {
+  const { config } = useBackground()
+
   // Calculate dynamic style if primaryColor is provided
   const footerStyle = primaryColor 
     ? (() => {
@@ -18,25 +21,17 @@ export function F1Footer({ primaryColor }: F1FooterProps) {
       })()
     : {};
 
+  const isTeamDriver = config.type === "team-driver"
+
   return (
-    <footer className="footer-container" style={footerStyle}>
+    <footer className={`footer-container ${isTeamDriver ? "footer-team-driver" : ""}`} style={footerStyle}>
       {/* Gradient line */}
       <div className="footer-gradient-line" />
 
       <div className="footer-content">
-        <p className="footer-copyright">
-          {"F1 Predictions. All rights reserved."}
-        </p>
-
         <nav className="footer-nav" aria-label="Footer navigation">
-          <Link to="/terms" className="footer-link">
-            Terms
-          </Link>
-          <Link to="/privacy" className="footer-link">
-            Privacy
-          </Link>
-          <Link to="/contact" className="footer-link">
-            Contact
+          <Link to="/impressum" className="footer-link">
+            Impressum
           </Link>
         </nav>
       </div>

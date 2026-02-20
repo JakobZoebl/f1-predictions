@@ -2,6 +2,7 @@ import { useState, useEffect } from "react"
 import { useAuth } from "@/frontend/auth/AuthContext"
 import { useUserProfile } from "@/lib/hooks/useUserProfile"
 import { F1Header } from "@/frontend/components/f1-header"
+import { F1Footer } from "@/frontend/components/f1-footer"
 import { FeatureRace } from "@/frontend/components/FeatureRace"
 import { SeasonSummary, type SeasonStats } from "@/frontend/home/SeasonSummary"
 import { MiniLeaderboard, type LeaderboardEntry } from "@/frontend/home/MiniLeaderboard"
@@ -134,6 +135,7 @@ export default function Home() {
                  I can add a placeholder or simple list for the calendar if needed, but for now I'll stick to the requested items.
              */}
         </main>
+        <F1Footer />
       </div>
     </div>
   )

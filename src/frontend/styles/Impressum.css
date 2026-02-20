@@ -1,0 +1,27 @@
+.impressum-main {
+  @apply container mx-auto px-4 py-12 flex-1;
+}
+
+.impressum-content-card {
+  @apply max-w-3xl mx-auto bg-black/40 backdrop-blur-md rounded-2xl border border-white/10 p-8 space-y-8;
+}
+
+.impressum-title {
+  @apply text-3xl font-display font-bold uppercase tracking-wide text-white mb-6 border-b border-white/10 pb-4;
+}
+
+.impressum-section {
+  @apply space-y-4;
+}
+
+.impressum-section h2 {
+  @apply text-xl font-bold uppercase tracking-wider text-white/90;
+}
+
+.impressum-section p {
+  @apply text-white/70 leading-relaxed font-light;
+}
+
+.impressum-section.disclaimer p {
+  @apply text-sm text-white/50 italic mt-8 pt-4 border-t border-white/10;
+}

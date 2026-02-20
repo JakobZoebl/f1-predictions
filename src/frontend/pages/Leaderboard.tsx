@@ -8,11 +8,19 @@ import { SeasonStats } from "@/frontend/leaderboard/SeasonStats"
 import { supabase } from "@/lib/supabaseClient"
 import { PageLoader } from "@/frontend/components/PageLoader"
 import { useBackground } from "@/frontend/components/BackgroundContext"
+import { F1Footer } from "@/frontend/components/f1-footer"
 
 export default function Leaderboard() {
   const { user } = useAuth()
   const { profile, loading } = useUserProfile()
-  const { setBackgroundConfig } = useBackground()
+  const { setBackgroundConfig, resetToDefault } = useBackground()
+
+  // Reset background configuration on unmount
+  useEffect(() => {
+    return () => {
+      resetToDefault()
+    }
+  }, [resetToDefault])
 
   const [leaderboardData, setLeaderboardData] = useState<LeaderboardEntry[]>([])
   const [historyData, setHistoryData] = useState<UserPointsHistory[]>([])
@@ -53,12 +61,12 @@ export default function Leaderboard() {
         // Find leader and apply their background
         const leader = lbData.find(e => e.rank === 1)
         if (leader) {
-          const userObj = (Array.isArray(leader.users) ? leader.users[0] : leader.users) as Record<string, any>
+          const userObj = (Array.isArray(leader.users) ? leader.users[0] : leader.users) as Record<string, string | null>
           if (userObj?.favorite_team_id || userObj?.favorite_driver_id) {
             setBackgroundConfig({
               type: "team-driver",
-              teamId: userObj.favorite_team_id,
-              driverId: userObj.favorite_driver_id
+              teamId: userObj.favorite_team_id || undefined,
+              driverId: userObj.favorite_driver_id || undefined
             })
           }
         }
@@ -141,6 +149,7 @@ export default function Leaderboard() {
                 <PointsHistoryChart data={historyData} />
                 <SeasonStats />
             </div>
+            <F1Footer />
         </div>
     </main>
   )

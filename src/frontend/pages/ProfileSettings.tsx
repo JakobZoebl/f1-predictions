@@ -11,6 +11,7 @@ import { SecuritySettings } from "@/frontend/profile-settings/SecuritySettings"
 import { F1Header } from "@/frontend/components/f1-header"
 import { supabase } from "@/lib/supabaseClient"
 import { PageLoader } from "@/frontend/components/PageLoader"
+import { F1Footer } from "@/frontend/components/f1-footer"
 import "@/frontend/styles/ProfileSettings.css"
 
 export default function ProfileSettings() {
@@ -42,6 +43,7 @@ export default function ProfileSettings() {
             />
           )}
         </main>
+        <F1Footer />
       </div>
     </div>
   )

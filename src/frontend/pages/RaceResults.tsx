@@ -27,7 +27,14 @@ export default function RaceResults() {
   const [results, setResults] = useState<RaceResult[]>([])
   const [loading, setLoading] = useState(true)
 
-  const { setBackgroundConfig } = useBackground()
+  const { setBackgroundConfig, resetToDefault } = useBackground()
+
+  // Reset background configuration on unmount
+  useEffect(() => {
+    return () => {
+      resetToDefault()
+    }
+  }, [resetToDefault])
 
   useEffect(() => {
     fetch("/data/race_results.csv")

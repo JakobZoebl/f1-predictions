@@ -1,15 +1,13 @@
 import { TEAMS, DRIVERS } from "@/lib/f1-presets"
 import { DRIVER_IMAGES } from "@/lib/driver-images"
 import { TEAM_LOGOS } from "@/lib/team-logos"
-import { MOCK_PROFILE } from "@/lib/mock-profile-data"
+import type { CardsStats } from "@/lib/hooks/useCardsStats"
 import "@/frontend/styles/ProfileCards.css"
-
-type ProfileData = typeof MOCK_PROFILE
 
 interface ProfileCardsProps {
   teamKey: string
   driverKey: string
-  data: ProfileData
+  data: CardsStats | null
 }
 
 export function ProfileCards({ teamKey, driverKey, data }: ProfileCardsProps) {
@@ -60,42 +58,23 @@ export function ProfileCards({ teamKey, driverKey, data }: ProfileCardsProps) {
             <div className="profile-card-standings-row">
                  <span className="profile-card-standings-label">Constructor Standings</span>
                  <div className="profile-card-standings-value">
-                    <span className="profile-card-standings-pos">P{data.constructor.standingsPos}</span> • {data.constructor.standingsPoints} points
+                    <span className="profile-card-standings-pos">P{data?.constructor.standingsPos || "-"}</span> • {data?.constructor.standingsPoints || 0} points
                  </div>
             </div>
             
             <div className="profile-card-stats-summary">
-                <span>Races: {data.constructor.seasonStats.races}</span>
-                <span>Wins: {data.constructor.seasonStats.wins}</span>
-                <span>Podiums: {data.constructor.seasonStats.podiums}</span>
-                <span>DNFs: {data.constructor.seasonStats.dnfs}</span>
+                <span>Races: {data?.constructor.seasonStats.races || 0}</span>
+                <span>Wins: {data?.constructor.seasonStats.wins || 0}</span>
+                <span>Podiums: {data?.constructor.seasonStats.podiums || 0}</span>
+                <span>DNFs: {data?.constructor.seasonStats.dnfs || 0}</span>
             </div>
 
             <div className="profile-card-section">
                 <div className="profile-card-section-label">Recent Results</div>
                 <div className="profile-card-result-badges">
-                    {data.constructor.recentResults.map((res: string, i: number) => (
+                    {data?.constructor.recentResults.map((res: string, i: number) => (
                         <span key={i} className="profile-card-result-badge">{res}</span>
-                    ))}
-                </div>
-            </div>
-            
-            {/* User Predictions Section */}
-            <div className="profile-card-predictions-section">
-                <div className="profile-card-section-label-mb">Your Predictions for {team.name}</div>
-                <div className="profile-card-predictions-list">
-                     <div className="profile-card-prediction-row">
-                        <span className="profile-card-prediction-label">Exact Position</span>
-                        <span className="profile-card-prediction-value">+{data.constructor.userPredictions.exactPosition} points</span>
-                     </div>
-                     <div className="profile-card-prediction-row">
-                        <span className="profile-card-prediction-label">Your Position</span>
-                        <span className="profile-card-prediction-value">+{data.constructor.userPredictions.yourPosition} points</span>
-                     </div>
-                     <div className="profile-card-prediction-total-row">
-                        <span className="profile-card-prediction-total-label">Total</span>
-                        <span className="profile-card-prediction-value">{data.constructor.userPredictions.total} points</span>
-                     </div>
+                    )) || <span className="profile-card-result-badge">-</span>}
                 </div>
             </div>
         </div>
@@ -139,42 +118,23 @@ export function ProfileCards({ teamKey, driverKey, data }: ProfileCardsProps) {
              <div className="profile-card-standings-row">
                  <span className="profile-card-standings-label">Driver Standings</span>
                  <div className="profile-card-standings-value">
-                    <span className="profile-card-standings-pos">P{data.driver.standingsPos}</span> • {data.driver.standingsPoints} points
+                    <span className="profile-card-standings-pos">P{data?.driver.standingsPos || "-"}</span> • {data?.driver.standingsPoints || 0} points
                  </div>
             </div>
 
             <div className="profile-card-stats-summary-wrap">
-                <span>Races: {data.driver.seasonStats.races}</span> • 
-                <span>Wins: {data.driver.seasonStats.wins}</span> • 
-                <span>Podiums: {data.driver.seasonStats.podiums}</span> • 
-                <span>Poles: {data.driver.seasonStats.poles}</span>
+                <span>Races: {data?.driver.seasonStats.races || 0}</span> • 
+                <span>Wins: {data?.driver.seasonStats.wins || 0}</span> • 
+                <span>Podiums: {data?.driver.seasonStats.podiums || 0}</span> • 
+                <span>Poles: {data?.driver.seasonStats.poles || 0}</span>
             </div>
 
              <div className="profile-card-section">
                 <div className="profile-card-section-label">Recent Finishes</div>
                 <div className="profile-card-result-badges">
-                    {data.driver.recentResults.map((res: string, i: number) => (
+                    {data?.driver.recentResults.map((res: string, i: number) => (
                         <span key={i} className="profile-card-result-badge-driver">🏆 {res}</span>
-                    ))}
-                </div>
-            </div>
-
-            {/* Prediction Accuracy Section */}
-            <div className="profile-card-predictions-section">
-                <div className="profile-card-section-label-mb">Prediction Accuracy for {driver.name}</div>
-                <div className="profile-card-predictions-list">
-                     <div className="profile-card-prediction-row">
-                        <span className="profile-card-prediction-label">Exact Position Matches</span>
-                        <span className="profile-card-prediction-value-neutral">{data.driver.userPredictions.exactMatches}</span>
-                     </div>
-                     <div className="profile-card-prediction-row">
-                        <span className="profile-card-prediction-label">Pole Position</span>
-                        <span className="profile-card-prediction-value-neutral">{data.driver.userPredictions.polePosition}</span>
-                     </div>
-                     <div className="profile-card-prediction-accuracy-row">
-                        <span className="profile-card-prediction-total-label">Overall Accuracy</span>
-                        <span className="profile-card-prediction-value-accent">{data.driver.userPredictions.accuracy}</span>
-                     </div>
+                    )) || <span className="profile-card-result-badge-driver">-</span>}
                 </div>
             </div>
         </div>

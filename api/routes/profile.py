@@ -106,6 +106,141 @@ def get_season_stats():
         print(f"Error in get_season_stats: {str(e)}")
         return jsonify({"success": False, "error": str(e)}), 500
 
+
+@profile_bp.route('/api/profile/cards-stats', methods=['GET'])
+@require_auth
+def get_cards_stats():
+    """Fetch driver and constructor stats for profile cards."""
+    try:
+        user = g.current_user
+        supabase = get_supabase_client()
+        
+        team_id = request.args.get('team_id')
+        driver_id = request.args.get('driver_id')
+        
+        if not team_id or not driver_id:
+            return jsonify({"success": False, "error": "team_id and driver_id are required"}), 400
+
+        # 1. Fetch current active season
+        season_res = supabase.table("seasons").select("year").eq("is_active", True).limit(1).execute()
+        if not season_res.data:
+            return jsonify({"success": False, "error": "No active season found"}), 404
+        active_season = season_res.data[0]["year"]
+
+        # 2. Fetch driver standings
+        ds_res = supabase.table("driver_standings").select("points, position").eq("season", active_season).eq("driver_id", driver_id).execute()
+        driver_standings_pos = ds_res.data[0]["position"] if ds_res.data else "-"
+        driver_standings_points = ds_res.data[0]["points"] if ds_res.data else 0
+
+        # 3. Fetch constructor standings
+        cs_res = supabase.table("constructor_standings").select("points, position").eq("season", active_season).eq("constructor_id", team_id).execute()
+        constructor_standings_pos = cs_res.data[0]["position"] if cs_res.data else "-"
+        constructor_standings_points = cs_res.data[0]["points"] if cs_res.data else 0
+
+        # 4. Fetch race results
+        results_res = (
+            supabase.table("race_results")
+            .select("*, races!inner(round)")
+            .eq("races.season", active_season)
+            .order("races(round)", desc=False)
+            .execute()
+        )
+        
+        driver_stats = {"races": 0, "wins": 0, "podiums": 0, "poles": 0}
+        constructor_stats = {"races": 0, "wins": 0, "podiums": 0, "dnfs": 0}
+        
+        driver_recent = []
+        constructor_recent = []
+        
+        races_count = 0
+        
+        for r in results_res.data:
+            races_count += 1
+            # Driver logic
+            d_pos = "-"
+            is_podium = False
+            if r.get("p1_driver") == driver_id:
+                driver_stats["wins"] += 1
+                is_podium = True
+                d_pos = "1st"
+            elif r.get("p2_driver") == driver_id:
+                is_podium = True
+                d_pos = "2nd"
+            elif r.get("p3_driver") == driver_id:
+                is_podium = True
+                d_pos = "3rd"
+            elif r.get("p4_driver") == driver_id: d_pos = "4th"
+            elif r.get("p5_driver") == driver_id: d_pos = "5th"
+            elif r.get("p6_driver") == driver_id: d_pos = "6th"
+            elif r.get("p7_driver") == driver_id: d_pos = "7th"
+            elif r.get("p8_driver") == driver_id: d_pos = "8th"
+            elif r.get("p9_driver") == driver_id: d_pos = "9th"
+            elif r.get("p10_driver") == driver_id: d_pos = "10th"
+            else:
+                d_pos = "OUT" # out of points or dnf
+                
+            if is_podium:
+                driver_stats["podiums"] += 1
+                
+            if r.get("pole_position") == driver_id:
+                driver_stats["poles"] += 1
+                
+            driver_recent.append(d_pos)
+            
+            # Constructor logic
+            c_pos = "-"
+            c_is_podium = False
+            if r.get("c1_constructor") == team_id:
+                constructor_stats["wins"] += 1
+                c_is_podium = True
+                c_pos = "1st"
+            elif r.get("c2_constructor") == team_id:
+                c_is_podium = True
+                c_pos = "2nd"
+            elif r.get("c3_constructor") == team_id:
+                c_is_podium = True
+                c_pos = "3rd"
+            elif r.get("c4_constructor") == team_id: c_pos = "4th"
+            elif r.get("c5_constructor") == team_id: c_pos = "5th"
+            else:
+                c_pos = "OUT"
+                
+            if c_is_podium:
+                constructor_stats["podiums"] += 1
+                
+            constructor_recent.append(c_pos)
+            
+        driver_stats["races"] = races_count
+        constructor_stats["races"] = races_count
+        
+        # Keep last 5 elements
+        driver_recent = driver_recent[-5:]
+        constructor_recent = constructor_recent[-5:]
+        
+        # Reverse them? F1 results are typically shown Most Recent first (right to left or left to right? Mockup or F1 site shows Oldest -> Newest usually in tables, but for a summary maybe Most Recent is first. Let's provide it in order (Oldest -> Newest) and frontend can reverse it if needed. The current UI loops through data.driver.recentResults.)
+
+        data = {
+            "constructor": {
+                "standingsPos": constructor_standings_pos,
+                "standingsPoints": constructor_standings_points,
+                "seasonStats": constructor_stats,
+                "recentResults": constructor_recent
+            },
+            "driver": {
+                "standingsPos": driver_standings_pos,
+                "standingsPoints": driver_standings_points,
+                "seasonStats": driver_stats,
+                "recentResults": driver_recent
+            }
+        }
+        
+        return jsonify({"success": True, "data": data}), 200
+
+    except Exception as e:
+        import traceback
+        traceback.print_exc()
+        return jsonify({"success": False, "error": str(e)}), 500
+
 def _get_profile():
     #Fetch the authenticated user's profile
     try:

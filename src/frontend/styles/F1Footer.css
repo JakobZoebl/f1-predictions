@@ -2,6 +2,10 @@
   @apply mt-auto w-full;
 }
 
+.footer-team-driver {
+  @apply bg-black/60 backdrop-blur-md border-t border-white/5;
+}
+
 .footer-gradient-line {
   @apply h-px w-full bg-gradient-to-r from-transparent via-f1-neon to-transparent opacity-30;
 }

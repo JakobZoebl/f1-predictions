@@ -7,6 +7,7 @@ import { FeatureRace } from "@/frontend/components/FeatureRace"
 import { Button } from "@/frontend/components/button"
 import { Link } from "react-router-dom"
 import { PageLoader } from "@/frontend/components/PageLoader"
+import { F1Footer } from "@/frontend/components/f1-footer"
 import "@/frontend/styles/SeasonOverview.css"
 
 export default function SeasonOverview() {
@@ -104,6 +105,7 @@ export default function SeasonOverview() {
           })()}
         </div>
       </main>
+      <F1Footer />
     </div>
   )
 }
