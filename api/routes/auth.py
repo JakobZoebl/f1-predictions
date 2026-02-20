@@ -88,6 +88,7 @@ def signup():
 
         supabase = get_supabase_client()
 
+        # Check for existing user in our public.users table
         existing = (
             supabase.table("users")
             .select("id")
@@ -97,34 +98,47 @@ def signup():
         if existing.data:
             return jsonify({"success": False, "error": "Username is already taken."}), 409
 
-        auth_response = supabase.auth.admin.create_user({
-            "email": email,
-            "password": password,
-            "email_confirm": True,
-            "user_metadata": {
-                "username": username,
-                "display_name": display_name,
-                "favorite_team_id": favorite_team_id,
-                "favorite_driver_id": favorite_driver_id,
-            },
-        })
+        # Register user with Supabase Auth using Admin API
+        try:
+            auth_response = supabase.auth.admin.create_user({
+                "email": email,
+                "password": password,
+                "email_confirm": True,
+                "user_metadata": {
+                    "username": username,
+                    "display_name": display_name,
+                    "favorite_team_id": favorite_team_id,
+                    "favorite_driver_id": favorite_driver_id,
+                },
+            })
+        except Exception as auth_err:
+            print(f"DEBUG: Supabase Auth error: {str(auth_err)}")
+            return jsonify({"success": False, "error": f"Auth error: {str(auth_err)}"}), 500
 
-        if not auth_response.user:
+        if not auth_response or not hasattr(auth_response, 'user') or not auth_response.user:
+            print(f"DEBUG: Auth response details: {auth_response}")
             return jsonify({"success": False, "error": "Failed to create user account."}), 500
 
         user_id = auth_response.user.id
 
-        profile_result = (
-            supabase.table("users")
-            .insert({
-                "id": user_id,
-                "username": username,
-                "display_name": display_name,
-                "favorite_team_id": favorite_team_id,
-                "favorite_driver_id": favorite_driver_id,
-            })
-            .execute()
-        )
+        # Insert user into our public.users table
+        try:
+            profile_result = (
+                supabase.table("users")
+                .insert({
+                    "id": user_id,
+                    "username": username,
+                    "display_name": display_name,
+                    "favorite_team_id": favorite_team_id,
+                    "favorite_driver_id": favorite_driver_id,
+                })
+                .execute()
+            )
+        except Exception as db_err:
+            # If profile creation fails, clean up the auth user
+            print(f"DEBUG: Profile DB error: {str(db_err)}")
+            supabase.auth.admin.delete_user(user_id)
+            return jsonify({"success": False, "error": f"Database error: {str(db_err)}"}), 500
 
         if not profile_result.data:
             supabase.auth.admin.delete_user(user_id)
@@ -141,6 +155,7 @@ def signup():
         }), 201
 
     except Exception as e:
+        print(f"DEBUG: Unexpected signup error: {str(e)}")
         return jsonify({"success": False, "error": f"Server error: {str(e)}"}), 500
 
 

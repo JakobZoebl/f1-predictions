@@ -92,73 +92,40 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     favoriteDriverId: string = "verstappen"
   ): Promise<{ error: string | null }> => {
     try {
-      // Check username uniqueness first
-      // Use .maybeSingle() instead of .single() to avoid 406 when no rows found
-      const { data: existing, error: checkError } = await supabase
-        .from("users")
-        .select("id")
-        .eq("username", username)
-        .maybeSingle()
-
-      if (checkError) {
-        console.error("Username check error:", checkError)
-        return { error: "Could not verify username availability. Please try again." }
-      }
-
-      if (existing) {
-        return { error: "Username is already taken." }
-      }
-
-      // Sign up with Supabase Auth
-      const { data, error } = await supabase.auth.signUp({
-        email,
-        password,
-        options: {
-          data: {
-            username,
-            display_name: displayName,
-            favorite_team_id: favoriteTeamId,
-            favorite_driver_id: favoriteDriverId,
-          },
+      const response = await fetch("/api/auth/signup", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
         },
-      })
-
-      if (error) {
-        return { error: error.message }
-      }
-
-      if (!data.user) {
-        return { error: "Failed to create account." }
-      }
-
-      // If signUp didn't return a session, sign in to establish one
-      if (!data.session) {
-        const { error: signInError } = await supabase.auth.signInWithPassword({
+        body: JSON.stringify({
           email,
           password,
-        })
-        if (signInError) {
-          return { error: "Account created, but could not sign in automatically. Please log in manually." }
-        }
+          username,
+          display_name: displayName,
+          favorite_team_id: favoriteTeamId,
+          favorite_driver_id: favoriteDriverId,
+        }),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        return { error: data.error || "Failed to create account." };
       }
 
-      // Now we have a session — create the profile row
-      const { error: profileError } = await supabase.from("users").insert({
-        id: data.user.id,
-        username,
-        display_name: displayName,
-        favorite_team_id: favoriteTeamId,
-        favorite_driver_id: favoriteDriverId,
-      })
+      // Automatically sign in after successful account creation
+      const { error: signInError } = await supabase.auth.signInWithPassword({
+        email,
+        password,
+      });
 
-      if (profileError) {
-        console.error("Profile creation error:", profileError)
-        return { error: "Account created but profile setup failed. Please contact support." }
+      if (signInError) {
+        return { error: "Account created, but could not sign in automatically. Please log in manually." };
       }
 
-      return { error: null }
+      return { error: null };
     } catch (err) {
-      return { error: err instanceof Error ? err.message : "An unexpected error occurred." }
+      return { error: err instanceof Error ? err.message : "An unexpected error occurred." };
     }
   }, [])
 

@@ -389,6 +389,7 @@ ALTER TABLE public.seasons ENABLE ROW LEVEL SECURITY;
 
 -- Basic Policies
 DO $$ BEGIN CREATE POLICY "Users view own profile" ON public.users FOR SELECT USING (auth.uid() = id); EXCEPTION WHEN duplicate_object THEN NULL; END $$;
+DO $$ BEGIN CREATE POLICY "Users insert own profile" ON public.users FOR INSERT WITH CHECK (auth.uid() = id); EXCEPTION WHEN duplicate_object THEN NULL; END $$;
 DO $$ BEGIN CREATE POLICY "Users update own profile" ON public.users FOR UPDATE USING (auth.uid() = id); EXCEPTION WHEN duplicate_object THEN NULL; END $$;
 DO $$ BEGIN CREATE POLICY "Authenticated view all profiles" ON public.users FOR SELECT USING (auth.role() = 'authenticated'); EXCEPTION WHEN duplicate_object THEN NULL; END $$;
 DO $$ BEGIN CREATE POLICY "Anyone view seasons" ON public.seasons FOR SELECT USING (true); EXCEPTION WHEN duplicate_object THEN NULL; END $$;
