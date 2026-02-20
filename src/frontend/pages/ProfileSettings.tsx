@@ -8,10 +8,7 @@ import { ProfileDetails } from "@/frontend/profile-settings/ProfileDetails"
 import { ThemeCustomization } from "@/frontend/profile-settings/ThemeCustomization"
 import { SecuritySettings } from "@/frontend/profile-settings/SecuritySettings"
 import { F1Header } from "@/frontend/components/f1-header"
-import F1Background from "@/frontend/components/team-driver-background"
 import { TEAMS, DRIVERS } from "@/lib/f1-presets"
-import { TEAM_EMBLEMS } from "@/lib/team-emblems"
-import { DRIVER_IMAGES } from "@/lib/driver-images"
 import { supabase } from "@/lib/supabaseClient"
 import { PageLoader } from "@/frontend/components/PageLoader"
 import "@/frontend/styles/ProfileSettings.css"
@@ -61,7 +58,7 @@ export default function ProfileSettings() {
   async function handleSavePreferences() {
     if (!session?.access_token) return
 
-    const res = await fetch("/api/profile/preferences", {
+    const res = await fetch("/api/profile", {
       method: "PUT",
       headers: {
         "Content-Type": "application/json",
@@ -106,8 +103,7 @@ export default function ProfileSettings() {
     await supabase.auth.signOut()
   }
 
-  const team = TEAMS[selectedTeam] || TEAMS.ferrari
-  const driver = DRIVERS[selectedDriver] || DRIVERS.leclerc
+
 
   const displayUsername = profile?.username || user?.user_metadata?.username || "User"
   const isAuthenticated = !!user
@@ -116,16 +112,6 @@ export default function ProfileSettings() {
 
   return (
     <div className="profile-settings-container">
-      {/* Background Layer */}
-      <div className="fixed inset-0 z-0">
-        <F1Background 
-          teamColors={team.colors}
-          driverColors={driver.colors}
-          teamLogoUrl={TEAM_EMBLEMS[selectedTeam]}
-          driverLogoUrl={DRIVER_IMAGES[selectedDriver]}
-        />
-      </div>
-
       {/* Content Layer */}
       <div className="relative z-10 flex min-h-screen flex-col">
         <F1Header variant="Home" activeNav="Profile" isAuthenticated={isAuthenticated} username={displayUsername} />

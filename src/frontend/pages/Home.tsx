@@ -2,10 +2,6 @@ import { useState, useEffect } from "react"
 import { useAuth } from "@/frontend/auth/AuthContext"
 import { useUserProfile } from "@/lib/hooks/useUserProfile"
 import { F1Header } from "@/frontend/components/f1-header"
-import F1Background from "@/frontend/components/team-driver-background"
-import { TEAMS, DRIVERS } from "@/lib/f1-presets"
-import { TEAM_EMBLEMS } from "@/lib/team-emblems"
-import { DRIVER_IMAGES } from "@/lib/driver-images"
 import { FeatureRace } from "@/frontend/components/FeatureRace"
 import { SeasonSummary } from "@/frontend/home/SeasonSummary"
 import { MiniLeaderboard, type LeaderboardEntry } from "@/frontend/home/MiniLeaderboard"
@@ -21,10 +17,6 @@ export default function Home() {
 
     const isAuthenticated = !!user
     const displayUsername = profile?.username || user?.user_metadata?.username || "User"
-
-    // Use user's favourite team/driver for background, with defaults
-    const teamKey = (profile?.favorite_team_id && TEAMS[profile.favorite_team_id]) ? profile.favorite_team_id : "redbull"
-    const driverKey = (profile?.favorite_driver_id && DRIVERS[profile.favorite_driver_id]) ? profile.favorite_driver_id : "verstappen"
 
     const [leaderboardData, setLeaderboardData] = useState<LeaderboardEntry[]>([])
 
@@ -70,16 +62,6 @@ export default function Home() {
 
   return (
     <div className="home-page-container">
-      {/* Background Layer */}
-      <div className="fixed inset-0 z-0">
-          <F1Background 
-            teamColors={TEAMS[teamKey].colors}
-            driverColors={DRIVERS[driverKey].colors}
-            teamLogoUrl={TEAM_EMBLEMS[teamKey]}
-            driverLogoUrl={DRIVER_IMAGES[driverKey]}
-          />
-      </div>
-
       {/* Content Layer */}
       <div className="relative z-10 flex min-h-screen flex-col">
         <F1Header variant="Home" activeNav="Home" isAuthenticated={isAuthenticated} username={displayUsername} />

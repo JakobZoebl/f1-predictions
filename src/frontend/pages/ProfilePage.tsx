@@ -3,11 +3,8 @@
 import { useAuth } from "@/frontend/auth/AuthContext"
 import { useUserProfile } from "@/lib/hooks/useUserProfile"
 import { F1Header } from "@/frontend/components/f1-header"
-import F1Background from "@/frontend/components/team-driver-background"
 import { PageLoader } from "@/frontend/components/PageLoader"
 import { TEAMS, DRIVERS } from "@/lib/f1-presets"
-import { DRIVER_IMAGES } from "@/lib/driver-images"
-import { TEAM_EMBLEMS } from "@/lib/team-emblems"
 import "@/frontend/styles/ProfilePage.css"
 
 import { ProfileHeader } from "@/frontend/profile/ProfileHeader"
@@ -33,9 +30,6 @@ export default function ProfilePage() {
       ? profile.favorite_driver_id
       : DEFAULT_DRIVER_KEY
 
-  const team = TEAMS[teamKey]
-  const driver = DRIVERS[driverKey]
-
   // Format membership date
   const memberSince = profile?.created_at
     ? new Date(profile.created_at).toLocaleDateString("en-US", {
@@ -52,14 +46,6 @@ export default function ProfilePage() {
 
   return (
     <main className="profile-main">
-       {/* Background layer */}
-       <F1Background
-        teamColors={team.colors}
-        driverColors={driver.colors}
-        driverLogoUrl={DRIVER_IMAGES[driverKey]}
-        teamLogoUrl={TEAM_EMBLEMS[teamKey]}
-      />
-
       <F1Header variant="Home" activeNav="Profile" isAuthenticated={isAuthenticated} username={displayUsername} />
       
       {/* ── Page Content ── */}

@@ -6,11 +6,8 @@ import { useUserProfile } from "@/lib/hooks/useUserProfile"
 import { F1Header } from "@/frontend/components/f1-header"
 import { F1Footer } from "@/frontend/components/f1-footer"
 import { hexToHsl } from "@/lib/utils"
-import F1Background from "@/frontend/components/team-driver-background"
 import { FeatureRace } from "@/frontend/components/FeatureRace"
-import { RACES, TEAMS, DRIVERS } from "@/lib/f1-presets"
-import { DRIVER_IMAGES } from "@/lib/driver-images"
-import { TEAM_EMBLEMS } from "@/lib/team-emblems"
+import { RACES } from "@/lib/f1-presets"
 import { LeaderboardTable, type LeaderboardEntry } from "@/frontend/leaderboard/LeaderboardTable"
 import { Top10Drivers } from "@/frontend/results/Top10Drivers"
 import { Top5Constructors } from "@/frontend/results/Top5Constructors"
@@ -66,19 +63,6 @@ export default function RaceResults() {
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [results])
 
-  // Determine winning team/driver for background
-  const winnerRow = top10.find(r => r.Position === "1")
-  const winnerDriverName = winnerRow?.Actual || "Max Verstappen"
-  const winnerTeamName = winnerRow?.Team || "Red Bull Racing"
-
-  // Find presets
-  // Note: presets keys are lowercase
-  const winnerDriverKey = Object.keys(DRIVERS).find(k => DRIVERS[k].name === winnerDriverName) || "verstappen"
-  const winnerTeamKey = Object.keys(TEAMS).find(k => TEAMS[k].name === winnerTeamName) || "redbull"
-  
-  const winnerDriver = DRIVERS[winnerDriverKey]
-  const winnerTeam = TEAMS[winnerTeamKey]
-
   // Find the race - Assuming Bahrain for the mock (id: bahrain)
   const race = RACES.find(r => r.id === "bahrain")
   const primaryColor = race?.colors?.primary
@@ -99,12 +83,6 @@ export default function RaceResults() {
 
   return (
     <>
-      <F1Background 
-        teamColors={winnerTeam?.colors} 
-        driverColors={winnerDriver?.colors}
-        teamLogoUrl={TEAM_EMBLEMS[winnerTeamKey]}
-        driverLogoUrl={DRIVER_IMAGES[winnerDriverKey]}
-      />
       <div className="relative z-10 min-h-screen flex flex-col">
          {/* Pass proper colors to header even if background is doing its thing? 
              Actually F1Header might need specific colors or transparent. 
