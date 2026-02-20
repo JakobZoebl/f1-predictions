@@ -1,6 +1,8 @@
 "use client"
 
 import { useState, useCallback, useMemo } from "react"
+import { useAuth } from "@/frontend/auth/AuthContext"
+import { useUserProfile } from "@/lib/hooks/useUserProfile"
 import { F1Header } from "@/frontend/components/f1-header"
 import { F1Footer } from "@/frontend/components/f1-footer"
 import { F1Background } from "@/frontend/components/blank-background"
@@ -29,6 +31,12 @@ const INITIAL_BONUS: SeasonBonusValues = {
 }
 
 export default function SeasonPredictions() {
+  const { user } = useAuth()
+  const { profile } = useUserProfile()
+
+  const isAuthenticated = !!user
+  const displayUsername = profile?.username || user?.user_metadata?.username || "User"
+
   const [selectedDrivers, setSelectedDrivers] = useState<(string | null)[]>(Array(22).fill(null))
   const [selectedConstructors, setSelectedConstructors] = useState<(string | null)[]>(Array(11).fill(null))
   const [bonusValues, setBonusValues] = useState<SeasonBonusValues>(INITIAL_BONUS)
@@ -91,7 +99,7 @@ export default function SeasonPredictions() {
 
   return (
     <F1Background>
-      <F1Header variant="Home" activeNav="SeasonPredictions" isAuthenticated={true} username="max_verstappen" />
+      <F1Header variant="Home" activeNav="SeasonPredictions" isAuthenticated={isAuthenticated} username={displayUsername} />
 
       <main className="container mx-auto px-4 py-8 space-y-8 flex-1">
         <div className="prediction-header-card flex flex-col md:flex-row justify-between items-start md:items-center gap-6">

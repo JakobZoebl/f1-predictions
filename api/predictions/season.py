@@ -25,7 +25,15 @@ Error responses:
     500 - Server error
 """
 
-from flask import Flask, request, jsonify
+import os
+import sys
+
+# Add the parent directory to sys.path to allow imports from api._utils
+sys.path.append(os.path.join(os.path.dirname(__file__), '..', '..'))
+
+from flask import Flask, request, jsonify, g
+from api._utils.supabase_client import get_supabase_client
+from api._utils.auth_helpers import require_auth
 
 app = Flask(__name__)
 

@@ -2,6 +2,7 @@
 POST /api/auth/signup
 
 Register a new user with Supabase Auth and create their profile.
+Sets default favorite team to Red Bull and driver to Max Verstappen.
 
 Request body:
     {
@@ -23,6 +24,12 @@ Error responses:
     500 - Server error
 """
 
+import os
+import sys
+
+# Add the parent directory to sys.path to allow imports from api._utils
+sys.path.append(os.path.join(os.path.dirname(__file__), '..', '..'))
+
 from flask import Flask, request, jsonify
 from api._utils.supabase_client import get_supabase_client
 from api._utils.validators import validate_signup
@@ -39,7 +46,7 @@ def signup():
         1. Validate input (email, username format, password length)
         2. Check username uniqueness in users table
         3. Call supabase.auth.sign_up()
-        4. Create user profile in users table
+        4. Create user profile in users table with default preferences
         5. Return success with user info
     """
     try:
@@ -86,12 +93,15 @@ def signup():
         user_id = auth_response.user.id
 
         # 4. Create user profile in users table
+        # Default: Red Bull (redbull) and Max Verstappen (verstappen)
         profile_result = (
             supabase.table("users")
             .insert({
                 "id": user_id,
                 "username": username,
                 "display_name": display_name,
+                "favorite_team_id": "redbull",
+                "favorite_driver_id": "verstappen",
             })
             .execute()
         )

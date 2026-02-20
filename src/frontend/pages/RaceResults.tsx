@@ -1,6 +1,8 @@
 "use client"
 
 import { useEffect, useState, useMemo } from "react"
+import { useAuth } from "@/frontend/auth/AuthContext"
+import { useUserProfile } from "@/lib/hooks/useUserProfile"
 import { F1Header } from "@/frontend/components/f1-header"
 import { F1Footer } from "@/frontend/components/f1-footer"
 import { hexToHsl } from "@/lib/utils"
@@ -17,6 +19,12 @@ import type { RaceResult } from "@/frontend/results/utils"
 import "@/frontend/styles/RacePredictions.css"
 
 export default function RaceResults() {
+  const { user } = useAuth()
+  const { profile } = useUserProfile()
+
+  const isAuthenticated = !!user
+  const displayUsername = profile?.username || user?.user_metadata?.username || "User"
+
   const [results, setResults] = useState<RaceResult[]>([])
   const [loading, setLoading] = useState(true)
 
@@ -101,7 +109,7 @@ export default function RaceResults() {
              Actually F1Header might need specific colors or transparent. 
              F1Background is fixed, so we just sit on top.
          */}
-        <F1Header variant="Home" activeNav="Results" isAuthenticated={true} username="max_verstappen" primaryColor={primaryColor} />
+        <F1Header variant="Home" activeNav="Results" isAuthenticated={isAuthenticated} username={displayUsername} primaryColor={primaryColor} />
 
         <main 
             className="container mx-auto px-4 py-8 space-y-8 flex-1"

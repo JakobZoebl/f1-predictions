@@ -1,3 +1,5 @@
+import { useAuth } from "@/frontend/auth/AuthContext"
+import { useUserProfile } from "@/lib/hooks/useUserProfile"
 import { F1Header } from "@/frontend/components/f1-header"
 import F1Background from "@/frontend/components/team-driver-background"
 import { TEAMS, DRIVERS } from "@/lib/f1-presets"
@@ -11,6 +13,16 @@ import { Link } from "react-router-dom"
 import "@/frontend/styles/Home.css"
 
 export default function Home() {
+    const { user } = useAuth()
+    const { profile } = useUserProfile()
+
+    const isAuthenticated = !!user
+    const displayUsername = profile?.username || user?.user_metadata?.username || "User"
+
+    // Use user's favourite team/driver for background, with defaults
+    const teamKey = (profile?.favorite_team_id && TEAMS[profile.favorite_team_id]) ? profile.favorite_team_id : "redbull"
+    const driverKey = (profile?.favorite_driver_id && DRIVERS[profile.favorite_driver_id]) ? profile.favorite_driver_id : "verstappen"
+
     // Mock data for Mini Leaderboard
     const leaderboardData = [
         { rank: 1, userId: "1", username: "racingpro47", displayName: "RacingPro47", points: 124, movement: 0 },
@@ -25,16 +37,16 @@ export default function Home() {
       {/* Background Layer */}
       <div className="fixed inset-0 z-0">
           <F1Background 
-            teamColors={TEAMS.redbull.colors}
-            driverColors={DRIVERS.verstappen.colors}
-            teamLogoUrl={TEAM_EMBLEMS.redbull}
-            driverLogoUrl={DRIVER_IMAGES.verstappen}
+            teamColors={TEAMS[teamKey].colors}
+            driverColors={DRIVERS[driverKey].colors}
+            teamLogoUrl={TEAM_EMBLEMS[teamKey]}
+            driverLogoUrl={DRIVER_IMAGES[driverKey]}
           />
       </div>
 
       {/* Content Layer */}
       <div className="relative z-10 flex min-h-screen flex-col">
-        <F1Header variant="Home" activeNav="Home" isAuthenticated={true} username="max_verstappen" />
+        <F1Header variant="Home" activeNav="Home" isAuthenticated={isAuthenticated} username={displayUsername} />
         
         <main className="home-main-content">
           

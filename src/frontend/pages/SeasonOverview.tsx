@@ -1,4 +1,6 @@
 import { useMemo } from "react"
+import { useAuth } from "@/frontend/auth/AuthContext"
+import { useUserProfile } from "@/lib/hooks/useUserProfile"
 import { RACES, SPRINTS } from "@/lib/f1-presets"
 import { F1Header } from "@/frontend/components/f1-header"
 import { F1Background } from "@/frontend/components/blank-background"
@@ -8,6 +10,12 @@ import { Link } from "react-router-dom"
 import "@/frontend/styles/SeasonOverview.css"
 
 export default function SeasonOverview() {
+  const { user } = useAuth()
+  const { profile } = useUserProfile()
+
+  const isAuthenticated = !!user
+  const displayUsername = profile?.username || user?.user_metadata?.username || "User"
+
   const allRaces = useMemo(() => {
     const combined = [...RACES, ...SPRINTS]
     return combined.sort((a, b) => {
@@ -20,7 +28,7 @@ export default function SeasonOverview() {
   return (
     <div className="season-overview-container">
       <F1Background>
-      <F1Header variant="Home" activeNav="Season" isAuthenticated={true} username="max_verstappen" />
+      <F1Header variant="Home" activeNav="Season" isAuthenticated={isAuthenticated} username={displayUsername} />
       
       <main className="season-overview-main">
         <h1 className="season-overview-title">

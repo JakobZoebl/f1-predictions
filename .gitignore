@@ -23,7 +23,9 @@ dist-ssr
 *.sln
 *.sw?
 .vercel
+*.pyc
 
 .env
 .env.local
 .env.*
+.env*.local

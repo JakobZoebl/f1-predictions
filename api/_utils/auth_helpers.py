@@ -11,7 +11,7 @@ Environment variables required:
 import os
 from functools import wraps
 
-import jwt
+
 from flask import request, jsonify, g
 
 from api._utils.supabase_client import get_supabase_client

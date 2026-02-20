@@ -42,6 +42,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
           id: authUser.id,
           username: uniqueUsername,
           display_name: googleName,
+          favorite_team_id: "redbull",
+          favorite_driver_id: "verstappen",
         })
       }
     } catch {
