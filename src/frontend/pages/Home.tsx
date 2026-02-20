@@ -1,3 +1,4 @@
+import { useState, useEffect } from "react"
 import { useAuth } from "@/frontend/auth/AuthContext"
 import { useUserProfile } from "@/lib/hooks/useUserProfile"
 import { F1Header } from "@/frontend/components/f1-header"
@@ -7,9 +8,10 @@ import { TEAM_EMBLEMS } from "@/lib/team-emblems"
 import { DRIVER_IMAGES } from "@/lib/driver-images"
 import { FeatureRace } from "@/frontend/components/FeatureRace"
 import { SeasonSummary } from "@/frontend/home/SeasonSummary"
-import { MiniLeaderboard } from "@/frontend/home/MiniLeaderboard"
+import { MiniLeaderboard, type LeaderboardEntry } from "@/frontend/home/MiniLeaderboard"
 import { Button } from "@/frontend/components/button"
 import { Link } from "react-router-dom"
+import { supabase } from "@/lib/supabaseClient"
 import "@/frontend/styles/Home.css"
 
 export default function Home() {
@@ -23,14 +25,43 @@ export default function Home() {
     const teamKey = (profile?.favorite_team_id && TEAMS[profile.favorite_team_id]) ? profile.favorite_team_id : "redbull"
     const driverKey = (profile?.favorite_driver_id && DRIVERS[profile.favorite_driver_id]) ? profile.favorite_driver_id : "verstappen"
 
-    // Mock data for Mini Leaderboard
-    const leaderboardData = [
-        { rank: 1, userId: "1", username: "racingpro47", displayName: "RacingPro47", points: 124, movement: 0 },
-        { rank: 2, userId: "2", username: "f1fanatic", displayName: "F1Fanatic", points: 105, movement: 0 },
-        { rank: 3, userId: "3", username: "speeddemon", displayName: "SpeedDemon", points: 98, movement: -1 },
-        { rank: 4, userId: "me", username: "username", displayName: "YOU", points: 87, movement: 2 },
-        { rank: 5, userId: "4", username: "maxverstappen33", displayName: "MaxVerstap...", points: 84, movement: 1 },
-    ]
+    const [leaderboardData, setLeaderboardData] = useState<LeaderboardEntry[]>([])
+
+    useEffect(() => {
+        const fetchTop5 = async () => {
+            try {
+                const { data, error } = await supabase
+                    .from('leaderboard')
+                    .select(`
+                        rank,
+                        user_id,
+                        total_points,
+                        users (username, display_name)
+                    `)
+                    .order('rank', { ascending: true })
+                    .limit(5)
+
+                if (error) throw error
+
+                if (data) {
+                    setLeaderboardData(data.map(entry => {
+                        const user = (Array.isArray(entry.users) ? entry.users[0] : entry.users) as Record<string, string> | null;
+                        return {
+                            rank: entry.rank || 0,
+                            userId: entry.user_id,
+                            username: user?.username || 'Unknown',
+                            displayName: user?.display_name || user?.username || 'Unknown',
+                            points: entry.total_points || 0,
+                            movement: 0,
+                        };
+                    }))
+                }
+            } catch (err) {
+                console.error("Error fetching mini leaderboard:", err)
+            }
+        }
+        fetchTop5()
+    }, [])
 
   return (
     <div className="home-page-container">
@@ -73,7 +104,7 @@ export default function Home() {
           {/* Dashboard Grid */}
           <div className="home-dashboard-grid">
              <SeasonSummary />
-             <MiniLeaderboard data={leaderboardData} currentUserId="me" />
+             <MiniLeaderboard data={leaderboardData} currentUserId={user?.id} />
           </div>
 
           {/* Race Calendar Teaser (Optional, based on image bottom part) */}

@@ -173,34 +173,4 @@ def reset_password():
     pass
 
 
-@auth_bp.route('/api/auth/update-password', methods=['PUT'])
-@require_auth
-def update_password():
-    """
-    Update user password using their current session.
-    """
-    try:
-        data = request.get_json()
-        if not data:
-            return jsonify({"success": False, "error": "Request body is required."}), 400
 
-        new_password = data.get("new_password", "")
-
-        if not new_password or len(new_password) < 8:
-            return jsonify({
-                "success": False,
-                "error": "Password must be at least 8 characters."
-            }), 400
-
-        user = g.current_user
-        supabase = get_supabase_client()
-
-        supabase.auth.admin.update_user_by_id(
-            user["id"],
-            {"password": new_password}
-        )
-
-        return jsonify({"success": True}), 200
-
-    except Exception as e:
-        return jsonify({"success": False, "error": f"Server error: {str(e)}"}), 500

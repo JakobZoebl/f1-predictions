@@ -46,7 +46,7 @@ def _get_profile():
         return jsonify({"success": False, "error": f"Server error: {str(e)}"}), 500
 
 def _update_profile():
-    """Update the authenticated user's display name."""
+    """Update the authenticated user's profile (name, preferences, and/or password)."""
     try:
         user = g.current_user
         data = request.get_json()
@@ -54,119 +54,57 @@ def _update_profile():
         if not data:
             return jsonify({"success": False, "error": "Request body is required."}), 400
 
-        # Validate input
-        is_valid, error_msg = validate_profile_update(data)
-        if not is_valid:
-            return jsonify({"success": False, "error": error_msg}), 400
-
-        # Build update payload ?" only allow display_name
+        # Build update payload for the users table
         update_data = {}
+        
         if "display_name" in data:
             update_data["display_name"] = data["display_name"].strip()
-
-        if not update_data:
-            return jsonify({"success": False, "error": "No valid fields to update."}), 400
-
-        supabase = get_supabase_client()
-
-        result = (
-            supabase.table("users")
-            .update(update_data)
-            .eq("id", user["id"])
-            .execute()
-        )
-
-        if not result.data:
-            return jsonify({"success": False, "error": "Failed to update profile."}), 500
-
-        return jsonify({"success": True, "profile": result.data[0]}), 200
-
-    except Exception as e:
-        return jsonify({"success": False, "error": f"Server error: {str(e)}"}), 500
-
-
-@profile_bp.route('/api/profile/preferences', methods=['GET', 'PUT'])
-@require_auth
-def preferences():
-    """Handle user preferences (favorite team/driver)."""
-    if request.method == 'GET':
-        return _get_preferences()
-    else:
-        return _update_preferences()
-
-def _get_preferences():
-    """Fetch the authenticated user's favorite team and driver."""
-    try:
-        user = g.current_user
-        supabase = get_supabase_client()
-
-        result = (
-            supabase.table("users")
-            .select("favorite_team_id, favorite_driver_id")
-            .eq("id", user["id"])
-            .single()
-            .execute()
-        )
-
-        if not result.data:
-            return jsonify({"success": False, "error": "Profile not found."}), 404
-
-        return jsonify({
-            "success": True,
-            "preferences": {
-                "favorite_team_id": result.data.get("favorite_team_id"),
-                "favorite_driver_id": result.data.get("favorite_driver_id"),
-            }
-        }), 200
-
-    except Exception as e:
-        return jsonify({"success": False, "error": f"Server error: {str(e)}"}), 500
-
-def _update_preferences():
-    """Update the authenticated user's favorite team and driver."""
-    try:
-        user = g.current_user
-        data = request.get_json()
-
-        if not data:
-            return jsonify({"success": False, "error": "Request body is required."}), 400
-
-        update_data = {}
-
+            
         if "favorite_team_id" in data:
             val = data["favorite_team_id"]
             if val is not None and not isinstance(val, str):
                 return jsonify({"success": False, "error": "favorite_team_id must be a string."}), 400
             update_data["favorite_team_id"] = val
-
+            
         if "favorite_driver_id" in data:
             val = data["favorite_driver_id"]
             if val is not None and not isinstance(val, str):
                 return jsonify({"success": False, "error": "favorite_driver_id must be a string."}), 400
             update_data["favorite_driver_id"] = val
 
-        if not update_data:
-            return jsonify({"success": False, "error": "No valid fields to update."}), 400
-
         supabase = get_supabase_client()
+        updated_profile = {}
 
-        result = (
-            supabase.table("users")
-            .update(update_data)
-            .eq("id", user["id"])
-            .execute()
-        )
+        # 1. Handle standard profile fields (display_name, favorites)
+        if update_data:
+            result = (
+                supabase.table("users")
+                .update(update_data)
+                .eq("id", user["id"])
+                .execute()
+            )
+            if not result.data:
+                return jsonify({"success": False, "error": "Failed to update profile data."}), 500
+            updated_profile = result.data[0]
 
-        if not result.data:
-            return jsonify({"success": False, "error": "Failed to update preferences."}), 500
+        # 2. Handle password updates simultaneously if provided
+        new_password = data.get("password", "")
+        if new_password:
+            if len(new_password) < 8:
+                return jsonify({
+                    "success": False,
+                    "error": "Password must be at least 8 characters."
+                }), 400
+                
+            supabase.auth.admin.update_user_by_id(
+                user["id"],
+                {"password": new_password}
+            )
 
-        return jsonify({
-            "success": True,
-            "preferences": {
-                "favorite_team_id": result.data[0].get("favorite_team_id"),
-                "favorite_driver_id": result.data[0].get("favorite_driver_id"),
-            }
-        }), 200
+        if not update_data and not new_password:
+             return jsonify({"success": False, "error": "No valid fields to update."}), 400
+
+        return jsonify({"success": True, "profile": updated_profile}), 200
 
     except Exception as e:
         return jsonify({"success": False, "error": f"Server error: {str(e)}"}), 500

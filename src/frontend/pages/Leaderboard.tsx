@@ -9,8 +9,7 @@ import { SeasonStats } from "@/frontend/leaderboard/SeasonStats"
 import { TEAMS, DRIVERS } from "@/lib/f1-presets"
 import { DRIVER_IMAGES } from "@/lib/driver-images"
 import { TEAM_EMBLEMS } from "@/lib/team-emblems"
-
-import { MOCK_LEADERBOARD_DATA, MOCK_POINTS_HISTORY } from "@/lib/mock-leaderboard-data"
+import { supabase } from "@/lib/supabaseClient"
 
 export default function Leaderboard() {
   const { user } = useAuth()
@@ -30,11 +29,97 @@ export default function Leaderboard() {
   const driver = DRIVERS[driverKey]
 
   useEffect(() => {
-    // Simulate API fetch
     const loadData = async () => {
-        // In reality: await fetch('/api/leaderboard')
-        setLeaderboardData(MOCK_LEADERBOARD_DATA)
-        setHistoryData(MOCK_POINTS_HISTORY)
+        try {
+            // Fetch Leaderboard
+            const { data: lbData, error: lbError } = await supabase
+                .from('leaderboard')
+                .select(`
+                    rank,
+                    user_id,
+                    total_points,
+                    users (username, display_name)
+                `)
+                .order('rank', { ascending: true })
+
+            if (lbError) throw lbError
+
+            if (lbData) {
+                const formattedLbData: LeaderboardEntry[] = lbData.map(entry => {
+                    const user = (Array.isArray(entry.users) ? entry.users[0] : entry.users) as Record<string, string> | null;
+                    return {
+                        rank: entry.rank || 0,
+                        userId: entry.user_id,
+                        username: user?.username || 'Unknown',
+                        displayName: user?.display_name || user?.username || 'Unknown',
+                        points: entry.total_points || 0,
+                        movement: 0, // Placeholder
+                    }
+                })
+                setLeaderboardData(formattedLbData)
+            }
+
+            // Fetch Points History
+            const { data: ptData, error: ptError } = await supabase
+                .from('points_log')
+                .select(`
+                    user_id,
+                    total_points,
+                    session_type,
+                    users (username),
+                    races (round, name)
+                `)
+                .order('created_at', { ascending: true })
+
+            if (ptError) throw ptError
+
+            if (ptData) {
+                const userHistoryMap = new Map<string, UserPointsHistory>()
+                const colors = ["#ef4444", "#3b82f6", "#10b981", "#f59e0b", "#8b5cf6", "#ec4899", "#14b8a6"]
+                let colorIndex = 0
+                const runningTotals = new Map<string, number>()
+
+                ptData.forEach(log => {
+                    const userId = log.user_id
+                    const user = (Array.isArray(log.users) ? log.users[0] : log.users) as Record<string, string> | null;
+                    const username = user?.username || "Unknown"
+                    const race = (Array.isArray(log.races) ? log.races[0] : log.races) as Record<string, string | number> | null;
+                    const round = Number(race?.round) || 0;
+                    const raceName = String(race?.name || `Round ${round}`);
+                    const points = log.total_points || 0
+
+                    if (!userHistoryMap.has(userId)) {
+                        userHistoryMap.set(userId, {
+                            userId,
+                            username,
+                            color: colors[colorIndex % colors.length],
+                            history: []
+                        })
+                        colorIndex++
+                        runningTotals.set(userId, 0)
+                    }
+
+                    const currentTotal = runningTotals.get(userId)! + points
+                    runningTotals.set(userId, currentTotal)
+
+                    // We only push to graph if it's not a generic season bonus to avoid messy overlapping for the same round,
+                    // or we group by round. For simplicity we'll just push sequential events.
+                    userHistoryMap.get(userId)!.history.push({
+                        round,
+                        raceName: log.session_type === 'sprint' ? `${raceName} Sprint` : raceName,
+                        points,
+                        cumulativePoints: currentTotal
+                    })
+                })
+
+                const historyArray = Array.from(userHistoryMap.values())
+                historyArray.forEach(u => u.history.sort((a, b) => a.round - b.round))
+                setHistoryData(historyArray)
+            }
+
+        } catch (error) {
+            console.error("Error loading leaderboard data:", error)
+        }
     }
     loadData()
   }, [])
