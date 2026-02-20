@@ -16,11 +16,12 @@ import { Top10Drivers } from "@/frontend/results/Top10Drivers"
 import { Top5Constructors } from "@/frontend/results/Top5Constructors"
 import { BonusResults } from "@/frontend/results/BonusResults"
 import type { RaceResult } from "@/frontend/results/utils"
+import { PageLoader } from "@/frontend/components/PageLoader"
 import "@/frontend/styles/RacePredictions.css"
 
 export default function RaceResults() {
   const { user } = useAuth()
-  const { profile } = useUserProfile()
+  const { profile, loading: profileLoading } = useUserProfile()
 
   const isAuthenticated = !!user
   const displayUsername = profile?.username || user?.user_metadata?.username || "User"
@@ -94,7 +95,7 @@ export default function RaceResults() {
       })()
     : {};
 
-  if (loading) return <div className="text-white">Loading results...</div>
+  if (loading || profileLoading) return <PageLoader />
 
   return (
     <>

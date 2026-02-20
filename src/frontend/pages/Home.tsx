@@ -12,11 +12,12 @@ import { MiniLeaderboard, type LeaderboardEntry } from "@/frontend/home/MiniLead
 import { Button } from "@/frontend/components/button"
 import { Link } from "react-router-dom"
 import { supabase } from "@/lib/supabaseClient"
+import { PageLoader } from "@/frontend/components/PageLoader"
 import "@/frontend/styles/Home.css"
 
 export default function Home() {
     const { user } = useAuth()
-    const { profile } = useUserProfile()
+    const { profile, loading } = useUserProfile()
 
     const isAuthenticated = !!user
     const displayUsername = profile?.username || user?.user_metadata?.username || "User"
@@ -62,6 +63,10 @@ export default function Home() {
         }
         fetchTop5()
     }, [])
+
+  if (loading) {
+      return <PageLoader />
+  }
 
   return (
     <div className="home-page-container">

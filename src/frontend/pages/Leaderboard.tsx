@@ -10,10 +10,11 @@ import { TEAMS, DRIVERS } from "@/lib/f1-presets"
 import { DRIVER_IMAGES } from "@/lib/driver-images"
 import { TEAM_EMBLEMS } from "@/lib/team-emblems"
 import { supabase } from "@/lib/supabaseClient"
+import { PageLoader } from "@/frontend/components/PageLoader"
 
 export default function Leaderboard() {
   const { user } = useAuth()
-  const { profile } = useUserProfile()
+  const { profile, loading } = useUserProfile()
 
   const [leaderboardData, setLeaderboardData] = useState<LeaderboardEntry[]>([])
   const [historyData, setHistoryData] = useState<UserPointsHistory[]>([])
@@ -123,6 +124,8 @@ export default function Leaderboard() {
     }
     loadData()
   }, [])
+
+  if (loading) return <PageLoader />
 
   return (
     <main className="relative min-h-screen w-full overflow-hidden">

@@ -10,6 +10,7 @@ import { DriverDragDrop } from "@/frontend/predictions/DriverDragDrop"
 import { ConstructorDragDrop } from "@/frontend/predictions/ConstructorDragDrop"
 import { SeasonBonusPredictions, type SeasonBonusValues } from "@/frontend/predictions/SeasonBonusPredictions"
 import { PredictionSummary } from "@/frontend/predictions/PredictionSummary"
+import { PageLoader } from "@/frontend/components/PageLoader"
 import { RACES, DRIVERS, TEAMS } from "@/lib/f1-presets"
 import "@/frontend/styles/SeasonPredictions.css"
 
@@ -32,7 +33,7 @@ const INITIAL_BONUS: SeasonBonusValues = {
 
 export default function SeasonPredictions() {
   const { user } = useAuth()
-  const { profile } = useUserProfile()
+  const { profile, loading } = useUserProfile()
 
   const isAuthenticated = !!user
   const displayUsername = profile?.username || user?.user_metadata?.username || "User"
@@ -96,6 +97,8 @@ export default function SeasonPredictions() {
       most_retirements: randomDriver(),
     })
   }
+
+  if (loading) return <PageLoader />
 
   return (
     <F1Background>

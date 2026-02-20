@@ -14,6 +14,7 @@ import { PredictionSummary } from "@/frontend/predictions/PredictionSummary"
 import { useNextRace } from "@/lib/hooks/useNextRace"
 import { DRIVERS, TEAMS } from "@/lib/f1-presets"
 import { hexToHsl } from "@/lib/utils"
+import { PageLoader } from "@/frontend/components/PageLoader"
 import "@/frontend/styles/RacePredictions.css"
 
 const INITIAL_BONUS: BonusValues = {
@@ -26,7 +27,7 @@ const INITIAL_BONUS: BonusValues = {
 
 export default function RacePredictions() {
   const { user } = useAuth()
-  const { profile } = useUserProfile()
+  const { profile, loading } = useUserProfile()
 
   const isAuthenticated = !!user
   const displayUsername = profile?.username || user?.user_metadata?.username || "User"
@@ -94,6 +95,8 @@ export default function RacePredictions() {
         return {};
       })()
     : {};
+
+  if (loading) return <PageLoader />
 
   return (
     <F1Background primaryColor={primaryColor}>

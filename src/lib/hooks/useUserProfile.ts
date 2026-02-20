@@ -24,13 +24,15 @@ interface UseUserProfileReturn {
  * Call `refetch()` after updating preferences to keep the cached profile in sync.
  */
 export function useUserProfile(): UseUserProfileReturn {
-  const { user, session } = useAuth()
+  const { user, session, loading: authLoading } = useAuth()
 
   const [profile, setProfile] = useState<UserProfile | null>(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
 
   const fetchProfile = useCallback(async () => {
+    if (authLoading) return
+
     if (!session?.access_token) {
       setProfile(null)
       setLoading(false)
@@ -69,8 +71,10 @@ export function useUserProfile(): UseUserProfileReturn {
 
   // Fetch on mount / session change
   useEffect(() => {
-    fetchProfile()
-  }, [fetchProfile])
+    if (!authLoading) {
+      fetchProfile()
+    }
+  }, [fetchProfile, authLoading])
 
   return { profile, loading, error, refetch: fetchProfile }
 }

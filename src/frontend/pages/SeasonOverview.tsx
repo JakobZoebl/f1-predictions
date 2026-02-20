@@ -7,11 +7,12 @@ import { F1Background } from "@/frontend/components/blank-background"
 import { FeatureRace } from "@/frontend/components/FeatureRace"
 import { Button } from "@/frontend/components/button"
 import { Link } from "react-router-dom"
+import { PageLoader } from "@/frontend/components/PageLoader"
 import "@/frontend/styles/SeasonOverview.css"
 
 export default function SeasonOverview() {
   const { user } = useAuth()
-  const { profile } = useUserProfile()
+  const { profile, loading } = useUserProfile()
 
   const isAuthenticated = !!user
   const displayUsername = profile?.username || user?.user_metadata?.username || "User"
@@ -24,6 +25,8 @@ export default function SeasonOverview() {
       return dateA.getTime() - dateB.getTime()
     })
   }, [])
+
+  if (loading) return <PageLoader />
 
   return (
     <div className="season-overview-container">

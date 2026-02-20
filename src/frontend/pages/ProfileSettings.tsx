@@ -13,6 +13,7 @@ import { TEAMS, DRIVERS } from "@/lib/f1-presets"
 import { TEAM_EMBLEMS } from "@/lib/team-emblems"
 import { DRIVER_IMAGES } from "@/lib/driver-images"
 import { supabase } from "@/lib/supabaseClient"
+import { PageLoader } from "@/frontend/components/PageLoader"
 import "@/frontend/styles/ProfileSettings.css"
 
 export default function ProfileSettings() {
@@ -111,6 +112,8 @@ export default function ProfileSettings() {
   const displayUsername = profile?.username || user?.user_metadata?.username || "User"
   const isAuthenticated = !!user
 
+  if (loading) return <PageLoader />
+
   return (
     <div className="profile-settings-container">
       {/* Background Layer */}
@@ -128,11 +131,7 @@ export default function ProfileSettings() {
         <F1Header variant="Home" activeNav="Profile" isAuthenticated={isAuthenticated} username={displayUsername} />
         
         <main className="profile-settings-page relative pt-24">
-          {loading ? (
-            <div className="flex items-center justify-center py-20">
-              <div className="text-white/60 text-lg">Loading profile...</div>
-            </div>
-          ) : error ? (
+          {error ? (
             <div className="flex items-center justify-center py-20">
               <div className="text-red-400 text-lg">{error}</div>
             </div>
