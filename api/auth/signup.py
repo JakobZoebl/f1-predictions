@@ -63,6 +63,8 @@ def signup():
         username = data["username"].strip()
         display_name = data["display_name"].strip()
         password = data["password"]
+        favorite_team_id = data.get("favorite_team_id", "redbull")
+        favorite_driver_id = data.get("favorite_driver_id", "verstappen")
 
         supabase = get_supabase_client()
 
@@ -84,6 +86,8 @@ def signup():
             "user_metadata": {
                 "username": username,
                 "display_name": display_name,
+                "favorite_team_id": favorite_team_id,
+                "favorite_driver_id": favorite_driver_id,
             },
         })
 
@@ -93,15 +97,14 @@ def signup():
         user_id = auth_response.user.id
 
         # 4. Create user profile in users table
-        # Default: Red Bull (redbull) and Max Verstappen (verstappen)
         profile_result = (
             supabase.table("users")
             .insert({
                 "id": user_id,
                 "username": username,
                 "display_name": display_name,
-                "favorite_team_id": "redbull",
-                "favorite_driver_id": "verstappen",
+                "favorite_team_id": favorite_team_id,
+                "favorite_driver_id": favorite_driver_id,
             })
             .execute()
         )

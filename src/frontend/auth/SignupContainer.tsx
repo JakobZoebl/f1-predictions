@@ -7,6 +7,14 @@ import { Link, useNavigate } from "react-router-dom"
 import { Input } from "@/frontend/components/input"
 import { useAuth } from "@/frontend/auth/AuthContext"
 import { z } from "zod"
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/frontend/components/ui/select"
+import { TEAMS, DRIVERS } from "@/lib/f1-presets"
 
 // Zod validation schema matching project spec
 const signupSchema = z
@@ -40,6 +48,11 @@ export function SignupContainer() {
   const [error, setError] = useState<string | null>(null)
   const [fieldErrors, setFieldErrors] = useState<FieldErrors>({})
   const [isLoading, setIsLoading] = useState(false)
+  const [selectedTeam, setSelectedTeam] = useState<string>("")
+  const [selectedDriver, setSelectedDriver] = useState<string>("")
+
+  const teamColors = selectedTeam ? TEAMS[selectedTeam]?.colors : null
+  const driverColors = selectedDriver ? DRIVERS[selectedDriver]?.colors : null
 
   const { signUp, signInWithGoogle } = useAuth()
   const navigate = useNavigate()
@@ -72,7 +85,14 @@ export function SignupContainer() {
 
     setIsLoading(true)
 
-    const { error } = await signUp(email, password, username, displayName)
+    const { error } = await signUp(
+      email, 
+      password, 
+      username, 
+      displayName,
+      selectedTeam || undefined,
+      selectedDriver || undefined
+    )
 
     if (error) {
       setError(error)
@@ -174,6 +194,80 @@ export function SignupContainer() {
             {fieldErrors.confirm_password && (
               <p className="mt-1 text-xs text-red-400">{fieldErrors.confirm_password}</p>
             )}
+          </div>
+
+          <div className="space-y-4">
+            {/* Team Dropdown */}
+            <div className="space-y-2">
+              <label className="text-xs font-semibold uppercase tracking-wider text-white/60">Favourite Team</label>
+              <Select value={selectedTeam} onValueChange={setSelectedTeam}>
+                <SelectTrigger className="w-full bg-secondary border-f1-card-border h-12 rounded-lg">
+                  <SelectValue placeholder="Select a team" />
+                </SelectTrigger>
+                <SelectContent>
+                  {Object.entries(TEAMS).map(([key, team]) => (
+                    <SelectItem key={key} value={key}>
+                      {team.name}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+              
+              {teamColors && (
+                <div className="flex items-center gap-3 mt-2">
+                  <div className="flex items-center gap-2">
+                    <div 
+                      className="w-6 h-6 rounded-md border border-white/20"
+                      style={{ backgroundColor: teamColors.primary }}
+                    />
+                    <span className="text-[10px] uppercase tracking-wider text-white/40">Primary</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <div 
+                      className="w-6 h-6 rounded-md border border-white/20"
+                      style={{ backgroundColor: teamColors.secondary }}
+                    />
+                    <span className="text-[10px] uppercase tracking-wider text-white/40">Secondary</span>
+                  </div>
+                </div>
+              )}
+            </div>
+
+            {/* Driver Dropdown */}
+            <div className="space-y-2">
+              <label className="text-xs font-semibold uppercase tracking-wider text-white/60">Favourite Driver</label>
+              <Select value={selectedDriver} onValueChange={setSelectedDriver}>
+                <SelectTrigger className="w-full bg-secondary border-f1-card-border h-12 rounded-lg">
+                  <SelectValue placeholder="Select a driver" />
+                </SelectTrigger>
+                <SelectContent>
+                  {Object.entries(DRIVERS).map(([key, driver]) => (
+                    <SelectItem key={key} value={key}>
+                      {driver.name}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+
+              {driverColors && (
+                <div className="flex items-center gap-3 mt-2">
+                  <div className="flex items-center gap-2">
+                    <div 
+                      className="w-6 h-6 rounded-md border border-white/20"
+                      style={{ backgroundColor: driverColors.primary }}
+                    />
+                    <span className="text-[10px] uppercase tracking-wider text-white/40">Primary</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <div 
+                      className="w-6 h-6 rounded-md border border-white/20"
+                      style={{ backgroundColor: driverColors.secondary }}
+                    />
+                    <span className="text-[10px] uppercase tracking-wider text-white/40">Secondary</span>
+                  </div>
+                </div>
+              )}
+            </div>
           </div>
 
           <button

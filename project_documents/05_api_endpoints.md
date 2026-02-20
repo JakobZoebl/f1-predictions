@@ -9,6 +9,7 @@
 ### Authentication Endpoints
 
 **POST /api/auth/signup**
+
 ```typescript
 // Request body
 {
@@ -27,6 +28,7 @@
 ```
 
 **POST /api/auth/login**
+
 ```typescript
 // Request body
 { email: string, password: string }
@@ -40,6 +42,7 @@
 ### Prediction Endpoints
 
 **POST /api/predictions/race**
+
 ```typescript
 // Request body
 {
@@ -72,6 +75,7 @@
 ```
 
 **GET /api/predictions/race/[raceId]**
+
 ```typescript
 // Query params: raceId
 // Headers: Authorization (session)
@@ -91,12 +95,14 @@
 ```
 
 **POST /api/predictions/sprint**
+
 ```typescript
 // Similar to race predictions but with sprint fields
 // sp1_driver through sp8_driver instead of p1-p10
 ```
 
 **POST /api/predictions/season**
+
 ```typescript
 // Request body
 {
@@ -121,6 +127,7 @@
 ### Leaderboard Endpoints
 
 **GET /api/leaderboard**
+
 ```typescript
 // Query params (optional):
 // - season: number (default: current season)
@@ -137,13 +144,14 @@
       rank: number,
       avg_points_per_race: number,
       races_predicted: number,
-      rank_change: number  // compared to last race
-    }
-  ]
+      rank_change: number, // compared to last race
+    },
+  ];
 }
 ```
 
 **GET /api/leaderboard/chart-data**
+
 ```typescript
 // For the points progression chart
 
@@ -172,6 +180,7 @@
 ### Race Management Endpoints
 
 **GET /api/races**
+
 ```typescript
 // Query params (optional):
 // - season: number
@@ -190,13 +199,14 @@
       date: string,
       cutoff: string,
       has_sprint: boolean,
-      status: string
-    }
-  ]
+      status: string,
+    },
+  ];
 }
 ```
 
 **GET /api/races/next**
+
 ```typescript
 // Get the next upcoming race
 
@@ -218,6 +228,7 @@
 ### Profile Endpoints
 
 **GET /api/profile/[userId]**
+
 ```typescript
 // Response
 {
@@ -250,6 +261,7 @@
 ```
 
 **PUT /api/profile**
+
 ```typescript
 // Update user profile (authenticated)
 
@@ -269,6 +281,7 @@
 ### Admin Endpoints
 
 **POST /api/admin/races**
+
 ```typescript
 // Create new race (admin only)
 
@@ -290,18 +303,21 @@
 ```
 
 **PUT /api/admin/races/[raceId]**
+
 ```typescript
 // Update race details (admin only)
 // Same fields as POST
 ```
 
 **DELETE /api/admin/races/[raceId]**
+
 ```typescript
 // Delete race (admin only)
 // Also deletes associated predictions and results
 ```
 
 **POST /api/admin/results**
+
 ```typescript
 // Enter race results (admin only)
 
@@ -324,6 +340,7 @@
 ```
 
 **POST /api/admin/calculate-points**
+
 ```typescript
 // Calculate points for all predictions for a race (admin only)
 
@@ -349,6 +366,7 @@
 ```
 
 **POST /api/admin/fetch-results**
+
 ```typescript
 // Fetch results from Jolpica API and save (admin only)
 
@@ -371,6 +389,7 @@
 ### Cron Job Endpoint
 
 **GET /api/cron/fetch-results**
+
 ```typescript
 // Vercel Cron job - runs automatically after races
 
@@ -407,6 +426,7 @@
 **Base URL:** https://api.jolpi.ca/ergast/f1/
 
 **Get Race Results:**
+
 ```
 GET /api/jolpi.ca/ergast/f1/{season}/{round}/results.json
 
@@ -415,6 +435,7 @@ GET https://api.jolpi.ca/ergast/f1/2026/1/results.json
 ```
 
 **Response Structure:**
+
 ```json
 {
   "MRData": {
@@ -437,9 +458,9 @@ GET https://api.jolpi.ca/ergast/f1/2026/1/results.json
               "Constructor": {
                 "name": "Red Bull"
               },
-              "grid": "1",  // Starting position (pole)
+              "grid": "1", // Starting position (pole)
               "FastestLap": {
-                "rank": "1"  // If fastest lap
+                "rank": "1" // If fastest lap
               }
             }
             // ... positions 2-20
@@ -452,45 +473,50 @@ GET https://api.jolpi.ca/ergast/f1/2026/1/results.json
 ```
 
 **Get Qualifying Results (for pole position):**
+
 ```
 GET /api/jolpi.ca/ergast/f1/{season}/{round}/qualifying.json
 ```
 
 **Parsing Example:**
+
 ```typescript
 async function fetchRaceResults(season: number, round: number) {
-  const url = `https://api.jolpi.ca/ergast/f1/${season}/${round}/results.json`
-  const response = await fetch(url)
-  const data = await response.json()
-  
-  const race = data.MRData.RaceTable.Races[0]
-  const results = race.Results
-  
+  const url = `https://api.jolpi.ca/ergast/f1/${season}/${round}/results.json`;
+  const response = await fetch(url);
+  const data = await response.json();
+
+  const race = data.MRData.RaceTable.Races[0];
+  const results = race.Results;
+
   // Parse top 10
-  const top10 = results.slice(0, 10).map(r => 
-    `${r.Driver.givenName} ${r.Driver.familyName}`
-  )
-  
+  const top10 = results
+    .slice(0, 10)
+    .map((r) => `${r.Driver.givenName} ${r.Driver.familyName}`);
+
   // Find fastest lap
-  const fastestLap = results.find(r => r.FastestLap?.rank === "1")
-  
+  const fastestLap = results.find((r) => r.FastestLap?.rank === "1");
+
   // Get pole position from qualifying
-  const qualUrl = `https://api.jolpi.ca/ergast/f1/${season}/${round}/qualifying.json`
-  const qualResponse = await fetch(qualUrl)
-  const qualData = await qualResponse.json()
-  const pole = qualData.MRData.RaceTable.Races[0].QualifyingResults[0]
-  
+  const qualUrl = `https://api.jolpi.ca/ergast/f1/${season}/${round}/qualifying.json`;
+  const qualResponse = await fetch(qualUrl);
+  const qualData = await qualResponse.json();
+  const pole = qualData.MRData.RaceTable.Races[0].QualifyingResults[0];
+
   return {
     p1_driver: top10[0],
     p2_driver: top10[1],
     // ... etc
     pole_position: `${pole.Driver.givenName} ${pole.Driver.familyName}`,
-    fastest_lap: fastestLap ? `${fastestLap.Driver.givenName} ${fastestLap.Driver.familyName}` : null
-  }
+    fastest_lap: fastestLap
+      ? `${fastestLap.Driver.givenName} ${fastestLap.Driver.familyName}`
+      : null,
+  };
 }
 ```
 
 **Rate Limits:**
+
 - 4 requests/second
 - 200 requests/hour
 - Should be fine for your use case
@@ -502,11 +528,13 @@ async function fetchRaceResults(season: number, round: number) {
 **Base URL:** https://api.openf1.org/v1/
 
 **Use for:**
+
 - Live timing during races
 - Telemetry data
 - Position tracking
 
 **Example:**
+
 ```
 GET https://api.openf1.org/v1/position?session_key=latest
 
@@ -527,6 +555,7 @@ Response:
 ### FastF1 (Python library - optional)
 
 **If you need more detailed data:**
+
 ```python
 import fastf1
 
@@ -551,6 +580,7 @@ results = session.results
 **Trigger:** Vercel Cron job 2 hours after race end
 
 **Flow:**
+
 1. Cron job runs (`/api/cron/fetch-results`)
 2. Finds completed races without results
 3. Calls Jolpica API for each
@@ -560,13 +590,14 @@ results = session.results
 7. (Optional) Sends email notifications
 
 **Vercel Cron Configuration:**
+
 ```json
 // vercel.json
 {
   "crons": [
     {
       "path": "/api/cron/fetch-results",
-      "schedule": "0 */2 * * 0"  // Every 2 hours on Sundays
+      "schedule": "0 22 * * 0" // Every Sunday at 22:00 UTC (Hobby plan allows max 1 per day)
     }
   ]
 }
@@ -577,6 +608,7 @@ results = session.results
 ### Manual Results Entry (Admin Fallback)
 
 **If API fails or data not available:**
+
 1. Admin goes to `/admin/results`
 2. Selects race from dropdown
 3. Clicks "Fetch from API" button
@@ -589,66 +621,68 @@ results = session.results
 ## ERROR HANDLING
 
 **API Call Failures:**
+
 ```typescript
 async function fetchWithRetry(url: string, retries = 3) {
   for (let i = 0; i < retries; i++) {
     try {
-      const response = await fetch(url)
-      if (!response.ok) throw new Error(`HTTP ${response.status}`)
-      return await response.json()
+      const response = await fetch(url);
+      if (!response.ok) throw new Error(`HTTP ${response.status}`);
+      return await response.json();
     } catch (error) {
-      if (i === retries - 1) throw error
-      await new Promise(resolve => setTimeout(resolve, 1000 * (i + 1)))
+      if (i === retries - 1) throw error;
+      await new Promise((resolve) => setTimeout(resolve, 1000 * (i + 1)));
     }
   }
 }
 ```
 
 **Rate Limit Handling:**
+
 ```typescript
 // Simple rate limiter
 class RateLimiter {
-  private queue: (() => Promise<any>)[] = []
-  private processing = false
-  private lastCall = 0
-  private minInterval = 250  // 4 per second max
-  
+  private queue: (() => Promise<any>)[] = [];
+  private processing = false;
+  private lastCall = 0;
+  private minInterval = 250; // 4 per second max
+
   async add<T>(fn: () => Promise<T>): Promise<T> {
     return new Promise((resolve, reject) => {
       this.queue.push(async () => {
         try {
-          const now = Date.now()
-          const wait = Math.max(0, this.minInterval - (now - this.lastCall))
-          if (wait > 0) await new Promise(r => setTimeout(r, wait))
-          
-          this.lastCall = Date.now()
-          const result = await fn()
-          resolve(result)
+          const now = Date.now();
+          const wait = Math.max(0, this.minInterval - (now - this.lastCall));
+          if (wait > 0) await new Promise((r) => setTimeout(r, wait));
+
+          this.lastCall = Date.now();
+          const result = await fn();
+          resolve(result);
         } catch (error) {
-          reject(error)
+          reject(error);
         }
-      })
-      
-      if (!this.processing) this.process()
-    })
+      });
+
+      if (!this.processing) this.process();
+    });
   }
-  
+
   private async process() {
-    this.processing = true
+    this.processing = true;
     while (this.queue.length > 0) {
-      const fn = this.queue.shift()!
-      await fn()
+      const fn = this.queue.shift()!;
+      await fn();
     }
-    this.processing = false
+    this.processing = false;
   }
 }
 
-const jolpicaLimiter = new RateLimiter()
+const jolpicaLimiter = new RateLimiter();
 
 // Usage
-const results = await jolpicaLimiter.add(() => 
-  fetch('https://api.jolpi.ca/ergast/f1/2026/1/results.json')
-)
+const results = await jolpicaLimiter.add(() =>
+  fetch("https://api.jolpi.ca/ergast/f1/2026/1/results.json"),
+);
 ```
 
 ---
@@ -656,43 +690,46 @@ const results = await jolpicaLimiter.add(() =>
 ## CACHING STRATEGIES
 
 **Race Results (immutable after completion):**
+
 ```typescript
 // Cache for 1 week
-const cacheResults = new Map<number, any>()
+const cacheResults = new Map<number, any>();
 
 async function getResults(raceId: number) {
   if (cacheResults.has(raceId)) {
-    return cacheResults.get(raceId)
+    return cacheResults.get(raceId);
   }
-  
-  const results = await fetchFromDatabase(raceId)
-  cacheResults.set(raceId, results)
-  return results
+
+  const results = await fetchFromDatabase(raceId);
+  cacheResults.set(raceId, results);
+  return results;
 }
 ```
 
 **Leaderboard (updates after each race):**
+
 ```typescript
 // Cache for 5 minutes
-let leaderboardCache: { data: any, timestamp: number } | null = null
-const CACHE_TTL = 5 * 60 * 1000  // 5 minutes
+let leaderboardCache: { data: any; timestamp: number } | null = null;
+const CACHE_TTL = 5 * 60 * 1000; // 5 minutes
 
 async function getLeaderboard() {
-  const now = Date.now()
-  
-  if (leaderboardCache && (now - leaderboardCache.timestamp) < CACHE_TTL) {
-    return leaderboardCache.data
+  const now = Date.now();
+
+  if (leaderboardCache && now - leaderboardCache.timestamp < CACHE_TTL) {
+    return leaderboardCache.data;
   }
-  
-  const data = await fetchLeaderboardFromDatabase()
-  leaderboardCache = { data, timestamp: now }
-  return data
+
+  const data = await fetchLeaderboardFromDatabase();
+  leaderboardCache = { data, timestamp: now };
+  return data;
 }
 ```
 
 ---
 
 ## Use this for:
+
 1. Building Next.js API routes
 2. Integrating Jolpica F1 API
 3. Setting up Vercel Cron jobs

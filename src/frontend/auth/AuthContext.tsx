@@ -8,7 +8,7 @@ interface AuthContextType {
   user: User | null
   session: Session | null
   loading: boolean
-  signUp: (email: string, password: string, username: string, displayName: string) => Promise<{ error: string | null }>
+  signUp: (email: string, password: string, username: string, displayName: string, favoriteTeamId?: string, favoriteDriverId?: string) => Promise<{ error: string | null }>
   signIn: (email: string, password: string) => Promise<{ error: string | null }>
   signInWithGoogle: () => Promise<{ error: string | null }>
   signOut: () => Promise<void>
@@ -87,7 +87,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     email: string,
     password: string,
     username: string,
-    displayName: string
+    displayName: string,
+    favoriteTeamId: string = "redbull",
+    favoriteDriverId: string = "verstappen"
   ): Promise<{ error: string | null }> => {
     try {
       // Check username uniqueness first
@@ -115,6 +117,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
           data: {
             username,
             display_name: displayName,
+            favorite_team_id: favoriteTeamId,
+            favorite_driver_id: favoriteDriverId,
           },
         },
       })
@@ -143,6 +147,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         id: data.user.id,
         username,
         display_name: displayName,
+        favorite_team_id: favoriteTeamId,
+        favorite_driver_id: favoriteDriverId,
       })
 
       if (profileError) {
