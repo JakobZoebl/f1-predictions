@@ -5,21 +5,23 @@
 -- ------------------------------------------------------------------------------
 -- 0. CLEANUP (Ensures fresh start and matches latest columns)
 -- ------------------------------------------------------------------------------
-DROP TRIGGER IF EXISTS tr_calculate_race_points ON public.race_results;
-DROP TRIGGER IF EXISTS tr_calculate_sprint_points ON public.sprint_results;
-DROP FUNCTION IF EXISTS public.calculate_f1_points();
-
 DROP TABLE IF EXISTS public.leaderboard CASCADE;
 DROP TABLE IF EXISTS public.points_log CASCADE;
 DROP TABLE IF EXISTS public.sprint_results CASCADE;
 DROP TABLE IF EXISTS public.race_results CASCADE;
 DROP TABLE IF EXISTS public.season_results CASCADE;
+DROP TABLE IF EXISTS public.constructor_standings CASCADE;
+DROP TABLE IF EXISTS public.driver_standings CASCADE;
 DROP TABLE IF EXISTS public.season_predictions CASCADE;
 DROP TABLE IF EXISTS public.sprint_predictions CASCADE;
 DROP TABLE IF EXISTS public.predictions CASCADE;
 DROP TABLE IF EXISTS public.races CASCADE;
 DROP TABLE IF EXISTS public.seasons CASCADE;
 DROP TABLE IF EXISTS public.users CASCADE;
+
+DROP FUNCTION IF EXISTS public.handle_new_user() CASCADE;
+DROP FUNCTION IF EXISTS public.calculate_f1_points() CASCADE;
+DROP FUNCTION IF EXISTS public.update_season_results_from_standings() CASCADE;
 
 -- ------------------------------------------------------------------------------
 -- 1. BASE TABLES
@@ -151,6 +153,28 @@ CREATE TABLE public.sprint_results (
   created_at TIMESTAMP WITHOUT TIME ZONE DEFAULT NOW()
 );
 
+-- Table 7.3: driver_standings
+CREATE TABLE public.driver_standings (
+  id SERIAL PRIMARY KEY,
+  season INTEGER NOT NULL REFERENCES public.seasons(year) ON DELETE CASCADE,
+  driver_id CHARACTER VARYING NOT NULL,
+  points NUMERIC DEFAULT 0,
+  position INTEGER,
+  updated_at TIMESTAMP WITHOUT TIME ZONE DEFAULT NOW(),
+  UNIQUE(season, driver_id)
+);
+
+-- Table 7.4: constructor_standings
+CREATE TABLE public.constructor_standings (
+  id SERIAL PRIMARY KEY,
+  season INTEGER NOT NULL REFERENCES public.seasons(year) ON DELETE CASCADE,
+  constructor_id CHARACTER VARYING NOT NULL,
+  points NUMERIC DEFAULT 0,
+  position INTEGER,
+  updated_at TIMESTAMP WITHOUT TIME ZONE DEFAULT NOW(),
+  UNIQUE(season, constructor_id)
+);
+
 -- Table 7.5: season_results
 CREATE TABLE public.season_results (
   id SERIAL PRIMARY KEY,
@@ -168,6 +192,7 @@ CREATE TABLE public.season_results (
   c10_constructor CHARACTER VARYING, c11_constructor CHARACTER VARYING,
   most_poles CHARACTER VARYING,
   most_fastest_laps CHARACTER VARYING,
+  updated_at TIMESTAMP WITHOUT TIME ZONE DEFAULT NOW(),
   created_at TIMESTAMP WITHOUT TIME ZONE DEFAULT NOW()
 );
 
@@ -334,11 +359,71 @@ BEGIN
     UPDATE public.leaderboard l
     SET rank = sub.new_rank
     FROM (
-        SELECT user_id, season, RANK() OVER (PARTITION BY season ORDER BY total_points DESC) as new_rank
-        FROM public.leaderboard
-        WHERE season = current_season
+        SELECT l.user_id, l.season, RANK() OVER (PARTITION BY l.season ORDER BY l.total_points DESC, u.username ASC) as new_rank
+        FROM public.leaderboard l
+        JOIN public.users u ON l.user_id = u.id
+        WHERE l.season = current_season
     ) sub
     WHERE l.user_id = sub.user_id AND l.season = sub.season;
+
+    RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE OR REPLACE FUNCTION public.update_season_results_from_standings()
+RETURNS TRIGGER AS $$
+DECLARE
+    r_season INTEGER;
+    d_drivers TEXT[];
+    c_constructors TEXT[];
+BEGIN
+    IF TG_TABLE_NAME = 'driver_standings' THEN
+        r_season := NEW.season;
+    ELSIF TG_TABLE_NAME = 'constructor_standings' THEN
+        r_season := NEW.season;
+    END IF;
+
+    -- Get drivers ordered by points (descending), then position (ascending) if points are equal
+    SELECT array_agg(driver_id ORDER BY points DESC, position ASC) INTO d_drivers
+    FROM public.driver_standings
+    WHERE season = r_season;
+
+    -- Get constructors ordered by points (descending)
+    SELECT array_agg(constructor_id ORDER BY points DESC, position ASC) INTO c_constructors
+    FROM public.constructor_standings
+    WHERE season = r_season;
+
+    -- Insert or update season_results
+    INSERT INTO public.season_results (
+        season, 
+        d1_driver, d2_driver, d3_driver, d4_driver, d5_driver, 
+        d6_driver, d7_driver, d8_driver, d9_driver, d10_driver,
+        d11_driver, d12_driver, d13_driver, d14_driver, d15_driver,
+        d16_driver, d17_driver, d18_driver, d19_driver, d20_driver,
+        c1_constructor, c2_constructor, c3_constructor, c4_constructor, c5_constructor,
+        c6_constructor, c7_constructor, c8_constructor, c9_constructor, c10_constructor, c11_constructor
+    ) VALUES (
+        r_season,
+        d_drivers[1], d_drivers[2], d_drivers[3], d_drivers[4], d_drivers[5],
+        d_drivers[6], d_drivers[7], d_drivers[8], d_drivers[9], d_drivers[10],
+        d_drivers[11], d_drivers[12], d_drivers[13], d_drivers[14], d_drivers[15],
+        d_drivers[16], d_drivers[17], d_drivers[18], d_drivers[19], d_drivers[20],
+        c_constructors[1], c_constructors[2], c_constructors[3], c_constructors[4], c_constructors[5],
+        c_constructors[6], c_constructors[7], c_constructors[8], c_constructors[9], c_constructors[10], c_constructors[11]
+    )
+    ON CONFLICT (season) DO UPDATE SET
+        d1_driver = EXCLUDED.d1_driver, d2_driver = EXCLUDED.d2_driver, d3_driver = EXCLUDED.d3_driver,
+        d4_driver = EXCLUDED.d4_driver, d5_driver = EXCLUDED.d5_driver, d6_driver = EXCLUDED.d6_driver,
+        d7_driver = EXCLUDED.d7_driver, d8_driver = EXCLUDED.d8_driver, d9_driver = EXCLUDED.d9_driver,
+        d10_driver = EXCLUDED.d10_driver, d11_driver = EXCLUDED.d11_driver, d12_driver = EXCLUDED.d12_driver,
+        d13_driver = EXCLUDED.d13_driver, d14_driver = EXCLUDED.d14_driver, d15_driver = EXCLUDED.d15_driver,
+        d16_driver = EXCLUDED.d16_driver, d17_driver = EXCLUDED.d17_driver, d18_driver = EXCLUDED.d18_driver,
+        d19_driver = EXCLUDED.d19_driver, d20_driver = EXCLUDED.d20_driver,
+        c1_constructor = EXCLUDED.c1_constructor, c2_constructor = EXCLUDED.c2_constructor, c3_constructor = EXCLUDED.c3_constructor,
+        c4_constructor = EXCLUDED.c4_constructor, c5_constructor = EXCLUDED.c5_constructor, c6_constructor = EXCLUDED.c6_constructor,
+        c7_constructor = EXCLUDED.c7_constructor, c8_constructor = EXCLUDED.c8_constructor, c9_constructor = EXCLUDED.c9_constructor,
+        c10_constructor = EXCLUDED.c10_constructor, c11_constructor = EXCLUDED.c11_constructor,
+        updated_at = NOW();
 
     RETURN NEW;
 END;
@@ -356,8 +441,54 @@ CREATE TRIGGER tr_calculate_sprint_points
     AFTER INSERT OR UPDATE ON public.sprint_results
     FOR EACH ROW EXECUTE FUNCTION public.calculate_f1_points();
 
+CREATE TRIGGER tr_after_driver_standings_update
+    AFTER INSERT OR UPDATE ON public.driver_standings
+    FOR EACH ROW EXECUTE FUNCTION public.update_season_results_from_standings();
+
+CREATE TRIGGER tr_after_constructor_standings_update
+    AFTER INSERT OR UPDATE ON public.constructor_standings
+    FOR EACH ROW EXECUTE FUNCTION public.update_season_results_from_standings();
+
 -- ------------------------------------------------------------------------------
--- 4. INDEXES
+-- 4. NEW USER HANDLER
+-- ------------------------------------------------------------------------------
+
+CREATE OR REPLACE FUNCTION public.handle_new_user()
+RETURNS TRIGGER AS $$
+DECLARE
+    active_season INTEGER;
+BEGIN
+    -- Get the currently active season
+    SELECT year INTO active_season FROM public.seasons WHERE is_active = TRUE LIMIT 1;
+
+    IF active_season IS NOT NULL THEN
+        -- Create leaderboard entry
+        INSERT INTO public.leaderboard (user_id, season, total_points, races_predicted)
+        VALUES (NEW.id, active_season, 0, 0)
+        ON CONFLICT (user_id, season) DO NOTHING;
+
+        -- Recalculate ranks for the active season
+        UPDATE public.leaderboard l
+        SET rank = sub.new_rank
+        FROM (
+            SELECT lb.user_id, lb.season, RANK() OVER (PARTITION BY lb.season ORDER BY lb.total_points DESC, u.username ASC) as new_rank
+            FROM public.leaderboard lb
+            JOIN public.users u ON lb.user_id = u.id
+            WHERE lb.season = active_season
+        ) sub
+        WHERE l.user_id = sub.user_id AND l.season = sub.season;
+    END IF;
+
+    RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE TRIGGER tr_after_user_insert
+    AFTER INSERT ON public.users
+    FOR EACH ROW EXECUTE FUNCTION public.handle_new_user();
+
+-- ------------------------------------------------------------------------------
+-- 5. INDEXES
 -- ------------------------------------------------------------------------------
 CREATE INDEX idx_predictions_user ON public.predictions(user_id);
 CREATE INDEX idx_predictions_race ON public.predictions(race_id);
@@ -365,6 +496,8 @@ CREATE INDEX idx_sprint_predictions_user ON public.sprint_predictions(user_id);
 CREATE INDEX idx_sprint_predictions_race ON public.sprint_predictions(race_id);
 CREATE INDEX idx_season_predictions_user_season ON public.season_predictions(user_id, season);
 CREATE INDEX idx_season_results_season ON public.season_results(season);
+CREATE INDEX idx_driver_standings_season ON public.driver_standings(season);
+CREATE INDEX idx_constructor_standings_season ON public.constructor_standings(season);
 CREATE INDEX idx_results_race ON public.race_results(race_id);
 CREATE INDEX idx_points_log_user ON public.points_log(user_id);
 CREATE INDEX idx_points_log_race ON public.points_log(race_id);
@@ -383,6 +516,8 @@ ALTER TABLE public.races ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.race_results ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.sprint_results ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.season_results ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.driver_standings ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.constructor_standings ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.points_log ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.leaderboard ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.seasons ENABLE ROW LEVEL SECURITY;
@@ -403,6 +538,8 @@ DO $$ BEGIN CREATE POLICY "Anyone view races" ON public.races FOR SELECT USING (
 DO $$ BEGIN CREATE POLICY "Anyone view results" ON public.race_results FOR SELECT USING (true); EXCEPTION WHEN duplicate_object THEN NULL; END $$;
 DO $$ BEGIN CREATE POLICY "Anyone view sprint results" ON public.sprint_results FOR SELECT USING (true); EXCEPTION WHEN duplicate_object THEN NULL; END $$;
 DO $$ BEGIN CREATE POLICY "Anyone view season results" ON public.season_results FOR SELECT USING (true); EXCEPTION WHEN duplicate_object THEN NULL; END $$;
+DO $$ BEGIN CREATE POLICY "Anyone view driver standings" ON public.driver_standings FOR SELECT USING (true); EXCEPTION WHEN duplicate_object THEN NULL; END $$;
+DO $$ BEGIN CREATE POLICY "Anyone view constructor standings" ON public.constructor_standings FOR SELECT USING (true); EXCEPTION WHEN duplicate_object THEN NULL; END $$;
 DO $$ BEGIN CREATE POLICY "Anyone view leaderboard" ON public.leaderboard FOR SELECT USING (true); EXCEPTION WHEN duplicate_object THEN NULL; END $$;
 DO $$ BEGIN CREATE POLICY "Anyone view points log" ON public.points_log FOR SELECT USING (true); EXCEPTION WHEN duplicate_object THEN NULL; END $$;
 

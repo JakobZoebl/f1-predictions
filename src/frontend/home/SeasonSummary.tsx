@@ -1,6 +1,6 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/frontend/components/card"
 import { Progress } from "@/frontend/components/progress"
-import { ArrowUp, User } from "lucide-react"
+import { User } from "lucide-react"
 
 interface StatItemProps {
     label: string
@@ -22,7 +22,42 @@ function StatItem({ label, value, subElement, footer }: StatItemProps) {
     )
 }
 
-export function SeasonSummary() {
+export interface SeasonStats {
+    rank: string
+    total_points: number
+    avg_points: number
+    races_predicted: number
+    total_completed_races: number
+    last_race: {
+        name: string
+        points: string | number
+    }
+    best_finish: string
+}
+
+interface SeasonSummaryProps {
+    username?: string
+    stats?: SeasonStats | null
+    loading?: boolean
+}
+
+export function SeasonSummary({ username, stats, loading }: SeasonSummaryProps) {
+  const displayUsername = username ? `@${username}` : "@username"
+  
+  if (loading) {
+      return (
+        <Card className="season-summary-card animate-pulse">
+            <CardContent className="h-[200px] flex items-center justify-center">
+                <p className="text-white/30">Loading stats...</p>
+            </CardContent>
+        </Card>
+      )
+  }
+
+  const predictionsProgress = stats?.total_completed_races 
+      ? (stats.races_predicted / stats.total_completed_races) * 100 
+      : 0
+
   return (
     <Card className="season-summary-card">
       <CardHeader className="pb-2">
@@ -32,7 +67,7 @@ export function SeasonSummary() {
             </div>
             <div>
                  <CardTitle className="summary-title">Your Season Summary</CardTitle>
-                 <p className="summary-username">@username</p>
+                 <p className="summary-username">{displayUsername}</p>
             </div>
         </div>
       </CardHeader>
@@ -40,34 +75,28 @@ export function SeasonSummary() {
         <div className="summary-stats-grid">
             <StatItem 
                 label="Rank" 
-                value="#4" 
-                subElement={
-                    <div className="rank-movement">
-                        <ArrowUp className="h-3 w-3 mr-0.5" />
-                        <span>+2</span>
-                    </div>
-                }
+                value={stats?.rank || "-"} 
             />
             <StatItem 
                 label="Points" 
-                value="87" 
+                value={stats?.total_points ?? "-"} 
                 subElement={<span className="points-unit">Points</span>}
-                footer="Avg. 87.0"
+                footer={stats?.avg_points ? `Avg. ${stats.avg_points.toFixed(1)}` : "Avg. -"}
             />
             <StatItem 
                 label="Last Race" 
-                value="Bahrain" 
-                footer="(P3, 87pts)"
+                value={stats?.last_race?.name || "-"} 
+                footer={stats?.last_race?.points !== "-" ? `(${stats?.last_race.points}pts)` : "(-)"}
             />
         </div>
 
         <div className="summary-footer">
              <div className="predictions-progress-wrapper">
                  <div className="progress-header">
-                     <span>Predictions Made: 1/2</span>
-                     <span className="text-white/50">Best Finish: #2</span>
+                     <span>Predictions Made: {stats?.races_predicted ?? 0}/{stats?.total_completed_races ?? 0}</span>
+                     <span className="text-white/50">Best Finish: {stats?.best_finish || "-"}</span>
                  </div>
-                 <Progress value={50} className="progress-bar-bg" indicatorClassName="progress-bar-indicator" />
+                 <Progress value={predictionsProgress} className="progress-bar-bg" indicatorClassName="progress-bar-indicator" />
              </div>
         </div>
       </CardContent>

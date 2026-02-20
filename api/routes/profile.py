@@ -20,6 +20,92 @@ def profile():
     else:
         return _update_profile()
 
+@profile_bp.route('/api/profile/season-stats', methods=['GET'])
+@require_auth
+def get_season_stats():
+    """Fetch consolidated season statistics for the user."""
+    try:
+        user = g.current_user
+        supabase = get_supabase_client()
+
+        # 1. Fetch current active season
+        season_res = supabase.table("seasons").select("year").eq("is_active", True).limit(1).execute()
+        if not season_res.data:
+            return jsonify({"success": False, "error": "No active season found"}), 404
+        
+        active_season = season_res.data[0]["year"]
+
+        # 2. Fetch data from leaderboard for the active season
+        lb_res = (
+            supabase.table("leaderboard")
+            .select("total_points, avg_points_per_race, rank, races_predicted")
+            .eq("user_id", user["id"])
+            .eq("season", active_season)
+            .single()
+            .execute()
+        )
+
+        # 3. Fetch latest points_log entry for "Last Race" info
+        last_race_res = (
+            supabase.table("points_log")
+            .select("total_points, races(name)")
+            .eq("user_id", user["id"])
+            .eq("season", active_season)
+            .order("created_at", desc=True)
+            .limit(1)
+            .execute()
+        )
+
+        # 4. Fetch total completed (or at least status != 'upcoming') races to show progress
+        total_races_res = (
+            supabase.table("races")
+            .select("id", count="exact")
+            .eq("season", active_season)
+            .neq("status", "upcoming")
+            .execute()
+        )
+        total_completed_races = total_races_res.count if total_races_res.count is not None else 0
+
+        # 5. Fetch best finish (highest rank in any race result)
+        # This is slightly tricky as we don't have a 'rank' per race in points_log yet if not implemented,
+        # but the prompt's mockup shows "Best Finish: #2". 
+        # For now, let's assume we fetch the minimum rank from somewhere or return a placeholder if not available.
+        # Actually, let's look for the highest points in a single race as a proxy or just leave it for now.
+        best_finish = "-" 
+
+        stats = {
+            "rank": "-",
+            "total_points": 0,
+            "avg_points": 0.0,
+            "races_predicted": 0,
+            "total_completed_races": total_completed_races,
+            "last_race": {
+                "name": "-",
+                "points": "-"
+            },
+            "best_finish": best_finish
+        }
+
+        if lb_res.data:
+            stats["rank"] = f"#{lb_res.data['rank']}" if lb_res.data['rank'] else "-"
+            stats["total_points"] = lb_res.data['total_points'] or 0
+            stats["avg_points"] = float(lb_res.data['avg_points_per_race'] or 0)
+            stats["races_predicted"] = lb_res.data['races_predicted'] or 0
+
+        if last_race_res.data:
+            entry = last_race_res.data[0]
+            race_name = entry.get("races", {}).get("name", "Unknown")
+            stats["last_race"] = {
+                "name": race_name,
+                "points": entry["total_points"]
+            }
+
+        return jsonify({"success": True, "stats": stats}), 200
+
+    except Exception as e:
+        print(f"Error in get_season_stats: {str(e)}")
+        return jsonify({"success": False, "error": str(e)}), 500
+
 def _get_profile():
     #Fetch the authenticated user's profile
     try:

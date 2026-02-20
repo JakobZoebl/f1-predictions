@@ -4,7 +4,7 @@
 
 .header-base::before {
   content: "";
-  @apply absolute bottom-full left-0 w-full h-[500px] bg-inherit pointer-events-none;
+  @apply absolute bottom-full left-0 right-0 h-[500px] bg-inherit pointer-events-none;
   backdrop-filter: inherit;
 }
 

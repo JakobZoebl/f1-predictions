@@ -25,7 +25,7 @@ export function PointsHistoryChart({ data }: PointsHistoryChartProps) {
   const svgRef = useRef<SVGSVGElement>(null)
 
   useEffect(() => {
-    if (!data || data.length === 0 || !containerRef.current || !svgRef.current) return
+    if (!containerRef.current || !svgRef.current) return
 
     const container = containerRef.current
     const svg = d3.select(svgRef.current)
@@ -39,14 +39,25 @@ export function PointsHistoryChart({ data }: PointsHistoryChartProps) {
 
     svg.attr("width", width).attr("height", height)
 
+    const isEmpty = !data || data.length === 0 || data.every(u => u.history.length === 0)
+
     // Scales
-    const allHistory = data.flatMap(d => d.history)
-    const maxPoints = d3.max(allHistory, d => d.cumulativePoints) || 0
-    const rounds = Array.from(new Set(allHistory.map(d => d.round))).sort((a, b) => a - b)
+    let rounds: number[] = []
+    let maxPoints = 0
+
+    if (!isEmpty) {
+      const allHistory = data.flatMap(d => d.history)
+      maxPoints = d3.max(allHistory, d => d.cumulativePoints) || 0
+      rounds = Array.from(new Set(allHistory.map(d => d.round))).sort((a, b) => a - b)
+    } else {
+      // Default values for empty state
+      rounds = [1, 2, 3, 4, 5]
+      maxPoints = 100
+    }
     
     // X Scale (Rounds)
     const x = d3.scaleLinear()
-        .domain([1, d3.max(rounds) || 1])
+        .domain([d3.min(rounds) || 1, d3.max(rounds) || 1])
         .range([margin.left, width - margin.right])
 
     // Y Scale (Points)
@@ -54,12 +65,6 @@ export function PointsHistoryChart({ data }: PointsHistoryChartProps) {
         .domain([0, maxPoints])
         .nice()
         .range([height - margin.bottom, margin.top])
-
-    // Line generator
-    const line = d3.line<PointsHistoryData>()
-        .x(d => x(d.round))
-        .y(d => y(d.cumulativePoints))
-        .curve(d3.curveMonotoneX)
 
     // Axes
     const xAxis = (g: d3.Selection<SVGGElement, unknown, null, undefined>) => g
@@ -78,6 +83,26 @@ export function PointsHistoryChart({ data }: PointsHistoryChartProps) {
 
     svg.append("g").call(xAxis)
     svg.append("g").call(yAxis)
+
+    if (isEmpty) {
+      // Add empty state message
+      svg.append("text")
+          .attr("x", width / 2)
+          .attr("y", height / 2)
+          .attr("text-anchor", "middle")
+          .attr("fill", "rgba(255,255,255,0.4)")
+          .attr("font-size", "14px")
+          .attr("font-style", "italic")
+          .text("No point history available yet this season")
+      
+      return // Don't try to draw lines or dots
+    }
+
+    // Line generator
+    const line = d3.line<PointsHistoryData>()
+        .x(d => x(d.round))
+        .y(d => y(d.cumulativePoints))
+        .curve(d3.curveMonotoneX)
 
     // Draw lines
     const lineGroup = svg.append("g").attr("class", "lines")
@@ -121,8 +146,8 @@ export function PointsHistoryChart({ data }: PointsHistoryChartProps) {
             .attr("stroke-width", 1)
             .style("cursor", "pointer")
             .on("mouseover", function(_event, d) {
-                d3.select(this)
-                    .transition()
+                const element = d3.select(this)
+                element.transition()
                     .duration(200)
                     .attr("r", 7)
                     .attr("stroke-width", 2)
@@ -140,10 +165,10 @@ export function PointsHistoryChart({ data }: PointsHistoryChartProps) {
                 svg.select(`#line-${user.userId.replace(/\s+/g, '-')}`).transition().duration(200).style("opacity", 1).attr("stroke-width", 3)
             })
             .on("mousemove", function(event) {
-                const [x, y] = d3.pointer(event, container)
+                const [xPos, yPos] = d3.pointer(event, container)
                 tooltip
-                    .style("top", (y - 10) + "px")
-                    .style("left", (x + 15) + "px")
+                    .style("top", (yPos - 10) + "px")
+                    .style("left", (xPos + 15) + "px")
             })
             .on("mouseout", function() {
                 d3.select(this)
