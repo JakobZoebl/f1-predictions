@@ -3,6 +3,16 @@
   "devCommand": "npm run dev",
   "buildCommand": "npm run build",
   "outputDirectory": "dist",
+  "rewrites": [
+    {
+      "source": "/api/cron/:match*",
+      "destination": "/api/cron/:match*"
+    },
+    {
+      "source": "/api/(.*)",
+      "destination": "/api/index.py"
+    }
+  ],
   "crons": [
     {
       "path": "/api/cron/fetch-results",
