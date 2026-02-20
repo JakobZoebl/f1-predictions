@@ -2,7 +2,6 @@
 
 import { useEffect, useState, useCallback, useMemo } from "react"
 import { RACES } from "@/lib/f1-presets"
-import ReactCountryFlag from "react-country-flag"
 import "@/frontend/styles/UpcomingRace.css"
 
 // Helper to load track assets dynamically
@@ -102,16 +101,8 @@ export function FeatureRace({ className, style, renderActions, race, resultsMode
                     
                     {/* Meta Info Row */}
                     <div className="flex items-center gap-3 text-sm font-medium text-white">
-                         <div className="flex items-center">
-                            <ReactCountryFlag 
-                                countryCode={nextRace.countryCode} 
-                                svg 
-                                style={{
-                                    width: '1.5em',
-                                    height: '1.1em',
-                                }}
-                                title={nextRace.country}
-                            />
+                         <div className="flex items-center text-lg">
+                            <span title={nextRace.country}>{nextRace.flag}</span>
                         </div>
                         <span className="font-bold uppercase tracking-wider whitespace-nowrap" style={{ color: nextRace.colors.primary }}>
                             Round {nextRace.round}

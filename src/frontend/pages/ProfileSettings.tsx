@@ -1,14 +1,14 @@
 "use client"
 
-import { useState, useEffect } from "react"
+import { useState } from "react"
 import { useAuth } from "@/frontend/auth/AuthContext"
-import { useUserProfile } from "@/lib/hooks/useUserProfile"
+import { useUserProfile, type UserProfile } from "@/lib/hooks/useUserProfile"
+import type { User, Session } from "@supabase/supabase-js"
 
 import { ProfileDetails } from "@/frontend/profile-settings/ProfileDetails"
 import { ThemeCustomization } from "@/frontend/profile-settings/ThemeCustomization"
 import { SecuritySettings } from "@/frontend/profile-settings/SecuritySettings"
 import { F1Header } from "@/frontend/components/f1-header"
-import { TEAMS, DRIVERS } from "@/lib/f1-presets"
 import { supabase } from "@/lib/supabaseClient"
 import { PageLoader } from "@/frontend/components/PageLoader"
 import "@/frontend/styles/ProfileSettings.css"
@@ -17,20 +17,49 @@ export default function ProfileSettings() {
   const { user, session } = useAuth()
   const { profile, loading, error, refetch } = useUserProfile()
 
-  const [selectedTeam, setSelectedTeam] = useState("ferrari")
-  const [selectedDriver, setSelectedDriver] = useState("leclerc")
+  const displayUsername = profile?.username || user?.user_metadata?.username || "User"
+  const isAuthenticated = !!user
 
-  // Sync local dropdowns when profile data arrives or changes
-  const profileTeamId = profile?.favorite_team_id
-  const profileDriverId = profile?.favorite_driver_id
-  useEffect(() => {
-    if (profileTeamId && TEAMS[profileTeamId]) {
-      setSelectedTeam(profileTeamId)
-    }
-    if (profileDriverId && DRIVERS[profileDriverId]) {
-      setSelectedDriver(profileDriverId)
-    }
-  }, [profileTeamId, profileDriverId])
+  return (
+    <div className="profile-settings-container">
+      {/* Content Layer */}
+      <div className="relative z-10 flex min-h-screen flex-col">
+        <F1Header variant="Home" activeNav="Profile" isAuthenticated={isAuthenticated} username={displayUsername} />
+        
+        <main className="profile-settings-page relative pt-24">
+          {loading ? (
+            <PageLoader />
+          ) : error ? (
+            <div className="flex items-center justify-center py-20">
+              <div className="text-red-400 text-lg">{error}</div>
+            </div>
+          ) : (
+            <ProfileSettingsContent 
+              profile={profile} 
+              user={user} 
+              session={session} 
+              refetch={refetch} 
+            />
+          )}
+        </main>
+      </div>
+    </div>
+  )
+}
+
+function ProfileSettingsContent({ 
+  profile, 
+  user, 
+  session, 
+  refetch 
+}: { 
+  profile: UserProfile | null
+  user: User | null
+  session: Session | null
+  refetch: () => Promise<void>
+}) {
+  const [selectedTeam, setSelectedTeam] = useState(profile?.favorite_team_id || "ferrari")
+  const [selectedDriver, setSelectedDriver] = useState(profile?.favorite_driver_id || "leclerc")
 
   // Save display name
   async function handleSaveDisplayName(newDisplayName: string) {
@@ -103,52 +132,30 @@ export default function ProfileSettings() {
     await supabase.auth.signOut()
   }
 
-
-
-  const displayUsername = profile?.username || user?.user_metadata?.username || "User"
-  const isAuthenticated = !!user
-
-  if (loading) return <PageLoader />
-
   return (
-    <div className="profile-settings-container">
-      {/* Content Layer */}
-      <div className="relative z-10 flex min-h-screen flex-col">
-        <F1Header variant="Home" activeNav="Profile" isAuthenticated={isAuthenticated} username={displayUsername} />
-        
-        <main className="profile-settings-page relative pt-24">
-          {error ? (
-            <div className="flex items-center justify-center py-20">
-              <div className="text-red-400 text-lg">{error}</div>
-            </div>
-          ) : (
-            <>
-              <div className="profile-settings-grid">
-                <ProfileDetails
-                  username={profile?.username || ""}
-                  email={profile?.email || user?.email || ""}
-                  displayName={profile?.display_name || ""}
-                  onSaveDisplayName={handleSaveDisplayName}
-                />
-                <ThemeCustomization 
-                  selectedTeam={selectedTeam}
-                  selectedDriver={selectedDriver}
-                  onTeamChange={setSelectedTeam}
-                  onDriverChange={setSelectedDriver}
-                  onSave={handleSavePreferences}
-                />
-              </div>
-              
-              <div className="mt-6">
-                <SecuritySettings
-                  onUpdatePassword={handleUpdatePassword}
-                  onSignOut={handleSignOut}
-                />
-              </div>
-            </>
-          )}
-        </main>
+    <>
+      <div className="profile-settings-grid">
+        <ProfileDetails
+          username={profile?.username || ""}
+          email={profile?.email || user?.email || ""}
+          displayName={profile?.display_name || ""}
+          onSaveDisplayName={handleSaveDisplayName}
+        />
+        <ThemeCustomization 
+          selectedTeam={selectedTeam}
+          selectedDriver={selectedDriver}
+          onTeamChange={setSelectedTeam}
+          onDriverChange={setSelectedDriver}
+          onSave={handleSavePreferences}
+        />
       </div>
-    </div>
+      
+      <div className="mt-6">
+        <SecuritySettings
+          onUpdatePassword={handleUpdatePassword}
+          onSignOut={handleSignOut}
+        />
+      </div>
+    </>
   )
 }
