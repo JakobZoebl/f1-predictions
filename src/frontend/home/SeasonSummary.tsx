@@ -37,11 +37,12 @@ export interface SeasonStats {
 
 interface SeasonSummaryProps {
     username?: string
+    avatarUrl?: string | null
     stats?: SeasonStats | null
     loading?: boolean
 }
 
-export function SeasonSummary({ username, stats, loading }: SeasonSummaryProps) {
+export function SeasonSummary({ username, avatarUrl, stats, loading }: SeasonSummaryProps) {
   const displayUsername = username ? `@${username}` : "@username"
   
   if (loading) {
@@ -62,8 +63,16 @@ export function SeasonSummary({ username, stats, loading }: SeasonSummaryProps) 
     <Card className="season-summary-card">
       <CardHeader className="pb-2">
         <div className="summary-header-content">
-            <div className="summary-user-icon-wrapper">
-                <User className="summary-user-icon" />
+            <div className="summary-user-icon-wrapper" style={{ overflow: "hidden", position: "relative" }}>
+                 {avatarUrl ? (
+                     <img 
+                       src={avatarUrl} 
+                       alt="User Avatar" 
+                       style={{ width: "100%", height: "100%", objectFit: "cover" }} 
+                     />
+                 ) : (
+                     <User className="summary-user-icon" />
+                 )}
             </div>
             <div>
                  <CardTitle className="summary-title">Your Season Summary</CardTitle>

@@ -6,6 +6,7 @@ export interface UserProfile {
   username: string
   display_name: string
   email: string
+  avatar_url?: string | null
   favorite_team_id: string | null
   favorite_driver_id: string | null
   created_at?: string | null
@@ -51,6 +52,7 @@ export function UserProfileProvider({ children }: { children: ReactNode }) {
           username: p.username,
           display_name: p.display_name || "",
           email: p.email || user?.email || "",
+          avatar_url: p.avatar_url,
           favorite_team_id: p.favorite_team_id,
           favorite_driver_id: p.favorite_driver_id,
           created_at: p.created_at,

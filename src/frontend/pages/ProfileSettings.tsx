@@ -1,9 +1,10 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { useAuth } from "@/frontend/auth/AuthContext"
 import { useUserProfile, type UserProfile } from "@/lib/hooks/useUserProfile"
 import type { User, Session } from "@supabase/supabase-js"
+import { useBackground } from "@/frontend/components/BackgroundContext"
 
 import { ProfileDetails } from "@/frontend/profile-settings/ProfileDetails"
 import { ThemeCustomization } from "@/frontend/profile-settings/ThemeCustomization"
@@ -62,6 +63,24 @@ function ProfileSettingsContent({
 }) {
   const [selectedTeam, setSelectedTeam] = useState(profile?.favorite_team_id || "ferrari")
   const [selectedDriver, setSelectedDriver] = useState(profile?.favorite_driver_id || "leclerc")
+
+  const { setBackgroundConfig, resetToDefault } = useBackground()
+
+  // Live background preview based on dropdown selection
+  useEffect(() => {
+    setBackgroundConfig({
+      type: "team-driver",
+      teamId: selectedTeam,
+      driverId: selectedDriver
+    })
+  }, [selectedTeam, selectedDriver, setBackgroundConfig])
+
+  // Revert preview on unmount to prevent unintended background changes across pages
+  useEffect(() => {
+    return () => {
+      resetToDefault()
+    }
+  }, [resetToDefault])
 
   // Save display name
   async function handleSaveDisplayName(newDisplayName: string) {

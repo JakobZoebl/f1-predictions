@@ -38,7 +38,7 @@ export default function Leaderboard() {
                     rank,
                     user_id,
                     total_points,
-                    users (username, display_name)
+                    users (username, display_name, avatar_url)
                 `)
                 .order('rank', { ascending: true })
 
@@ -52,6 +52,7 @@ export default function Leaderboard() {
             userId: entry.user_id,
             username: user?.username || 'Unknown',
             displayName: user?.display_name || user?.username || 'Unknown',
+            avatarUrl: user?.avatar_url,
             points: entry.total_points || 0,
             movement: 0, // Placeholder
           }

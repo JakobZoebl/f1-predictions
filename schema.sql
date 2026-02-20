@@ -32,6 +32,7 @@ CREATE TABLE public.users (
   id UUID NOT NULL PRIMARY KEY,
   username CHARACTER VARYING NOT NULL UNIQUE,
   display_name CHARACTER VARYING,
+  avatar_url CHARACTER VARYING,
   favorite_team_id CHARACTER VARYING,
   favorite_driver_id CHARACTER VARYING,
   created_at TIMESTAMP WITHOUT TIME ZONE DEFAULT NOW(),

@@ -5,6 +5,7 @@ import {
   TableCell,
   TableRow,
 } from "@/frontend/components/table"
+import { Avatar, AvatarFallback, AvatarImage } from "@/frontend/components/avatar"
 import { Trophy } from "lucide-react"
 import { Link } from "react-router-dom"
 
@@ -53,8 +54,13 @@ export function MiniLeaderboard({ data, currentUserId }: MiniLeaderboardProps) {
                     </div>
                 </TableCell>
                 <TableCell className="user-cell">
-                  <div className="user-info-wrapper">
-                    {/* Simplified Avatar */}
+                  <div className="user-info-wrapper flex items-center gap-2">
+                    <Avatar className="h-6 w-6 border border-white/10">
+                      <AvatarImage src={entry.avatarUrl} alt={entry.username} />
+                      <AvatarFallback className="bg-white/10 text-[10px] text-white">
+                        {entry.username.slice(0, 2).toUpperCase()}
+                      </AvatarFallback>
+                    </Avatar>
                     <span className={`user-display-name ${currentUserId === entry.userId ? "user-name-active" : "user-name-inactive"}`}>
                         {currentUserId === entry.userId ? "YOU" : entry.displayName}
                     </span>

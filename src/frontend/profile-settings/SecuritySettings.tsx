@@ -86,7 +86,7 @@ export function SecuritySettings({ onUpdatePassword, onSignOut }: SecuritySettin
         <div className="mt-3 text-red-400 text-sm">{error}</div>
       )}
 
-      <div className="flex justify-between items-center mt-6">
+      <div className="sign-out-container">
         <button 
           onClick={handleUpdatePassword}
           disabled={saving}
@@ -99,13 +99,16 @@ export function SecuritySettings({ onUpdatePassword, onSignOut }: SecuritySettin
           )}
         </button>
 
-        <button 
-          onClick={onSignOut}
-          className="text-red-500 hover:text-red-400 text-sm font-medium flex items-center gap-2 transition-colors"
-        >
-          <LogOut className="h-4 w-4" />
-          Sign out of all devices
-        </button>
+        <div className="sign-out-group">
+          <div className="text-xs text-red-300/60 uppercase tracking-widest font-bold mb-1">Session Management</div>
+          <button 
+            onClick={onSignOut}
+            className="sign-out-button"
+          >
+            <LogOut className="h-4 w-4" />
+            Sign out of all devices
+          </button>
+        </div>
       </div>
     </div>
   )

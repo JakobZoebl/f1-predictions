@@ -17,8 +17,125 @@ def profile():
     """Handle profile fetch and update (both authenticated)."""
     if request.method == 'GET':
         return _get_profile()
-    else:
+    elif request.method == 'PUT':
         return _update_profile()
+    return jsonify({"success": False, "error": "Method not allowed"}), 405
+
+@profile_bp.route('/api/profile/avatar', methods=['POST', 'DELETE'])
+@require_auth
+def manage_avatar():
+    """Handle uploading or deleting a profile picture."""
+    if request.method == 'POST':
+        return upload_avatar()
+    elif request.method == 'DELETE':
+        return delete_avatar()
+    return jsonify({"success": False, "error": "Method not allowed"}), 405
+
+def upload_avatar():
+    """Handle uploading a new profile picture."""
+    try:
+        user = g.current_user
+        
+        if 'file' not in request.files:
+            return jsonify({"success": False, "error": "No file part in the request"}), 400
+            
+        file = request.files['file']
+        
+        if file.filename == '':
+            return jsonify({"success": False, "error": "No selected file"}), 400
+            
+        if not file.content_type.startswith('image/'):
+            return jsonify({"success": False, "error": "File is not an image"}), 400
+            
+        # Optional: restrict size (e.g., to 5MB)
+        file.seek(0, os.SEEK_END)
+        file_length = file.tell()
+        file.seek(0, os.SEEK_SET) # reset pointer 
+        if file_length > 5 * 1024 * 1024:
+            return jsonify({"success": False, "error": "Image file is too large (max 5MB)"}), 400
+        
+        import uuid
+        # Generate a unique filename using UUID
+        ext = file.filename.rsplit('.', 1)[1].lower() if '.' in file.filename else 'jpg'
+        filename = f"{user['id']}/{uuid.uuid4()}.{ext}"
+        
+        supabase = get_supabase_client()
+        
+        # Read the file content
+        file_data = file.read()
+        
+        # Upload to Supabase Storage (requires a public bucket named 'avatars')
+        res = supabase.storage.from_("avatars").upload(
+            file=file_data,
+            path=filename,
+            file_options={"content-type": file.content_type, "upsert": "true"}
+        )
+        
+        # Get the public URL for the uploaded file
+        public_url = supabase.storage.from_("avatars").get_public_url(filename)
+        
+        # Update the user's profile with the new avatar_url
+        update_result = (
+            supabase.table("users")
+            .update({"avatar_url": public_url})
+            .eq("id", user["id"])
+            .execute()
+        )
+        
+        if not update_result.data:
+             return jsonify({"success": False, "error": "Failed to update user profile with image URL"}), 500
+            
+        return jsonify({"success": True, "avatar_url": public_url}), 200
+
+    except Exception as e:
+        import traceback
+        traceback.print_exc()
+        return jsonify({"success": False, "error": f"Server error: {str(e)}"}), 500
+
+def delete_avatar():
+    """Handle deleting the current profile picture."""
+    try:
+        user = g.current_user
+        supabase = get_supabase_client()
+        
+        # 1. Get the current avatar_url
+        res = supabase.table("users").select("avatar_url").eq("id", user["id"]).single().execute()
+        
+        if not res.data or not res.data.get("avatar_url"):
+            return jsonify({"success": True, "message": "No avatar to delete"}), 200
+            
+        avatar_url = res.data["avatar_url"]
+        
+        # 2. Extract the file path from the URL
+        # URL format: .../storage/v1/object/public/avatars/USER_ID/FILENAME.ext
+        # We need everything after "/avatars/"
+        try:
+            path = avatar_url.split("/avatars/")[1]
+        except (IndexError, AttributeError):
+            # If URL format is unexpected, just nullify the DB entry
+            path = None
+            
+        # 3. Delete from storage if path exists
+        if path:
+            supabase.storage.from_("avatars").remove([path])
+            
+        # 4. Nullify the avatar_url in the database
+        update_res = (
+            supabase.table("users")
+            .update({"avatar_url": None})
+            .eq("id", user["id"])
+            .execute()
+        )
+        
+        if not update_res.data:
+            return jsonify({"success": False, "error": "Failed to update user profile"}), 500
+            
+        return jsonify({"success": True, "message": "Avatar deleted successfully"}), 200
+        
+    except Exception as e:
+        import traceback
+        traceback.print_exc()
+        return jsonify({"success": False, "error": f"Server error: {str(e)}"}), 500
 
 @profile_bp.route('/api/profile/season-stats', methods=['GET'])
 @require_auth
@@ -249,7 +366,7 @@ def _get_profile():
 
         result = (
             supabase.table("users")
-            .select("username, display_name, favorite_team_id, favorite_driver_id, created_at")
+            .select("username, display_name, avatar_url, favorite_team_id, favorite_driver_id, created_at")
             .eq("id", user["id"])
             .single()
             .execute()
