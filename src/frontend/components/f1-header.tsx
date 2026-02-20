@@ -84,7 +84,7 @@ export function F1Header({
         {variant === "Home" && (
           <nav className="header-center-nav" aria-label="Main navigation">
             <Link
-              to="/Home"
+              to="/home"
               className={cn(
                 "header-nav-link",
                 activeNav === "Home" ? "header-nav-link-active" : "header-nav-link-inactive"

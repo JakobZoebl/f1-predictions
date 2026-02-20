@@ -14,6 +14,7 @@ import { Top5Constructors } from "@/frontend/results/Top5Constructors"
 import { BonusResults } from "@/frontend/results/BonusResults"
 import type { RaceResult } from "@/frontend/results/utils"
 import { PageLoader } from "@/frontend/components/PageLoader"
+import { useBackground } from "@/frontend/components/BackgroundContext"
 import "@/frontend/styles/RacePredictions.css"
 
 export default function RaceResults() {
@@ -26,6 +27,8 @@ export default function RaceResults() {
   const [results, setResults] = useState<RaceResult[]>([])
   const [loading, setLoading] = useState(true)
 
+  const { setBackgroundConfig } = useBackground()
+
   useEffect(() => {
     fetch("/data/race_results.csv")
       .then((res) => res.text())
@@ -37,9 +40,24 @@ export default function RaceResults() {
            return { Category, Position, Actual, Predicted, Points, Team: Team?.trim(), Details: Details?.trim() }
         }).filter(r => r.Category)
         setResults(parsed)
+        
+        // Find winner to set background
+        const winner = parsed.find(r => r.Category === "RESULT" && r.Position === "1")
+        if (winner && winner.Actual) {
+          // Normalize names for presets
+          const driverKey = winner.Actual.toLowerCase().replace(/\s+/g, "")
+          const teamKey = winner.Team?.toLowerCase().replace(/\s+/g, "") || ""
+          
+          setBackgroundConfig({
+            type: "team-driver",
+            driverId: driverKey,
+            teamId: teamKey
+          })
+        }
+        
         setLoading(false)
       })
-  }, [])
+  }, [setBackgroundConfig])
 
   // Derived data
   const top10 = results.filter((r) => r.Category === "RESULT")
