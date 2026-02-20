@@ -1,7 +1,7 @@
 /* ── Home Page Styles ── */
 
 .home-page-container {
-  @apply relative min-h-screen bg-background text-foreground overflow-x-hidden;
+  @apply relative min-h-screen text-foreground overflow-x-hidden;
 }
 
 .home-main-content {

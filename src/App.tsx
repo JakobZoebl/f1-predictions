@@ -15,31 +15,36 @@ import SeasonOverview from "@/frontend/pages/SeasonOverview"
 import SeasonPredictions from "@/frontend/pages/SeasonPredictions"
 import ProfileSettings from "@/frontend/pages/ProfileSettings"
 import RaceResults from "@/frontend/pages/RaceResults"
+import { BackgroundProvider } from "@/frontend/components/BackgroundContext"
+
 
 function App() {
   return (
     <AuthProvider>
       <UserProfileProvider>
-        <Routes>
-          {/* Public / Auth routes (they have their own specific backgrounds) */}
-          <Route path="/" element={<LandingPage />} />
-          <Route path="/login" element={<Login />} />
-          <Route path="/signup" element={<SignUp />} />
-          <Route path="/auth/callback" element={<AuthCallback />} />
-          
-          {/* Authenticated routes wrapped with the team/driver background layout */}
-          <Route element={<BackgroundLayout />}>
-            <Route path="/profile" element={<ProfilePage />} />
-            <Route path="/leaderboard" element={<Leaderboard />} />
-            <Route path="/race-predictions" element={<RacePredictions />} />
-            <Route path="/season-predictions" element={<SeasonPredictions />} />
-            <Route path="/season-overview" element={<SeasonOverview />} />
-            <Route path="/home" element={<Home />} />
-            <Route path="/profile-settings" element={<ProfileSettings />} />
-            <Route path="/race-results" element={<RaceResults />} />
-          </Route>
-        </Routes>
+        <BackgroundProvider>
+          <Routes>
+            {/* Public / Auth routes (they have their own specific backgrounds) */}
+            <Route path="/" element={<LandingPage />} />
+            <Route path="/login" element={<Login />} />
+            <Route path="/signup" element={<SignUp />} />
+            <Route path="/auth/callback" element={<AuthCallback />} />
+            
+            {/* Authenticated routes wrapped with the team/driver background layout */}
+            <Route element={<BackgroundLayout />}>
+              <Route path="/profile" element={<ProfilePage />} />
+              <Route path="/leaderboard" element={<Leaderboard />} />
+              <Route path="/race-predictions" element={<RacePredictions />} />
+              <Route path="/season-predictions" element={<SeasonPredictions />} />
+              <Route path="/season-overview" element={<SeasonOverview />} />
+              <Route path="/home" element={<Home />} />
+              <Route path="/profile-settings" element={<ProfileSettings />} />
+              <Route path="/race-results" element={<RaceResults />} />
+            </Route>
+          </Routes>
+        </BackgroundProvider>
       </UserProfileProvider>
+
     </AuthProvider>
   )
 }

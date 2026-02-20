@@ -25,15 +25,21 @@ export function BackgroundLayout() {
       "/signup"
     ]
 
-    if (blankPages.some(p => path.startsWith(p))) {
-      setBackgroundConfig({ type: "blank" })
+    const isBlankPage = blankPages.some(p => p === "/" ? path === "/" : path.startsWith(p))
+
+    if (isBlankPage) {
+      if (config.type !== "blank") {
+        setBackgroundConfig({ type: "blank" })
+      }
     } else {
       // Default behavior for other pages (Home, Profile, etc.) will use Team/Driver background
       // pages like Results and Leaderboard will handle their own overrides via context
-      if (config.type === "blank" && !blankPages.some(p => path.startsWith(p))) {
+      if (config.type === "blank" && !isBlankPage) {
         setBackgroundConfig({ type: "team-driver" })
       }
     }
+
+
   }, [location.pathname, setBackgroundConfig, config.type])
 
   // Resolve team/driver based on config or user profile

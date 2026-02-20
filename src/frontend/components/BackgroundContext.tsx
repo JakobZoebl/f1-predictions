@@ -1,6 +1,6 @@
 "use client"
 
-import { createContext, useContext, useState, type ReactNode } from "react"
+import { createContext, useContext, useState, useCallback, useMemo, type ReactNode } from "react"
 
 export type BackgroundType = "blank" | "team-driver"
 
@@ -22,16 +22,18 @@ const BackgroundContext = createContext<BackgroundContextType | undefined>(undef
 export function BackgroundProvider({ children }: { children: ReactNode }) {
   const [config, setConfig] = useState<BackgroundConfig>({ type: "team-driver" })
 
-  const setBackgroundConfig = (newConfig: BackgroundConfig) => {
+  const setBackgroundConfig = useCallback((newConfig: BackgroundConfig) => {
     setConfig(newConfig)
-  }
+  }, [])
 
-  const resetToDefault = () => {
+  const resetToDefault = useCallback(() => {
     setConfig({ type: "team-driver" })
-  }
+  }, [])
+
+  const value = useMemo(() => ({ config, setBackgroundConfig, resetToDefault }), [config, setBackgroundConfig, resetToDefault])
 
   return (
-    <BackgroundContext.Provider value={{ config, setBackgroundConfig, resetToDefault }}>
+    <BackgroundContext.Provider value={value}>
       {children}
     </BackgroundContext.Provider>
   )
