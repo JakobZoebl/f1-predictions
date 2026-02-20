@@ -5,7 +5,6 @@ import { useAuth } from "@/frontend/auth/AuthContext"
 import { useUserProfile } from "@/lib/hooks/useUserProfile"
 import { F1Header } from "@/frontend/components/f1-header"
 import { F1Footer } from "@/frontend/components/f1-footer"
-import { F1Background } from "@/frontend/components/blank-background"
 import { DriverDragDrop } from "@/frontend/predictions/DriverDragDrop"
 import { ConstructorDragDrop } from "@/frontend/predictions/ConstructorDragDrop"
 import { SeasonBonusPredictions, type SeasonBonusValues } from "@/frontend/predictions/SeasonBonusPredictions"
@@ -101,7 +100,7 @@ export default function SeasonPredictions() {
   if (loading) return <PageLoader />
 
   return (
-    <F1Background>
+    <>
       <F1Header variant="Home" activeNav="SeasonPredictions" isAuthenticated={isAuthenticated} username={displayUsername} />
 
       <main className="container mx-auto px-4 py-8 space-y-8 flex-1">
@@ -196,6 +195,6 @@ export default function SeasonPredictions() {
       </main>
 
       <F1Footer />
-    </F1Background>
+    </>
   )
 }

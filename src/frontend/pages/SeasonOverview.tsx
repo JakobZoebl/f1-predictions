@@ -3,7 +3,6 @@ import { useAuth } from "@/frontend/auth/AuthContext"
 import { useUserProfile } from "@/lib/hooks/useUserProfile"
 import { RACES, SPRINTS } from "@/lib/f1-presets"
 import { F1Header } from "@/frontend/components/f1-header"
-import { F1Background } from "@/frontend/components/blank-background"
 import { FeatureRace } from "@/frontend/components/FeatureRace"
 import { Button } from "@/frontend/components/button"
 import { Link } from "react-router-dom"
@@ -30,7 +29,6 @@ export default function SeasonOverview() {
 
   return (
     <div className="season-overview-container">
-      <F1Background>
       <F1Header variant="Home" activeNav="Season" isAuthenticated={isAuthenticated} username={displayUsername} />
       
       <main className="season-overview-main">
@@ -106,7 +104,6 @@ export default function SeasonOverview() {
           })()}
         </div>
       </main>
-      </F1Background>
     </div>
   )
 }

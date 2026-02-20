@@ -101,9 +101,6 @@ export function FeatureRace({ className, style, renderActions, race, resultsMode
                     
                     {/* Meta Info Row */}
                     <div className="flex items-center gap-3 text-sm font-medium text-white">
-                         <div className="flex items-center text-lg">
-                            <span title={nextRace.country}>{nextRace.flag}</span>
-                        </div>
                         <span className="font-bold uppercase tracking-wider whitespace-nowrap" style={{ color: nextRace.colors.primary }}>
                             Round {nextRace.round}
                         </span>

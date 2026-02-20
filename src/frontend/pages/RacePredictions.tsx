@@ -5,7 +5,6 @@ import { useAuth } from "@/frontend/auth/AuthContext"
 import { useUserProfile } from "@/lib/hooks/useUserProfile"
 import { F1Header } from "@/frontend/components/f1-header"
 import { F1Footer } from "@/frontend/components/f1-footer"
-import { F1Background } from "@/frontend/components/blank-background"
 import { FeatureRace } from "@/frontend/components/FeatureRace"
 import { DriverDragDrop } from "@/frontend/predictions/DriverDragDrop"
 import { ConstructorDragDrop } from "@/frontend/predictions/ConstructorDragDrop"
@@ -99,7 +98,7 @@ export default function RacePredictions() {
   if (loading) return <PageLoader />
 
   return (
-    <F1Background primaryColor={primaryColor}>
+    <>
       <F1Header variant="Home" activeNav="RacePredictions" primaryColor={primaryColor} isAuthenticated={isAuthenticated} username={displayUsername} />
 
       <main 
@@ -157,6 +156,6 @@ export default function RacePredictions() {
       </main>
 
       <F1Footer primaryColor={primaryColor} />
-    </F1Background>
+    </>
   )
 }
