@@ -1,11 +1,10 @@
 "use client"
 
-import { useEffect, useState, useMemo } from "react"
+import { useEffect, useState} from "react"
 import { useAuth } from "@/frontend/auth/AuthContext"
 import { useUserProfile } from "@/lib/hooks/useUserProfile"
 import { F1Header } from "@/frontend/components/f1-header"
 import { F1Footer } from "@/frontend/components/f1-footer"
-import { LeaderboardTable, type LeaderboardEntry } from "@/frontend/leaderboard/LeaderboardTable"
 import { Top10Drivers } from "@/frontend/results/Top10Drivers"
 import { Top5Constructors } from "@/frontend/results/Top5Constructors"
 import { BonusResults } from "@/frontend/results/BonusResults"
@@ -69,20 +68,6 @@ export default function SeasonResults() {
   const userScore = currentUserRow
     ? parseInt(currentUserRow.Points)
     : driverScore + constructorScore + bonusScore
-
-  const leaderboardEntries = useMemo<LeaderboardEntry[]>(() => {
-    return leaderboardRows.map((row) => {
-      const username = (row.Team || "unknown").replace(/^@/, "")
-      return {
-        rank: parseInt(row.Position) || 0,
-        userId: username,
-        username,
-        displayName: row.Team || "Unknown",
-        points: parseInt(row.Points) || 0,
-        movement: 0,
-      }
-    })
-  }, [leaderboardRows])
 
   if (loading || profileLoading) return <PageLoader />
 
@@ -159,11 +144,6 @@ export default function SeasonResults() {
             </div>
           </div>
 
-          <LeaderboardTable
-            data={leaderboardEntries}
-            title="Season Leaderboard"
-            currentUserId={displayUsername}
-          />
         </main>
 
         <F1Footer />
