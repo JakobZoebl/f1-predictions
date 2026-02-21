@@ -15,6 +15,7 @@ import { BonusResults } from "@/frontend/results/BonusResults"
 import type { RaceResult } from "@/frontend/results/utils"
 import { PageLoader } from "@/frontend/components/PageLoader"
 import { useBackground } from "@/frontend/components/BackgroundContext"
+import { useLastRace } from "@/lib/hooks/useLastRace"
 import "@/frontend/styles/RacePredictions.css"
 
 export default function RaceResults() {
@@ -27,6 +28,8 @@ export default function RaceResults() {
   const [results, setResults] = useState<RaceResult[]>([])
   const [raceInfo, setRaceInfo] = useState<Record<string, unknown> | null>(null)
   const [loading, setLoading] = useState(true)
+
+  const lastRace = useLastRace()
 
   const { setBackgroundConfig, resetToDefault } = useBackground()
 
@@ -108,8 +111,10 @@ export default function RaceResults() {
   }, [results])
 
   // Find the race
-  const race = raceInfo ? RACES.find(r => r.round === raceInfo.round) : undefined
+  const race = lastRace
+  console.log(race)
   const primaryColor = race?.colors?.primary
+  console.log(primaryColor)
 
   // Calculate dynamic style for prediction elements
   const accentStyle = primaryColor 
@@ -132,7 +137,7 @@ export default function RaceResults() {
              Actually F1Header might need specific colors or transparent. 
              F1Background is fixed, so we just sit on top.
          */}
-        <F1Header variant="Home" activeNav="Results" isAuthenticated={isAuthenticated} username={displayUsername} primaryColor={primaryColor} />
+        <F1Header variant="Home" activeNav="Results" primaryColor={primaryColor} isAuthenticated={isAuthenticated} username={displayUsername} />
 
         <main 
             className="container mx-auto px-4 py-8 space-y-8 flex-1"

@@ -12,8 +12,8 @@ import { DriverDragDrop } from "@/frontend/predictions/DriverDragDrop"
 import { ConstructorDragDrop } from "@/frontend/predictions/ConstructorDragDrop"
 import { BonusPredictions, type BonusValues } from "@/frontend/predictions/BonusPredictions"
 import { PredictionSummary } from "@/frontend/predictions/PredictionSummary"
-import { useNextRace } from "@/lib/hooks/useNextRace"
-import { DRIVERS, TEAMS } from "@/lib/f1-presets"
+import { useNextSprint } from "@/lib/hooks/useNextSprint"
+import { DRIVERS, TEAMS, type RaceEvent } from "@/lib/f1-presets"
 import { hexToHsl } from "@/lib/utils"
 import { PageLoader } from "@/frontend/components/PageLoader"
 import "@/frontend/styles/RacePredictions.css"
@@ -37,8 +37,8 @@ export default function SprintPredictions() {
   const [selectedConstructors, setSelectedConstructors] = useState<(string | null)[]>(Array(5).fill(null))
   const [bonusValues, setBonusValues] = useState<BonusValues>(INITIAL_BONUS)
 
-  const nextRace = useNextRace()
-  const primaryColor = nextRace?.colors?.primary
+  const nextSprint: RaceEvent | undefined = useNextSprint() ?? undefined
+  const primaryColor = nextSprint?.colors?.primary
 
   const [isLoadingPredictions, setIsLoadingPredictions] = useState(false)
   const [submitError, setSubmitError] = useState<string | null>(null)
@@ -47,13 +47,13 @@ export default function SprintPredictions() {
   // Fetch existing predictions
   useEffect(() => {
     async function fetchPredictions() {
-      if (!isAuthenticated || !nextRace?.round) return;
+      if (!isAuthenticated || !nextSprint?.round) return;
       
       setIsLoadingPredictions(true);
       try {
         const token = user?.id ? await supabase.auth.getSession().then(({ data }: {data: {session: Session | null}}) => data.session?.access_token) : null;
         
-        const response = await fetch(`/api/predictions?session_type=sprint&race_id=${nextRace.round}`, {
+        const response = await fetch(`/api/predictions?session_type=sprint&race_id=${nextSprint.round}`, {
           headers: {
             'Authorization': `Bearer ${token}`
           }
@@ -95,10 +95,10 @@ export default function SprintPredictions() {
       }
     }
 
-    if (nextRace?.round && user) {
+    if (nextSprint?.round && user) {
         fetchPredictions();
     }
-  }, [nextRace?.round, user, isAuthenticated]);
+  }, [nextSprint?.round, user, isAuthenticated]);
 
   const handleDriversChange = useCallback((drivers: (string | null)[]) => {
     setSelectedDrivers(drivers)
@@ -158,7 +158,7 @@ export default function SprintPredictions() {
     : {};
 
   const handleSubmit = async () => {
-    if (!isAuthenticated || !nextRace?.round) return;
+    if (!isAuthenticated || !nextSprint?.round) return;
 
     setSubmitError(null);
     setSubmitSuccess(false);
@@ -168,7 +168,7 @@ export default function SprintPredictions() {
       
       const payload = {
         session_type: 'sprint',
-        race_id: nextRace.round,
+        race_id: nextSprint.round,
         drivers: selectedDrivers,
         constructors: selectedConstructors,
         bonus: bonusValues
@@ -207,7 +207,7 @@ export default function SprintPredictions() {
         style={accentStyle}
       >
         {/* Race Info Banner */}
-        <FeatureRace />
+        <FeatureRace race = {nextSprint}/>
 
         {/* Top 8 Drivers */}
         <section className="prediction-section">
