@@ -1,7 +1,7 @@
 "use client"
 
 import { useEffect, useState, useCallback, useMemo } from "react"
-import { RACES } from "@/lib/f1-presets"
+import { RACES, SPRINTS } from "@/lib/f1-presets"
 import "@/frontend/styles/UpcomingRace.css"
 
 // Helper to load track assets dynamically
@@ -51,18 +51,30 @@ export function FeatureRace({ className, style, renderActions, race, resultsMode
     const nextRace = useMemo(() => {
         if (race) return race
         if (!RACES || RACES.length === 0) return null
-        // Find the first race in the future
+        
+        const allEvents = [...RACES, ...SPRINTS].sort((a, b) => {
+            const dateA = new Date(`${a.date}T${a.time.split(' ')[0]}:00Z`);
+            const dateB = new Date(`${b.date}T${b.time.split(' ')[0]}:00Z`);
+            return dateA.getTime() - dateB.getTime();
+        });
+
+        // Find the first event where results are not yet available (now < 00:00 day after event.date)
         const now = new Date()
-        const upcoming = RACES.find(r => {
-            const raceTime = new Date(`${r.date}T${r.time.split(' ')[0]}:00Z`)
-            return raceTime > now
+        const upcoming = allEvents.find(r => {
+            const resultsDay = new Date(r.date);
+            resultsDay.setUTCDate(resultsDay.getUTCDate() + 1);
+            resultsDay.setUTCHours(0, 0, 0, 0);
+            return resultsDay > now
         })
-        return upcoming || RACES[0]
+        return upcoming || allEvents[allEvents.length - 1]
     }, [race])
 
-    const raceDate = useMemo(() => {
+    const targetDate = useMemo(() => {
         if (!nextRace) return new Date()
         try {
+            if (nextRace.cutoff) {
+                return new Date(nextRace.cutoff.replace(' ', 'T') + ':00Z')
+            }
              const timePart = nextRace.time.split(' ')[0]
              const timeWithSeconds = timePart.length === 5 ? `${timePart}:00` : timePart
              return new Date(`${nextRace.date}T${timeWithSeconds}Z`)
@@ -72,7 +84,7 @@ export function FeatureRace({ className, style, renderActions, race, resultsMode
         }
     }, [nextRace])
 
-    const { days, hours, minutes } = useCountdown(raceDate)
+    const { days, hours, minutes } = useCountdown(targetDate)
 
     if (!nextRace) return <div className="p-8 text-center text-white">No upcoming races found</div>
 
@@ -100,7 +112,7 @@ export function FeatureRace({ className, style, renderActions, race, resultsMode
                     </span>
                     
                     {/* Meta Info Row */}
-                    <div className="flex items-center gap-3 text-sm font-medium text-white">
+                    <div className="flex flex-wrap items-center gap-x-3 gap-y-1 text-sm font-medium text-white">
                         <span className="font-bold uppercase tracking-wider whitespace-nowrap" style={{ color: nextRace.colors.primary }}>
                             Round {nextRace.round}
                         </span>
@@ -166,7 +178,15 @@ export function FeatureRace({ className, style, renderActions, race, resultsMode
                 </div>
 
                 {renderActions && (
-                    <div className="race-actions-bottom">
+                    <div className="race-actions-bottom flex flex-col items-start gap-2">
+                        {nextRace.cutoff && !resultsMode && (
+                             <div className="flex items-center gap-1.5 opacity-80 mb-1">
+                                <span style={{ color: nextRace.colors.primary }} className="font-bold uppercase text-sm tracking-wider">Locks:</span>
+                                <span className="text-sm font-medium text-white/90">
+                                    {new Date(nextRace.cutoff.replace(' ', 'T') + ':00Z').toLocaleString('en-GB', { day: '2-digit', month: 'short', hour: '2-digit', minute: '2-digit' })}
+                                </span>
+                             </div>
+                        )}
                         {renderActions(nextRace.colors)}
                     </div>
                 )}

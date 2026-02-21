@@ -207,9 +207,108 @@ VALUES
     ) ON CONFLICT (season, round) DO
 UPDATE
 SET
-    date = EXCLUDED.date,
-    cutoff = EXCLUDED.cutoff,
     status = EXCLUDED.status;
+
+-- 2.1 SPRINTS
+INSERT INTO
+    public.sprints (race_id, season, round, date, cutoff, status)
+VALUES
+    (
+        (
+            SELECT
+                id
+            FROM
+                public.races
+            WHERE
+                season = 2026
+                AND round = 2
+        ),
+        2026,
+        2,
+        '2026-02-14 14:00:00',
+        '2026-02-14 13:00:00',
+        'completed'
+    ),
+    (
+        (
+            SELECT
+                id
+            FROM
+                public.races
+            WHERE
+                season = 2026
+                AND round = 6
+        ),
+        2026,
+        6,
+        '2026-05-02 21:00:00',
+        '2026-05-01 20:00:00',
+        'upcoming'
+    ),
+    (
+        (
+            SELECT
+                id
+            FROM
+                public.races
+            WHERE
+                season = 2026
+                AND round = 7
+        ),
+        2026,
+        7,
+        '2026-05-23 19:00:00',
+        '2026-05-22 18:00:00',
+        'upcoming'
+    ),
+    (
+        (
+            SELECT
+                id
+            FROM
+                public.races
+            WHERE
+                season = 2026
+                AND round = 11
+        ),
+        2026,
+        11,
+        '2026-07-04 15:00:00',
+        '2026-07-03 14:00:00',
+        'upcoming'
+    ),
+    (
+        (
+            SELECT
+                id
+            FROM
+                public.races
+            WHERE
+                season = 2026
+                AND round = 14
+        ),
+        2026,
+        14,
+        '2026-08-22 14:00:00',
+        '2026-08-21 13:00:00',
+        'upcoming'
+    ),
+    (
+        (
+            SELECT
+                id
+            FROM
+                public.races
+            WHERE
+                season = 2026
+                AND round = 18
+        ),
+        2026,
+        18,
+        '2026-10-10 13:00:00',
+        '2026-10-09 12:00:00',
+        'upcoming'
+    ) ON CONFLICT (season, round) DO NOTHING;
 
 -- 3. DRIVER STANDINGS (Updated with mock result points)
 INSERT INTO

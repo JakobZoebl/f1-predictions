@@ -7,12 +7,12 @@ export function useNextSprint(): RaceEvent | null {
     // Find the first race in the future
     const now = new Date()
     const upcoming = SPRINTS.find((r) => {
-      const timePart = r.time.split(" ")[0]
-      const dateTimeString = `${r.date}T${timePart}:00Z` // Appending Z usually implies UTC, but original code did this. 
+      const resultsDay = new Date(r.date)
+      resultsDay.setUTCDate(resultsDay.getUTCDate() + 1)
+      resultsDay.setUTCHours(0, 0, 0, 0)
 
-      const raceTime = new Date(dateTimeString)
-      return raceTime > now
+      return resultsDay > now
     })
-    return upcoming || SPRINTS[0]
+    return upcoming || SPRINTS[SPRINTS.length - 1]
   }, [])
 }

@@ -14,6 +14,7 @@ DROP TABLE IF EXISTS public.constructor_standings CASCADE;
 DROP TABLE IF EXISTS public.driver_standings CASCADE;
 DROP TABLE IF EXISTS public.season_predictions CASCADE;
 DROP TABLE IF EXISTS public.sprint_predictions CASCADE;
+DROP TABLE IF EXISTS public.sprints CASCADE;
 DROP TABLE IF EXISTS public.predictions CASCADE;
 DROP TABLE IF EXISTS public.races CASCADE;
 DROP TABLE IF EXISTS public.seasons CASCADE;
@@ -159,6 +160,19 @@ CREATE TABLE public.sprint_results (
   red_flag BOOLEAN,
   created_at TIMESTAMP WITHOUT TIME ZONE DEFAULT NOW()
 );
+
+-- Table 7.1: sprints
+CREATE TABLE public.sprints (
+  id SERIAL PRIMARY KEY,
+  race_id INTEGER UNIQUE REFERENCES public.races(id) ON DELETE CASCADE,
+  season INTEGER NOT NULL REFERENCES public.seasons(year) ON DELETE CASCADE,
+  round INTEGER NOT NULL,
+  date TIMESTAMP WITHOUT TIME ZONE,
+  cutoff TIMESTAMP WITHOUT TIME ZONE,
+  status CHARACTER VARYING DEFAULT 'upcoming',
+  UNIQUE(season, round)
+);
+
 
 -- Table 7.3: driver_standings
 CREATE TABLE public.driver_standings (
@@ -517,6 +531,7 @@ CREATE INDEX idx_results_race ON public.race_results(race_id);
 CREATE INDEX idx_points_log_user ON public.points_log(user_id);
 CREATE INDEX idx_points_log_race ON public.points_log(race_id);
 CREATE INDEX idx_races_season_round ON public.races(season, round);
+CREATE INDEX idx_sprints_season_round ON public.sprints(season, round);
 CREATE INDEX idx_leaderboard_season ON public.leaderboard(season);
 CREATE INDEX idx_leaderboard_rank ON public.leaderboard(rank);
 
@@ -528,6 +543,7 @@ ALTER TABLE public.predictions ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.sprint_predictions ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.season_predictions ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.races ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.sprints ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.race_results ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.sprint_results ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.season_results ENABLE ROW LEVEL SECURITY;
@@ -550,6 +566,7 @@ DO $$ BEGIN CREATE POLICY "Users view all sprint predictions" ON public.sprint_p
 DO $$ BEGIN CREATE POLICY "Users insert own sprint predictions" ON public.sprint_predictions FOR INSERT WITH CHECK (auth.uid() = user_id); EXCEPTION WHEN duplicate_object THEN NULL; END $$;
 DO $$ BEGIN CREATE POLICY "Users update own sprint predictions" ON public.sprint_predictions FOR UPDATE USING (auth.uid() = user_id); EXCEPTION WHEN duplicate_object THEN NULL; END $$;
 DO $$ BEGIN CREATE POLICY "Anyone view races" ON public.races FOR SELECT USING (true); EXCEPTION WHEN duplicate_object THEN NULL; END $$;
+DO $$ BEGIN CREATE POLICY "Anyone view sprints" ON public.sprints FOR SELECT USING (true); EXCEPTION WHEN duplicate_object THEN NULL; END $$;
 DO $$ BEGIN CREATE POLICY "Anyone view results" ON public.race_results FOR SELECT USING (true); EXCEPTION WHEN duplicate_object THEN NULL; END $$;
 DO $$ BEGIN CREATE POLICY "Anyone view sprint results" ON public.sprint_results FOR SELECT USING (true); EXCEPTION WHEN duplicate_object THEN NULL; END $$;
 DO $$ BEGIN CREATE POLICY "Anyone view season results" ON public.season_results FOR SELECT USING (true); EXCEPTION WHEN duplicate_object THEN NULL; END $$;

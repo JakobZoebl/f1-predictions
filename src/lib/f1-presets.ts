@@ -222,6 +222,7 @@ export interface RaceEvent {
   colors: ColorPair
   trackImage: string
   laps: number
+      cutoff: string // ISO date string
 }
 
 export const RACES: RaceEvent[] = [
@@ -236,7 +237,8 @@ export const RACES: RaceEvent[] = [
     countryCode: "AU",
     colors: { primary: "#00008B", secondary: "#ffffff" },
     trackImage: "melbourne.avif",
-    laps: 58,
+    laps: 58, 
+    cutoff: "2026-03-07 06:00",
   },
   {
     id: "shanghai",
@@ -249,7 +251,8 @@ export const RACES: RaceEvent[] = [
     countryCode: "CN",
     colors: { primary: "#EE1C25", secondary: "#FFFF00" },
     trackImage: "shanghai.avif",
-    laps: 56,
+    laps: 56, 
+    cutoff: "2026-03-14 08:00", 
   },
   {
     id: "suzuka",
@@ -262,7 +265,8 @@ export const RACES: RaceEvent[] = [
     countryCode: "JP",
     colors: { primary: "#BC002D", secondary: "#FFFFFF" },
     trackImage: "suzuka.avif",
-    laps: 53,
+    laps: 53, 
+    cutoff: "2026-03-28 07:00",
   },
   {
     id: "bahrain",
@@ -275,7 +279,8 @@ export const RACES: RaceEvent[] = [
     countryCode: "BH",
     colors: { primary: "#E31E24", secondary: "#FFFFFF" },
     trackImage: "bahrain.avif",
-    laps: 57,
+    laps: 57, 
+    cutoff: "2026-04-11 18:00",
   },
   {
     id: "jeddah",
@@ -288,7 +293,8 @@ export const RACES: RaceEvent[] = [
     countryCode: "SA",
     colors: { primary: "#006C35", secondary: "#ffffff" },
     trackImage: "jeddah.avif",
-    laps: 50,
+    laps: 50, 
+    cutoff: "2026-04-18 19:00",
   },
   {
     id: "miami",
@@ -301,7 +307,8 @@ export const RACES: RaceEvent[] = [
     countryCode: "US",
     colors: { primary: "#ff4992", secondary: "#00efff" },
     trackImage: "miami.avif",
-    laps: 57,
+    laps: 57, 
+    cutoff: "2026-05-02 22:00",
   },
   {
     id: "montreal",
@@ -314,7 +321,8 @@ export const RACES: RaceEvent[] = [
     countryCode: "CA",
     colors: { primary: "#D80621", secondary: "#FFFFFF" },
     trackImage: "montreal.avif",
-    laps: 70,
+    laps: 70, 
+    cutoff: "2026-05-23 22:00",
   },
   {
     id: "monaco",
@@ -327,7 +335,8 @@ export const RACES: RaceEvent[] = [
     countryCode: "MC",
     colors: { primary: "#CE1126", secondary: "#FFFFFF" },
     trackImage: "monaco.avif",
-    laps: 78,
+    laps: 78, 
+    cutoff: "2026-06-06 16:00",
   },
   {
     id: "barcelona",
@@ -340,7 +349,8 @@ export const RACES: RaceEvent[] = [
     countryCode: "ES",
     colors: { primary: "#A50044", secondary: "#004D98" },
     trackImage: "barcelona.avif",
-    laps: 66,
+    laps: 66, 
+    cutoff: "2026-06-13 16:00",
   },
   {
     id: "spielberg",
@@ -353,7 +363,8 @@ export const RACES: RaceEvent[] = [
     countryCode: "AT",
     colors: { primary: "#EF3340", secondary: "#FFFFFF" },
     trackImage: "spielberg.avif",
-    laps: 71,
+    laps: 71, 
+    cutoff: "2026-06-27 16:00",
   },
   {
     id: "silverstone",
@@ -366,7 +377,8 @@ export const RACES: RaceEvent[] = [
     countryCode: "GB",
     colors: { primary: "#C8102E", secondary: "#FFFFFF" },
     trackImage: "silverstone.avif",
-    laps: 52,
+    laps: 52, 
+    cutoff: "2026-07-04 17:00",
   },
   {
     id: "spa",
@@ -379,7 +391,8 @@ export const RACES: RaceEvent[] = [
     countryCode: "BE",
     colors: { primary: "#FFCD00", secondary: "#000000" },
     trackImage: "spa.avif",
-    laps: 44,
+    laps: 44, 
+    cutoff: "2026-07-18 16:00",
   },
   {
     id: "hungaroring",
@@ -392,7 +405,8 @@ export const RACES: RaceEvent[] = [
     countryCode: "HU",
     colors: { primary: "#436F4D", secondary: "#ffffff" },
     trackImage: "hungaroring.avif",
-    laps: 70,
+    laps: 70, 
+    cutoff: "2026-07-25 16:00",
   },
   {
     id: "zandvoort",
@@ -405,7 +419,8 @@ export const RACES: RaceEvent[] = [
     countryCode: "NL",
     colors: { primary: "#ff9d00", secondary: "#ffffff" },
     trackImage: "zandvoort.avif",
-    laps: 72,
+    laps: 72, 
+    cutoff: "2026-08-22 16:00",
   },
   {
     id: "monza",
@@ -418,7 +433,8 @@ export const RACES: RaceEvent[] = [
     countryCode: "IT",
     colors: { primary: "#008C45", secondary: "#CD212A" },
     trackImage: "monza.avif",
-    laps: 53,
+    laps: 53, 
+    cutoff: "2026-09-05 16:00",
   },
   {
     id: "madrid",
@@ -431,7 +447,8 @@ export const RACES: RaceEvent[] = [
     countryCode: "ES",
     colors: { primary: "#AA151B", secondary: "#F1BF00" },
     trackImage: "madrid.avif",
-    laps: 66,
+    laps: 66, 
+    cutoff: "2026-09-12 16:00",
   },
   {
     id: "baku",
@@ -444,7 +461,8 @@ export const RACES: RaceEvent[] = [
     countryCode: "AZ",
     colors: { primary: "#0092BC", secondary: "#00AF66" },
     trackImage: "baku.avif",
-    laps: 51,
+    laps: 51, 
+    cutoff: "2026-09-25 14:00",
   },
   {
     id: "singapore",
@@ -457,7 +475,8 @@ export const RACES: RaceEvent[] = [
     countryCode: "SG",
     colors: { primary: "#EE2536", secondary: "#FFFFFF" },
     trackImage: "singapore.avif",
-    laps: 62,
+    laps: 62, 
+    cutoff: "2026-10-10 15:00",
   },
   {
     id: "austin",
@@ -470,7 +489,8 @@ export const RACES: RaceEvent[] = [
     countryCode: "US",
     colors: { primary: "#00205B", secondary: "#BF0D3E" },
     trackImage: "austin.avif",
-    laps: 56,
+    laps: 56, 
+    cutoff: "2026-10-24 23:00",
   },
   {
     id: "mexico",
@@ -483,7 +503,8 @@ export const RACES: RaceEvent[] = [
     countryCode: "MX",
     colors: { primary: "#006847", secondary: "#CE1126" },
     trackImage: "mexico.avif",
-    laps: 71,
+    laps: 71, 
+    cutoff: "2026-10-31 22:00",
   },
   {
     id: "interlagos",
@@ -496,7 +517,8 @@ export const RACES: RaceEvent[] = [
     countryCode: "BR",
     colors: { primary: "#009739", secondary: "#FEDD00" },
     trackImage: "interlagos.avif",
-    laps: 71,
+    laps: 71, 
+    cutoff: "2026-11-07 19:00",
   },
   {
     id: "vegas",
@@ -509,7 +531,8 @@ export const RACES: RaceEvent[] = [
     countryCode: "US",
     colors: { primary: "#FFD700", secondary: "#C0C0C0" },
     trackImage: "vegas.avif",
-    laps: 50,
+    laps: 50, 
+    cutoff: "2026-11-21 05:00",
   },
   {
     id: "lusail",
@@ -522,7 +545,8 @@ export const RACES: RaceEvent[] = [
     countryCode: "QA",
     colors: { primary: "#8A1538", secondary: "#FFFFFF" },
     trackImage: "lusail.avif",
-    laps: 57,
+    laps: 57, 
+    cutoff: "2026-11-28 19:00",
   },
   {
     id: "abudhabi",
@@ -535,7 +559,8 @@ export const RACES: RaceEvent[] = [
     countryCode: "AE",
     colors: { primary: "#C8102E", secondary: "#00843D" },
     trackImage: "abudhabi.avif",
-    laps: 58,
+    laps: 58, 
+    cutoff: "2026-12-05 15:00",
   },
 ]
 
@@ -551,7 +576,8 @@ export const SPRINTS: RaceEvent[] = [
     countryCode: "CN",
     colors: { primary: "#EE1C25", secondary: "#FFFF00" },
     trackImage: "shanghai.avif",
-    laps: 19,
+    laps: 19, 
+    cutoff: "2026-03-13 08:30",
   },
   {
     id: "miami-sprint",
@@ -564,7 +590,8 @@ export const SPRINTS: RaceEvent[] = [
     countryCode: "US",
     colors: { primary: "#ff4992", secondary: "#00efff" },
     trackImage: "miami.avif",
-    laps: 19,
+    laps: 19, 
+    cutoff: "2026-05-01 22:30",
   },
   {
     id: "montreal-sprint",
@@ -577,7 +604,8 @@ export const SPRINTS: RaceEvent[] = [
     countryCode: "CA",
     colors: { primary: "#D80621", secondary: "#FFFFFF" },
     trackImage: "montreal.avif",
-    laps: 24,
+    laps: 24, 
+    cutoff: "2026-05-22 22:30",
   },
   {
     id: "silverstone-sprint",
@@ -590,7 +618,8 @@ export const SPRINTS: RaceEvent[] = [
     countryCode: "GB",
     colors: { primary: "#C8102E", secondary: "#FFFFFF" },
     trackImage: "silverstone.avif",
-    laps: 17,
+    laps: 17, 
+    cutoff: "2026-07-03 17:30",
   },
   {
     id: "zandvoort-sprint",
@@ -603,7 +632,8 @@ export const SPRINTS: RaceEvent[] = [
     countryCode: "NL",
     colors: { primary: "#ff9d00", secondary: "#ffffff" },
     trackImage: "zandvoort.avif",
-    laps: 17,
+    laps: 17, 
+    cutoff: "2026-08-21 16:30",
   },
   {
     id: "singapore-sprint",
@@ -616,7 +646,8 @@ export const SPRINTS: RaceEvent[] = [
     countryCode: "SG",
     colors: { primary: "#EE2536", secondary: "#FFFFFF" },
     trackImage: "singapore.avif",
-    laps: 20,
+    laps: 20, 
+    cutoff: "2026-10-09 14:30",
   },
 ]
 
