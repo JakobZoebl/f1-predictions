@@ -79,14 +79,6 @@ export default function SeasonOverview() {
                 className="season-overview-feature-race"
                 renderActions={(raceColors) => (
                   <div className="season-overview-actions">
-                    {isPending && (
-                       <div className="flex items-center gap-1.5 opacity-80 mb-1">
-                          <span style={{ color: raceColors.primary }} className="font-bold uppercase text-sm tracking-wider">Unlocks at:</span>
-                          <span className="text-sm font-medium text-white/90">
-                            {unlockDate?.toLocaleString('en-GB', { day: '2-digit', month: 'short', hour: '2-digit', minute: '2-digit' })}
-                          </span>
-                       </div>
-                    )}
 
                     {isOpen && (
                       <Link to={isRace ? "/race-predictions" : "/sprint-predictions"}>

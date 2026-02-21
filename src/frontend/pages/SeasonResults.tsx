@@ -11,6 +11,7 @@ import { Top5Constructors } from "@/frontend/results/Top5Constructors"
 import { BonusResults } from "@/frontend/results/BonusResults"
 import type { RaceResult } from "@/frontend/results/utils"
 import { PageLoader } from "@/frontend/components/PageLoader"
+import { Info } from "lucide-react"
 import "@/frontend/styles/RacePredictions.css"
 
 // Max scores for season (must match API)
@@ -97,7 +98,7 @@ export default function SeasonResults() {
 
         <main className="container mx-auto px-4 py-8 space-y-8 flex-1">
           {/* Season Results Hero */}
-          <div className="bg-black/40 backdrop-blur-md border border-white/10 rounded-xl p-6 !bg-transparent">
+          <div className="bg-black/40 backdrop-blur-md border border-white/10 rounded-xl p-6">
             <span className="upcoming-label whitespace-nowrap">Season Results</span>
             <div className="flex flex-wrap items-center gap-4 mt-2">
               {seasonYear != null && (
@@ -121,6 +122,19 @@ export default function SeasonResults() {
               Season Results
             </h2>
           </div>
+
+          {/* Preliminary Results Disclaimer */}
+          {new Date() < new Date(new Date().getFullYear(), 11, 7) && (
+            <div className="disclaimer-banner">
+              <Info className="disclaimer-banner-icon" />
+              <p className="disclaimer-banner-text">
+                <strong>Preliminary Results:</strong> 
+                The standings shown here are currently based on live championship data. These points 
+                do not yet count towards your total user profile points and will only be finalized 
+                once the season has officially concluded and the final standings are confirmed.
+              </p>
+            </div>
+          )}
 
           {/* MAIN GRID: Left = All 22 Drivers, Right = 11 Constructors + 3 Bonus */}
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">

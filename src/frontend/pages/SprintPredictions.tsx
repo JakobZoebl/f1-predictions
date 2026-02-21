@@ -14,6 +14,7 @@ import { BonusPredictions, type BonusValues } from "@/frontend/predictions/Bonus
 import { PredictionSummary } from "@/frontend/predictions/PredictionSummary"
 import { useNextSprint } from "@/lib/hooks/useNextSprint"
 import { DRIVERS, TEAMS, type RaceEvent } from "@/lib/f1-presets"
+import { getEventStatus } from "@/lib/event-utils"
 import { hexToHsl } from "@/lib/utils"
 import { PageLoader } from "@/frontend/components/PageLoader"
 import "@/frontend/styles/RacePredictions.css"
@@ -39,6 +40,8 @@ export default function SprintPredictions() {
 
   const nextSprint: RaceEvent | undefined = useNextSprint() ?? undefined
   const primaryColor = nextSprint?.colors?.primary
+
+  const { isOpen: isPredictionsOpen } = getEventStatus(nextSprint)
 
   const [isLoadingPredictions, setIsLoadingPredictions] = useState(false)
   const [submitError, setSubmitError] = useState<string | null>(null)
@@ -209,77 +212,90 @@ export default function SprintPredictions() {
         {/* Race Info Banner */}
         <FeatureRace race = {nextSprint}/>
 
-        {/* Top 8 Drivers */}
-        <section className="prediction-section">
-          <div className="prediction-section-title">
-            <h2>Top 8 Sprint Drivers</h2>
-            <span className="max-pts">max 36 pts</span>
-          </div>
-          <DriverDragDrop
-            selected={selectedDrivers}
-            onChange={handleDriversChange}
-            slotCount={8}
-            points={[8, 7, 6, 5, 4, 3, 2, 1]}
-          />
-        </section>
-
-        {/* Top 5 Constructors */}
-        <section className="prediction-section">
-          <div className="prediction-section-title">
-            <h2>Top 5 Sprint Constructors</h2>
-            <span className="max-pts">max 30 pts</span>
-          </div>
-          <ConstructorDragDrop
-            selected={selectedConstructors}
-            onChange={handleConstructorsChange}
-            points={[8, 7, 6, 5, 4]}
-            poolLabel="Remaining Constructors — 4 pts each if in top 5"
-          />
-        </section>
-
-        {/* Bonus Predictions */}
-        <section className="prediction-section">
-          <div className="prediction-section-title">
-            <h2>Bonus Predictions</h2>
-            <span className="max-pts">max 40 pts</span>
-          </div>
-          <BonusPredictions
-            values={bonusValues}
-            onChange={handleBonusChange}
-          />
-        </section>
-
-        {/* Summary & Submit */}
-        <section className="prediction-section">
-            {submitError && (
-              <div className="bg-red-500/20 border border-red-500 text-white p-3 rounded-lg text-center mb-4">
-                {submitError}
+        {/* Prediction content visible only if open */}
+        {isPredictionsOpen ? (
+          <>
+            {/* Top 8 Drivers */}
+            <section className="prediction-section">
+              <div className="prediction-section-title">
+                <h2>Top 8 Sprint Drivers</h2>
+                <span className="max-pts">max 36 pts</span>
               </div>
-            )}
-            {submitSuccess && (
-              <div className="bg-green-500/20 border border-green-500 text-white p-3 rounded-lg text-center mb-4">
-                Predictions saved successfully!
+              <DriverDragDrop
+                selected={selectedDrivers}
+                onChange={handleDriversChange}
+                slotCount={8}
+                points={[8, 7, 6, 5, 4, 3, 2, 1]}
+              />
+            </section>
+
+            {/* Top 5 Constructors */}
+            <section className="prediction-section">
+              <div className="prediction-section-title">
+                <h2>Top 5 Sprint Constructors</h2>
+                <span className="max-pts">max 30 pts</span>
               </div>
-            )}
-            <PredictionSummary
-              driverCount={filledDriversCount}
-              constructorCount={filledConstructorsCount}
-              totalConstructors={5}
-              bonusCount={bonusFilledCount}
-              totalBonusFields={3}
-              totalDrivers={8}
-              labels={{
-                drivers: "Top 8 Drivers"
-              }}
-              maxPoints={{
-                  drivers: 36,
-                  constructors: 30,
-                  bonus: 40
-              }}
-              onAutoFill={handleAutoFill}
-              onSubmit={handleSubmit}
-            />
-        </section>
+              <ConstructorDragDrop
+                selected={selectedConstructors}
+                onChange={handleConstructorsChange}
+                points={[8, 7, 6, 5, 4]}
+                poolLabel="Remaining Constructors — 4 pts each if in top 5"
+              />
+            </section>
+
+            {/* Bonus Predictions */}
+            <section className="prediction-section">
+              <div className="prediction-section-title">
+                <h2>Bonus Predictions</h2>
+                <span className="max-pts">max 40 pts</span>
+              </div>
+              <BonusPredictions
+                values={bonusValues}
+                onChange={handleBonusChange}
+              />
+            </section>
+
+            {/* Summary & Submit */}
+            <section className="prediction-section">
+                {submitError && (
+                  <div className="bg-red-500/20 border border-red-500 text-white p-3 rounded-lg text-center mb-4">
+                    {submitError}
+                  </div>
+                )}
+                {submitSuccess && (
+                  <div className="bg-green-500/20 border border-green-500 text-white p-3 rounded-lg text-center mb-4">
+                    Predictions saved successfully!
+                  </div>
+                )}
+                <PredictionSummary
+                  driverCount={filledDriversCount}
+                  constructorCount={filledConstructorsCount}
+                  totalConstructors={5}
+                  bonusCount={bonusFilledCount}
+                  totalBonusFields={3}
+                  totalDrivers={8}
+                  labels={{
+                    drivers: "Top 8 Drivers"
+                  }}
+                  maxPoints={{
+                      drivers: 36,
+                      constructors: 30,
+                      bonus: 40
+                  }}
+                  onAutoFill={handleAutoFill}
+                  onSubmit={handleSubmit}
+                />
+            </section>
+          </>
+        ) : (
+          <div className="bg-white/5 border border-white/10 rounded-2xl p-12 text-center space-y-4">
+            <h3 className="text-2xl font-bold text-white">Predictions are currently locked</h3>
+            <p className="text-white/60 max-w-md mx-auto">
+              Sprint predictions unlock immediately after the previous race weekend concludes. 
+              Check the countdown above to see when this race session begins!
+            </p>
+          </div>
+        )}
       </main>
 
       <F1Footer primaryColor={primaryColor} />

@@ -2,6 +2,7 @@
 
 import { useEffect, useState, useCallback, useMemo } from "react"
 import { RACES, SPRINTS } from "@/lib/f1-presets"
+import { getEventStatus } from "@/lib/event-utils"
 import "@/frontend/styles/UpcomingRace.css"
 
 // Helper to load track assets dynamically
@@ -84,6 +85,8 @@ export function FeatureRace({ className, style, renderActions, race, resultsMode
         }
     }, [nextRace])
 
+    const { isOpen: isPredictionsOpen, isLocked, unlocksAt } = useMemo(() => getEventStatus(nextRace), [nextRace])
+
     const { days, hours, minutes } = useCountdown(targetDate)
 
     if (!nextRace) return <div className="p-8 text-center text-white">No upcoming races found</div>
@@ -106,9 +109,9 @@ export function FeatureRace({ className, style, renderActions, race, resultsMode
             <div className="race-content-left">
                 <div className="race-content-top">
                     <span className="upcoming-label whitespace-nowrap">
-                        {race ? (
+                        {isPredictionsOpen ? (
                             nextRace.name.includes("Sprint") ? "Sprint Race" : "Grand Prix"
-                        ) : "Upcoming Race"}
+                        ) : nextRace.name.includes("Sprint") ? "Upcoming Sprint" : "Upcoming Grand Prix"}
                     </span>
                     
                     {/* Meta Info Row */}
@@ -177,19 +180,30 @@ export function FeatureRace({ className, style, renderActions, race, resultsMode
                     </div>
                 </div>
 
-                {renderActions && (
-                    <div className="race-actions-bottom flex flex-col items-start gap-2">
-                        {nextRace.cutoff && !resultsMode && (
-                             <div className="flex items-center gap-1.5 opacity-80 mb-1">
-                                <span style={{ color: nextRace.colors.primary }} className="font-bold uppercase text-sm tracking-wider">Locks:</span>
-                                <span className="text-sm font-medium text-white/90">
-                                    {new Date(nextRace.cutoff.replace(' ', 'T') + ':00Z').toLocaleString('en-GB', { day: '2-digit', month: 'short', hour: '2-digit', minute: '2-digit' })}
-                                </span>
-                             </div>
-                        )}
-                        {renderActions(nextRace.colors)}
-                    </div>
-                )}
+                <div className="race-actions-bottom flex flex-col items-start gap-2">
+                    {/* Locks display */}
+                    {nextRace.cutoff && !resultsMode && !isLocked && (
+                         <div className="flex items-center gap-1.5 opacity-80 mb-1">
+                            <span style={{ color: nextRace.colors.primary }} className="font-bold uppercase text-sm tracking-wider">Locks:</span>
+                            <span className="text-sm font-medium text-white/90">
+                                {new Date(nextRace.cutoff.replace(' ', 'T') + ':00Z').toLocaleString('en-GB', { day: '2-digit', month: 'short', hour: '2-digit', minute: '2-digit' })}
+                            </span>
+                         </div>
+                    )}
+                    {/* Unlocks at display */}
+                    {!isPredictionsOpen && unlocksAt && !resultsMode && (
+                        <div className="flex items-center gap-1.5 opacity-80 mb-1">
+                            <span style={{ color: nextRace.colors.primary }} className="font-bold uppercase text-sm tracking-wider">Unlocks at:</span>
+                            <span className="text-sm font-medium text-white/90">
+                                {unlocksAt.toLocaleString('en-GB', { day: '2-digit', month: 'short', hour: '2-digit', minute: '2-digit' })}
+                            </span>
+                        </div>
+                    )}
+
+ 
+
+                    {renderActions && renderActions(nextRace.colors)}
+                </div>
             </div>
 
             {/* Right Side: Track Map */}

@@ -320,3 +320,21 @@
     hsl(var(--prediction-accent, 211 100% 50%) / 0.6)
   );
 }
+
+/* ── Disclaimer Banner ── */
+
+.disclaimer-banner {
+  @apply bg-black/40 backdrop-blur-md border border-white/10 rounded-xl p-4 flex items-start gap-3;
+}
+
+.disclaimer-banner-icon {
+  @apply h-5 w-5 text-blue-400 mt-0.5 flex-shrink-0;
+}
+
+.disclaimer-banner-text {
+  @apply text-sm text-blue-100/80 leading-relaxed;
+}
+
+.disclaimer-banner-text strong {
+  @apply text-blue-300 font-bold uppercase tracking-wide mr-1;
+}
