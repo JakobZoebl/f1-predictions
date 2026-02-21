@@ -59,7 +59,17 @@ def handle_prediction():
             except Exception as e:
                 return jsonify({'error': str(e)}), 500
 
-        # Add support for sprint/season GET later
+        elif session_type == 'sprint':
+            if not race_id:
+                return jsonify({'error': 'Missing race_id for sprint predictions'}), 400
+            try:
+                response = supabase.table('sprint_predictions').select('*').eq('user_id', user_id).eq('race_id', race_id).execute()
+                if not response.data:
+                    return jsonify({'prediction': None}), 200
+                return jsonify({'prediction': response.data[0]}), 200
+            except Exception as e:
+                return jsonify({'error': str(e)}), 500
+
         return jsonify({'error': 'Unsupported session_type for GET'}), 400
 
     if request.method == 'POST':
@@ -153,6 +163,43 @@ def handle_prediction():
             except Exception as e:
                 return jsonify({'error': str(e)}), 500
 
-        # Add support for sprint/season POST later
+        elif session_type == 'sprint':
+            race_id = data.get('race_id')
+            drivers = data.get('drivers', [])
+            constructors = data.get('constructors', [])
+            bonus = data.get('bonus', {})
+
+            if not race_id:
+                return jsonify({'error': 'Missing race_id for sprint predictions POST'}), 400
+
+            # Pad drivers with None if they are fewer than required
+            drivers = drivers + [None] * (8 - len(drivers))
+            constructors = constructors + [None] * (5 - len(constructors))
+
+            insert_data = {
+                'user_id': user_id,
+                'race_id': race_id,
+                'sp1_driver': drivers[0], 'sp2_driver': drivers[1], 'sp3_driver': drivers[2],
+                'sp4_driver': drivers[3], 'sp5_driver': drivers[4], 'sp6_driver': drivers[5],
+                'sp7_driver': drivers[6], 'sp8_driver': drivers[7],
+                'c1_constructor': constructors[0], 'c2_constructor': constructors[1], 
+                'c3_constructor': constructors[2], 'c4_constructor': constructors[3], 
+                'c5_constructor': constructors[4],
+                'pole_position': bonus.get('pole_position'),
+                'fastest_lap': bonus.get('fastest_lap'),
+                'first_retirement': bonus.get('first_retirement'),
+                'safety_car': bonus.get('safety_car'),
+                'red_flag': bonus.get('red_flag')
+            }
+
+            try:
+                response = supabase.table('sprint_predictions').upsert(
+                    insert_data, 
+                    on_conflict='user_id, race_id'
+                ).execute()
+                return jsonify({'message': 'Sprint Prediction saved successfully!'}), 200
+            except Exception as e:
+                return jsonify({'error': str(e)}), 500
+
         return jsonify({'error': 'Unsupported session_type for POST'}), 400
 

@@ -87,6 +87,8 @@ CREATE TABLE public.sprint_predictions (
   sp1_driver CHARACTER VARYING, sp2_driver CHARACTER VARYING, sp3_driver CHARACTER VARYING,
   sp4_driver CHARACTER VARYING, sp5_driver CHARACTER VARYING, sp6_driver CHARACTER VARYING,
   sp7_driver CHARACTER VARYING, sp8_driver CHARACTER VARYING,
+  c1_constructor CHARACTER VARYING, c2_constructor CHARACTER VARYING, c3_constructor CHARACTER VARYING,
+  c4_constructor CHARACTER VARYING, c5_constructor CHARACTER VARYING,
   pole_position CHARACTER VARYING,
   fastest_lap CHARACTER VARYING,
   first_retirement CHARACTER VARYING,
@@ -148,6 +150,8 @@ CREATE TABLE public.sprint_results (
   sp1_driver CHARACTER VARYING, sp2_driver CHARACTER VARYING, sp3_driver CHARACTER VARYING,
   sp4_driver CHARACTER VARYING, sp5_driver CHARACTER VARYING, sp6_driver CHARACTER VARYING,
   sp7_driver CHARACTER VARYING, sp8_driver CHARACTER VARYING,
+  c1_constructor CHARACTER VARYING, c2_constructor CHARACTER VARYING, c3_constructor CHARACTER VARYING,
+  c4_constructor CHARACTER VARYING, c5_constructor CHARACTER VARYING,
   pole_position CHARACTER VARYING,
   fastest_lap CHARACTER VARYING,
   first_retirement CHARACTER VARYING,
@@ -305,10 +309,12 @@ BEGIN
     -- Logic for SPRINT
     ELSIF TG_TABLE_NAME = 'sprint_results' THEN
         actual_sprint_drivers := ARRAY[NEW.sp1_driver, NEW.sp2_driver, NEW.sp3_driver, NEW.sp4_driver, NEW.sp5_driver, NEW.sp6_driver, NEW.sp7_driver, NEW.sp8_driver];
+        actual_constructors := ARRAY[NEW.c1_constructor, NEW.c2_constructor, NEW.c3_constructor, NEW.c4_constructor, NEW.c5_constructor];
         
         FOR pred IN SELECT * FROM public.sprint_predictions WHERE race_id = NEW.race_id LOOP
             score := 0;
             driver_points := 0;
+            constructor_points := 0;
             bonus_points := 0;
 
             IF pred.sp1_driver = NEW.sp1_driver THEN driver_points := driver_points + 8; ELSIF pred.sp1_driver = ANY(actual_sprint_drivers) THEN driver_points := driver_points + 1; END IF;
@@ -320,6 +326,12 @@ BEGIN
             IF pred.sp7_driver = NEW.sp7_driver THEN driver_points := driver_points + 2; ELSIF pred.sp7_driver = ANY(actual_sprint_drivers) THEN driver_points := driver_points + 1; END IF;
             IF pred.sp8_driver = NEW.sp8_driver THEN driver_points := driver_points + 1; ELSIF pred.sp8_driver = ANY(actual_sprint_drivers) THEN driver_points := driver_points + 1; END IF;
 
+            IF pred.c1_constructor = NEW.c1_constructor THEN constructor_points := constructor_points + 8; ELSIF pred.c1_constructor = ANY(actual_constructors) THEN constructor_points := constructor_points + 4; END IF;
+            IF pred.c2_constructor = NEW.c2_constructor THEN constructor_points := constructor_points + 7; ELSIF pred.c2_constructor = ANY(actual_constructors) THEN constructor_points := constructor_points + 4; END IF;
+            IF pred.c3_constructor = NEW.c3_constructor THEN constructor_points := constructor_points + 6; ELSIF pred.c3_constructor = ANY(actual_constructors) THEN constructor_points := constructor_points + 4; END IF;
+            IF pred.c4_constructor = NEW.c4_constructor THEN constructor_points := constructor_points + 5; ELSIF pred.c4_constructor = ANY(actual_constructors) THEN constructor_points := constructor_points + 4; END IF;
+            IF pred.c5_constructor = NEW.c5_constructor THEN constructor_points := constructor_points + 4; ELSIF pred.c5_constructor = ANY(actual_constructors) THEN constructor_points := constructor_points + 4; END IF;
+
             IF pred.pole_position = NEW.pole_position THEN bonus_points := bonus_points + 10; END IF;
             IF pred.fastest_lap = NEW.fastest_lap THEN bonus_points := bonus_points + 10; END IF;
             IF pred.first_retirement = NEW.first_retirement THEN bonus_points := bonus_points + 10; END IF;
@@ -328,8 +340,8 @@ BEGIN
                 IF NEW.red_flag = TRUE THEN bonus_points := bonus_points + 5; ELSE bonus_points := bonus_points + 1; END IF;
             END IF;
 
-            score := driver_points + bonus_points;
-            breakdown_json := jsonb_build_object('driver_points', driver_points, 'bonus_points', bonus_points);
+            score := driver_points + constructor_points + bonus_points;
+            breakdown_json := jsonb_build_object('driver_points', driver_points, 'constructor_points', constructor_points, 'bonus_points', bonus_points);
 
             UPDATE public.sprint_predictions SET points = score WHERE id = pred.id;
 

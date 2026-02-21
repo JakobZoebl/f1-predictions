@@ -8,7 +8,10 @@ import SignUp from "@/frontend/pages/SignUp"
 import ProfilePage from "@/frontend/pages/ProfilePage"
 import Leaderboard from "@/frontend/pages/Leaderboard"
 import RacePredictions from "@/frontend/pages/RacePredictions"
+import SprintPredictions from "@/frontend/pages/SprintPredictions"
 import Home from "@/frontend/pages/Home"
+import PointSchemaPage from "@/frontend/pages/PointSchemaPage"
+
 
 
 import { BackgroundLayout } from "@/frontend/components/BackgroundLayout"
@@ -29,6 +32,8 @@ function App() {
             <Route path="/" element={<LandingPage />} />
             <Route path="/login" element={<Login />} />
             <Route path="/signup" element={<SignUp />} />
+            <Route path="/point-schema" element={<PointSchemaPage />} />
+
             <Route path="/auth/callback" element={<AuthCallback />} />
             
             
@@ -38,6 +43,7 @@ function App() {
                 <Route path="/profile" element={<ProfilePage />} />
                 <Route path="/leaderboard" element={<Leaderboard />} />
                 <Route path="/race-predictions" element={<RacePredictions />} />
+                <Route path="/sprint-predictions" element={<SprintPredictions />} />
                 <Route path="/season-predictions" element={<SeasonPredictions />} />
                 <Route path="/season-overview" element={<SeasonOverview />} />
                 <Route path="/home" element={<Home />} />

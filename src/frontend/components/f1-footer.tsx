@@ -1,3 +1,4 @@
+import { Link } from "react-router-dom"
 import { useBackground } from "@/frontend/components/BackgroundContext"
 import "@/frontend/styles/F1Footer.css"
 import { hexToHsl } from "@/lib/utils"
@@ -31,6 +32,9 @@ export function F1Footer({ primaryColor }: F1FooterProps) {
         <p className="footer-disclaimer">
           This is a non-commercial website and for private use only.
         </p>
+        <Link to="/point-schema" className="footer-link">
+          Points Schema
+        </Link>
       </div>
     </footer>
   )

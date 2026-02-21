@@ -26,14 +26,14 @@ const INITIAL_BONUS: BonusValues = {
   red_flag: false,
 }
 
-export default function RacePredictions() {
+export default function SprintPredictions() {
   const { user } = useAuth()
   const { profile, loading } = useUserProfile()
 
   const isAuthenticated = !!user
   const displayUsername = profile?.username || user?.user_metadata?.username || "User"
 
-  const [selectedDrivers, setSelectedDrivers] = useState<(string | null)[]>(Array(10).fill(null))
+  const [selectedDrivers, setSelectedDrivers] = useState<(string | null)[]>(Array(8).fill(null))
   const [selectedConstructors, setSelectedConstructors] = useState<(string | null)[]>(Array(5).fill(null))
   const [bonusValues, setBonusValues] = useState<BonusValues>(INITIAL_BONUS)
 
@@ -53,7 +53,7 @@ export default function RacePredictions() {
       try {
         const token = user?.id ? await supabase.auth.getSession().then(({ data }: {data: {session: Session | null}}) => data.session?.access_token) : null;
         
-        const response = await fetch(`/api/predictions?session_type=race&race_id=${nextRace.round}`, {
+        const response = await fetch(`/api/predictions?session_type=sprint&race_id=${nextRace.round}`, {
           headers: {
             'Authorization': `Bearer ${token}`
           }
@@ -64,14 +64,14 @@ export default function RacePredictions() {
           if (data.prediction) {
             const pred = data.prediction;
             
-            // Populate drivers
+            // Populate drivers (only 8 for sprints)
             const fetchedDrivers = [
-              pred.p1_driver, pred.p2_driver, pred.p3_driver, pred.p4_driver, pred.p5_driver,
-              pred.p6_driver, pred.p7_driver, pred.p8_driver, pred.p9_driver, pred.p10_driver
+              pred.sp1_driver, pred.sp2_driver, pred.sp3_driver, pred.sp4_driver, 
+              pred.sp5_driver, pred.sp6_driver, pred.sp7_driver, pred.sp8_driver
             ];
             setSelectedDrivers(fetchedDrivers);
 
-            // Populate constructors
+            // Populate constructors (only 5 for sprints)
             const fetchedConstructors = [
               pred.c1_constructor, pred.c2_constructor, pred.c3_constructor, 
               pred.c4_constructor, pred.c5_constructor
@@ -89,7 +89,7 @@ export default function RacePredictions() {
           }
         }
       } catch (error) {
-        console.error("Failed to fetch predictions:", error);
+        console.error("Failed to fetch sprint predictions:", error);
       } finally {
         setIsLoadingPredictions(false);
       }
@@ -113,11 +113,11 @@ export default function RacePredictions() {
   }, [])
 
   const handleAutoFill = useCallback(() => {
-    // Randomize and select top 10 drivers
+    // Randomize and select top 8 drivers
     const drivers = Object.keys(DRIVERS)
     const shuffledDrivers = [...drivers].sort(() => Math.random() - 0.5)
-    setSelectedDrivers(shuffledDrivers.slice(0, 10))
-
+    setSelectedDrivers(shuffledDrivers.slice(0, 8))
+    
     // Randomize and select top 5 constructors
     const teams = Object.keys(TEAMS)
     const shuffledTeams = [...teams].sort(() => Math.random() - 0.5)
@@ -167,7 +167,7 @@ export default function RacePredictions() {
       const token = user?.id ? await supabase.auth.getSession().then(({ data }: {data: {session: Session | null}}) => data.session?.access_token) : null;
       
       const payload = {
-        session_type: 'race',
+        session_type: 'sprint',
         race_id: nextRace.round,
         drivers: selectedDrivers,
         constructors: selectedConstructors,
@@ -200,7 +200,7 @@ export default function RacePredictions() {
 
   return (
     <>
-      <F1Header variant="Home" activeNav="RacePredictions" primaryColor={primaryColor} isAuthenticated={isAuthenticated} username={displayUsername} />
+      <F1Header variant="Home" activeNav="SprintPredictions" primaryColor={primaryColor} isAuthenticated={isAuthenticated} username={displayUsername} />
 
       <main 
         className="container mx-auto px-4 py-8 space-y-8 flex-1"
@@ -209,27 +209,31 @@ export default function RacePredictions() {
         {/* Race Info Banner */}
         <FeatureRace />
 
-        {/* Top 10 Drivers */}
+        {/* Top 8 Drivers */}
         <section className="prediction-section">
           <div className="prediction-section-title">
-            <h2>Top 10 Drivers</h2>
-            <span className="max-pts">max 101 pts</span>
+            <h2>Top 8 Sprint Drivers</h2>
+            <span className="max-pts">max 36 pts</span>
           </div>
           <DriverDragDrop
             selected={selectedDrivers}
             onChange={handleDriversChange}
+            slotCount={8}
+            points={[8, 7, 6, 5, 4, 3, 2, 1]}
           />
         </section>
 
         {/* Top 5 Constructors */}
         <section className="prediction-section">
           <div className="prediction-section-title">
-            <h2>Top 5 Constructors</h2>
-            <span className="max-pts">max 80 pts</span>
+            <h2>Top 5 Sprint Constructors</h2>
+            <span className="max-pts">max 30 pts</span>
           </div>
           <ConstructorDragDrop
             selected={selectedConstructors}
             onChange={handleConstructorsChange}
+            points={[8, 7, 6, 5, 4]}
+            poolLabel="Remaining Constructors — 4 pts each if in top 5"
           />
         </section>
 
@@ -258,12 +262,22 @@ export default function RacePredictions() {
               </div>
             )}
             <PredictionSummary
-            driverCount={filledDriversCount}
-            constructorCount={filledConstructorsCount}
-            bonusCount={bonusFilledCount}
-            totalBonusFields={3}
-            onAutoFill={handleAutoFill}
-            onSubmit={handleSubmit}
+              driverCount={filledDriversCount}
+              constructorCount={filledConstructorsCount}
+              totalConstructors={5}
+              bonusCount={bonusFilledCount}
+              totalBonusFields={3}
+              totalDrivers={8}
+              labels={{
+                drivers: "Top 8 Drivers"
+              }}
+              maxPoints={{
+                  drivers: 36,
+                  constructors: 30,
+                  bonus: 40
+              }}
+              onAutoFill={handleAutoFill}
+              onSubmit={handleSubmit}
             />
         </section>
       </main>

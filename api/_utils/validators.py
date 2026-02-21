@@ -156,8 +156,8 @@ def validate_season_prediction(data: dict) -> tuple[bool, str | None]:
     Validate a season prediction submission.
     
     Checks:
-      - All 20 driver positions filled (d1_driver..d20_driver)
-      - All 10 constructor positions filled (c1_constructor..c10_constructor)
+      - All 22 driver positions filled (d1_driver..d22_driver)
+      - All 11 constructor positions filled (c1_constructor..c11_constructor)
       - No duplicate drivers
       - No duplicate constructors
       - most_poles and most_fastest_laps present
@@ -168,7 +168,7 @@ def validate_season_prediction(data: dict) -> tuple[bool, str | None]:
     Returns:
         tuple: (is_valid, error_message)
     """
-    driver_keys = [f"d{i}_driver" for i in range(1, 21)]
+    driver_keys = [f"d{i}_driver" for i in range(1, 23)]
     drivers = []
     for key in driver_keys:
         val = data.get(key, "").strip() if isinstance(data.get(key), str) else ""
@@ -178,7 +178,7 @@ def validate_season_prediction(data: dict) -> tuple[bool, str | None]:
     if len(set(drivers)) != len(drivers):
         return False, "Duplicate drivers found in season predictions."
 
-    constructor_keys = [f"c{i}_constructor" for i in range(1, 11)]
+    constructor_keys = [f"c{i}_constructor" for i in range(1, 12)]
     constructors = []
     for key in constructor_keys:
         val = data.get(key, "").strip() if isinstance(data.get(key), str) else ""

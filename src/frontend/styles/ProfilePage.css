@@ -1,7 +1,7 @@
 /* ── ProfilePage ─────────────────────────────────────── */
 
 .profile-main {
-  @apply relative min-h-screen bg-transparent text-foreground pb-20;
+  @apply relative min-h-screen bg-transparent text-foreground flex flex-col;
 }
 
 .profile-page-container {

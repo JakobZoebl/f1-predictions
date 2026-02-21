@@ -19,6 +19,7 @@ export function BackgroundLayout() {
     const blankPages = [
       "/",
       "/race-predictions", 
+      "/sprint-predictions",
       "/season-predictions", 
       "/season-overview", 
       "/login", 

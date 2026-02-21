@@ -98,7 +98,7 @@ export function F1Header({
               <button
                 className={cn(
                   "header-dropdown-trigger",
-                  (activeNav === "RacePredictions" || activeNav === "SeasonPredictions") 
+                  (activeNav === "RacePredictions" || activeNav === "SeasonPredictions" || activeNav === "SprintPredictions") 
                     ? "header-nav-link-active" 
                     : "header-nav-link-inactive"
                 )}
@@ -117,7 +117,16 @@ export function F1Header({
                       activeNav === "RacePredictions" ? "text-f1-neon" : "text-white/80"
                     )}
                   >
-                    Race
+                    Grand Prix
+                  </Link>
+                  <Link
+                    to="/sprint-predictions"
+                    className={cn(
+                      "header-dropdown-item",
+                      activeNav === "SprintPredictions" ? "text-f1-neon" : "text-white/80"
+                    )}
+                  >
+                    Sprint
                   </Link>
                   <Link
                     to="/season-predictions"
@@ -142,15 +151,53 @@ export function F1Header({
               Calendar
             </Link>
 
-            <Link
-              to="/race-results"
-              className={cn(
-                "header-nav-link",
-                activeNav === "Results" ? "header-nav-link-active" : "header-nav-link-inactive"
-              )}
-            >
-              Results
-            </Link>
+            {/* Results Dropdown */}
+            <div className="header-dropdown-container group">
+              <button
+                className={cn(
+                  "header-dropdown-trigger",
+                  (activeNav === "Results" || activeNav === "SprintResults" || activeNav === "SeasonResults") 
+                    ? "header-nav-link-active" 
+                    : "header-nav-link-inactive"
+                )}
+              >
+                Results
+                <ChevronDown className="header-dropdown-icon" />
+              </button>
+              
+              {/* Dropdown Menu */}
+              <div className="header-dropdown-menu">
+                <div className="header-dropdown-content">
+                  <Link
+                    to="/race-results"
+                    className={cn(
+                      "header-dropdown-item",
+                      activeNav === "Results" ? "text-f1-neon" : "text-white/80"
+                    )}
+                  >
+                    Grand Prix
+                  </Link>
+                  <Link
+                    to="/sprint-results"
+                    className={cn(
+                      "header-dropdown-item",
+                      activeNav === "SprintResults" ? "text-f1-neon" : "text-white/80"
+                    )}
+                  >
+                    Sprint
+                  </Link>
+                  <Link
+                    to="/season-results"
+                    className={cn(
+                      "header-dropdown-item",
+                      activeNav === "SeasonResults" ? "text-f1-neon" : "text-white/80"
+                    )}
+                  >
+                    Season
+                  </Link>
+                </div>
+              </div>
+            </div>
 
             <Link
               to="/leaderboard"

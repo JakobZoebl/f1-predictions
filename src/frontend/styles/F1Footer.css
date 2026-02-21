@@ -21,3 +21,7 @@
 .footer-disclaimer {
   @apply text-xs text-muted-foreground opacity-60 italic;
 }
+
+.footer-link {
+  @apply text-xs text-white/60 hover:text-f1-neon transition-colors font-medium;
+}

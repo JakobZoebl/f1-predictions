@@ -35,17 +35,17 @@ export function PredictionSummary({
     bonus: "Bonus Predictions"
   },
   maxPoints = {
-    drivers: 152,
-    constructors: 70,
-    bonus: 41
+    drivers: 101,
+    constructors: 80,
+    bonus: 40
   },
   totalDrivers = 10,
   totalConstructors = 5,
 }: PredictionSummaryProps) {
   // Calculate potential max points based on filled fields
-  const driverMaxPoints = driverCount > 0 ? maxPoints.drivers ?? 152 : 0
-  const constructorMaxPoints = constructorCount > 0 ? maxPoints.constructors ?? 70 : 0
-  const bonusMaxPoints = bonusCount > 0 ? maxPoints.bonus ?? 41 : 0
+  const driverMaxPoints = driverCount > 0 ? maxPoints.drivers ?? 101 : 0
+  const constructorMaxPoints = constructorCount > 0 ? maxPoints.constructors ?? 80 : 0
+  const bonusMaxPoints = bonusCount > 0 ? maxPoints.bonus ?? 40 : 0
   const totalMaxPoints = driverMaxPoints + constructorMaxPoints + bonusMaxPoints
 
   // Calculate completion
@@ -80,12 +80,14 @@ export function PredictionSummary({
             </span>
             <span className="value">max {driverMaxPoints} pts</span>
           </div>
-          <div className="summary-row">
-            <span className="label">
-              {labels.constructors} ({constructorCount}/{totalConstructors} filled)
-            </span>
-            <span className="value">max {constructorMaxPoints} pts</span>
-          </div>
+          {totalConstructors > 0 && (
+            <div className="summary-row">
+              <span className="label">
+                {labels.constructors} ({constructorCount}/{totalConstructors} filled)
+              </span>
+              <span className="value">max {constructorMaxPoints} pts</span>
+            </div>
+          )}
           <div className="summary-row">
             <span className="label">
               {labels.bonus} ({bonusCount}/{totalBonusFields} filled)

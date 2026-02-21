@@ -84,7 +84,7 @@ export function SeasonBonusPredictions({ values, onChange }: SeasonBonusPredicti
       {/* Most Retirements */}
       <div className="bonus-item">
         <div className="bonus-item-header">
-          <span className="bonus-item-label">Most Retirements</span>
+          <span className="bonus-item-label">Most First Retirements</span>
           <span className="bonus-item-pts">100 pts</span>
         </div>
         <Select

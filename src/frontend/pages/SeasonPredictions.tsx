@@ -235,7 +235,7 @@ export default function SeasonPredictions() {
         <section className="prediction-section">
           <div className="prediction-section-title">
             <h2>Drivers Championship</h2>
-            <span className="max-pts">max 1720 pts</span>
+            <span className="max-pts">max 1130 pts</span>
           </div>
           <DriverDragDrop
             selected={selectedDrivers}
@@ -251,7 +251,7 @@ export default function SeasonPredictions() {
         <section className="prediction-section">
           <div className="prediction-section-title">
             <h2>Constructors Championship</h2>
-            <span className="max-pts">max 910 pts</span>
+            <span className="max-pts">max 860 pts</span>
           </div>
           <ConstructorDragDrop
             selected={selectedConstructors}
@@ -283,8 +283,8 @@ export default function SeasonPredictions() {
           totalDrivers={22}
           totalConstructors={11}
           maxPoints={{
-            drivers: 1720,
-            constructors: 910,
+            drivers: 1130,
+            constructors: 860,
             bonus: 300
           }}
           labels={{
