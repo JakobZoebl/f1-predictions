@@ -7,7 +7,7 @@ import { F1Header } from "@/frontend/components/f1-header"
 import { F1Footer } from "@/frontend/components/f1-footer"
 import { hexToHsl } from "@/lib/utils"
 import { FeatureRace } from "@/frontend/components/FeatureRace"
-import { DRIVERS, RACES } from "@/lib/f1-presets"
+import { DRIVERS } from "@/lib/f1-presets"
 import { LeaderboardTable, type LeaderboardEntry } from "@/frontend/leaderboard/LeaderboardTable"
 import { Top10Drivers } from "@/frontend/results/Top10Drivers"
 import { Top5Constructors } from "@/frontend/results/Top5Constructors"
@@ -26,7 +26,6 @@ export default function SprintResults() {
   const displayUsername = profile?.username || user?.user_metadata?.username || "User"
 
   const [results, setResults] = useState<RaceResult[]>([])
-  const [raceInfo, setRaceInfo] = useState<Record<string, unknown> | null>(null)
   const [loading, setLoading] = useState(true)
 
   const lastSprint = useLastSprint()
@@ -57,7 +56,6 @@ export default function SprintResults() {
 
         const parsed = data.results || []
         setResults(parsed)
-        setRaceInfo(data.race || null)
         
         // Find winner to set background
         const winner = parsed.find((r: RaceResult) => r.Category === "RESULT" && r.Position === "1")
