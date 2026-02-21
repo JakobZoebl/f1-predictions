@@ -109,7 +109,7 @@ export default function RaceResults() {
   }, [results])
 
   // Find the race
-  const race = lastRace
+  const race = lastRace ?? undefined
   console.log(race)
   const primaryColor = race?.colors?.primary
   console.log(primaryColor)

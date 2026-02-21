@@ -109,7 +109,7 @@ export default function SprintResults() {
   }, [results])
 
   // Find the sprint
-  const sprint = lastSprint
+  const sprint = lastSprint ?? undefined
   const primaryColor = sprint?.colors?.primary
 
   // Calculate dynamic style for prediction elements
