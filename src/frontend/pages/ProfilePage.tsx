@@ -13,7 +13,6 @@ import { F1Footer } from "@/frontend/components/f1-footer"
 import { ProfileHeader } from "@/frontend/profile/ProfileHeader"
 import { ProfileCards } from "@/frontend/profile/ProfileCards"
 import { SeasonStats } from "@/frontend/profile/SeasonStats"
-import { MOCK_PROFILE } from "@/lib/mock-profile-data"
 
 export default function ProfilePage() {
   const { user } = useAuth()
@@ -44,11 +43,32 @@ export default function ProfilePage() {
         month: "short",
         year: "numeric",
       })
-    : MOCK_PROFILE.user.memberSince
+    : "-"
 
-  const displayUsername = profile?.username || user?.user_metadata?.username || MOCK_PROFILE.user.username
-  const displayName = profile?.display_name || user?.user_metadata?.display_name || MOCK_PROFILE.user.displayName
+  const displayUsername = profile?.username || user?.user_metadata?.username || "username"
+  const displayName = profile?.display_name || user?.user_metadata?.display_name || "Display Name"
   const isAuthenticated = !!user
+
+  const defaultSeasonStats = {
+    rank: "-",
+    total_points: 0,
+    avg_points: 0,
+    races_predicted: 0,
+    total_completed_races: 0,
+    last_race: { name: "-", points: "-" },
+    best_finish: "-",
+    worst_finish: "-",
+    accuracyBars: {
+      exactMatches: 0,
+      top10: 0,
+      polePosition: 0,
+      fastestLap: 0,
+      safetyCar: 0,
+      redFlag: 0
+    }
+  }
+
+  const displayStats = seasonStats || defaultSeasonStats
 
   if (isPageLoading) return <PageLoader />
 
@@ -63,8 +83,8 @@ export default function ProfilePage() {
                 username={`@${displayUsername}`}
                 displayName={displayName}
                 memberSince={memberSince}
-                rank={seasonStats ? (typeof seasonStats.rank === 'number' ? seasonStats.rank : parseInt(seasonStats.rank.replace('#', '')) || 0) : MOCK_PROFILE.user.rank}
-                points={seasonStats?.total_points ?? MOCK_PROFILE.user.totalPoints}
+                rank={displayStats.rank !== "-" ? (typeof displayStats.rank === 'string' ? parseInt(displayStats.rank.replace('#', '')) || 0 : displayStats.rank) : "-"}
+                points={displayStats.total_points}
             />
 
             {cardsLoading ? (
@@ -77,7 +97,7 @@ export default function ProfilePage() {
                 />
             )}
 
-            <SeasonStats data={MOCK_PROFILE.seasonStats} />
+            <SeasonStats data={displayStats} />
           </>
       </div>
       <F1Footer />

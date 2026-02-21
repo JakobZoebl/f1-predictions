@@ -13,6 +13,8 @@ export interface SeasonStatsData {
     points: number | string
   }
   best_finish: string | number
+  worst_finish: string | number
+  accuracyBars: Record<string, number>
 }
 
 export function useSeasonStats() {

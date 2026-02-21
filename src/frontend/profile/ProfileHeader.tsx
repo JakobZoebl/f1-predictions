@@ -4,15 +4,15 @@ interface ProfileHeaderProps {
   username?: string
   displayName?: string
   memberSince?: string
-  rank?: number
-  points?: number
+  rank?: number | string
+  points?: number | string
 }
 
 export function ProfileHeader({
   username = "@username",
   displayName = "Display Name",
   memberSince = "Jan 2026",
-  rank = 0,
+  rank = "-",
   points = 0,
 }: ProfileHeaderProps) {
   return (

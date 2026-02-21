@@ -189,6 +189,7 @@ def get_season_stats():
         # For now, let's assume we fetch the minimum rank from somewhere or return a placeholder if not available.
         # Actually, let's look for the highest points in a single race as a proxy or just leave it for now.
         best_finish = "-" 
+        worst_finish = "-"
 
         stats = {
             "rank": "-",
@@ -200,7 +201,16 @@ def get_season_stats():
                 "name": "-",
                 "points": "-"
             },
-            "best_finish": best_finish
+            "best_finish": best_finish,
+            "worst_finish": worst_finish,
+            "accuracyBars": {
+                "exactMatches": 0,
+                "top10": 0,
+                "polePosition": 0,
+                "fastestLap": 0,
+                "safetyCar": 0,
+                "redFlag": 0
+            }
         }
 
         if lb_res.data:
