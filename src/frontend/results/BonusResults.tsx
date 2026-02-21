@@ -28,10 +28,10 @@ export function BonusResults({ results, score = 0, maxScore = 41 }: BonusResults
                 <tbody className="text-white divide-y divide-white/5">
                     {results.map((row, idx) => {
                         const pts = parseInt(row.Points)
-                        const isDriverRow = ["Pole", "Fastest", "Retirement"].some(k => row.Position.includes(k))
+                        const isDriverRow = ["pole_position", "fastest_lap", "first_retirement"].some(k => row.Position.includes(k))
 
                         const renderDriverCell = (name: string, faded: boolean) => {
-                            const key = findDriver(name)
+                            const key = DRIVERS[name] ? name : findDriver(name)
                             const driver = key ? DRIVERS[key] : null
                             const team = driver ? TEAMS[driver.team] : null
                             if (!key) return <span className={faded ? 'opacity-50' : ''}>{name || '—'}</span>
@@ -49,7 +49,7 @@ export function BonusResults({ results, score = 0, maxScore = 41 }: BonusResults
                         return (
                         <tr key={idx} className="hover:bg-white/5 transition-colors">
                             <td className="px-2 py-2">
-                               <span>{row.Position}</span>
+                               <span className="capitalize">{row.Position.replace(/_/g, ' ')}</span>
                             </td>
                             <td className="px-2 py-2">
                                 {isDriverRow ? renderDriverCell(row.Actual, false) : row.Actual}

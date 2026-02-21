@@ -26,8 +26,8 @@ export function Top10Drivers({ results, score = 0, maxScore = 152 }: Top10Driver
 
             {results.map((row) => {
                 const pts = parseInt(row.Points)
-                const actualKey = findDriver(row.Actual)
-                const predictedKey = findDriver(row.Predicted)
+                const actualKey = DRIVERS[row.Actual] ? row.Actual : findDriver(row.Actual)
+                const predictedKey = DRIVERS[row.Predicted] ? row.Predicted : findDriver(row.Predicted)
                 const actualDriver = actualKey ? DRIVERS[actualKey] : null
                 const predictedDriver = predictedKey ? DRIVERS[predictedKey] : null
                 const actualTeam = actualDriver ? TEAMS[actualDriver.team] : null
@@ -48,7 +48,7 @@ export function Top10Drivers({ results, score = 0, maxScore = 152 }: Top10Driver
                                 style={{ backgroundColor: actualDriver?.colors.primary ?? '#555' }}
                             />
                             <div className="driver-info">
-                                <span className="driver-name">{row.Actual || '—'}</span>
+                                <span className="driver-name">{actualDriver?.name || row.Actual || '—'}</span>
                                 {actualTeam && <span className="driver-team">{actualTeam.name}</span>}
                             </div>
                         </div>
@@ -60,7 +60,7 @@ export function Top10Drivers({ results, score = 0, maxScore = 152 }: Top10Driver
                                 style={{ backgroundColor: predictedDriver?.colors.primary ?? '#555' }}
                             />
                             <div className="driver-info">
-                                <span className="driver-name">{row.Predicted || '—'}</span>
+                                <span className="driver-name">{predictedDriver?.name || row.Predicted || '—'}</span>
                                 {predictedTeam && <span className="driver-team">{predictedTeam.name}</span>}
                             </div>
                             {pts > 0 && <span className="text-green-500 text-xs ml-1">✔</span>}
