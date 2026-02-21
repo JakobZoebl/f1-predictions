@@ -28,7 +28,7 @@ export function BonusResults({ results, score = 0, maxScore = 41 }: BonusResults
                 <tbody className="text-white divide-y divide-white/5">
                     {results.map((row, idx) => {
                         const pts = parseInt(row.Points)
-                        const isDriverRow = ["pole_position", "fastest_lap", "first_retirement"].some(k => row.Position.includes(k))
+                        const isDriverRow = ["pole_position", "fastest_lap", "first_retirement", "most_poles", "most_fastest_laps", "most_retirements"].some(k => row.Position.includes(k))
 
                         const renderDriverCell = (name: string, faded: boolean) => {
                             const key = DRIVERS[name] ? name : findDriver(name)

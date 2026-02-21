@@ -5,13 +5,14 @@ interface Top5ConstructorsProps {
   results: RaceResult[]
   score?: number
   maxScore?: number
+  title?: string
 }
 
-export function Top5Constructors({ results, score = 0, maxScore = 70 }: Top5ConstructorsProps) {
+export function Top5Constructors({ results, score = 0, maxScore = 70, title = "Top 5 Constructors" }: Top5ConstructorsProps) {
   return (
     <section className="bg-black/40 backdrop-blur-md border border-white/10 rounded-xl p-6 flex-1 flex flex-col">
         <div className="prediction-section-title">
-            <h2>Top 5 Constructors</h2>
+            <h2>{title}</h2>
             <span className="max-pts">Your Score: {score}/{maxScore}</span>
         </div>
 

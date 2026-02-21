@@ -20,6 +20,7 @@ import SeasonPredictions from "@/frontend/pages/SeasonPredictions"
 import ProfileSettings from "@/frontend/pages/ProfileSettings"
 import RaceResults from "@/frontend/pages/RaceResults"
 import SprintResults from "@/frontend/pages/SprintResults"
+import SeasonResults from "@/frontend/pages/SeasonResults"
 import { BackgroundProvider } from "@/frontend/components/BackgroundContext"
 import { ProtectedRoute } from "@/frontend/components/ProtectedRoute"
 
@@ -51,6 +52,7 @@ function App() {
                 <Route path="/profile-settings" element={<ProfileSettings />} />
                 <Route path="/race-results" element={<RaceResults />} />
                 <Route path="/sprint-results" element={<SprintResults />} />
+                <Route path="/season-results" element={<SeasonResults />} />
               </Route>
             </Route>
           </Routes>
