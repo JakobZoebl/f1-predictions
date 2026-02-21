@@ -1,5 +1,6 @@
+import { useEffect, useState } from "react"
 import { Card, CardContent, CardHeader, CardTitle } from "@/frontend/components/card"
-import { Trophy, Zap, Target, TrendingUp } from "lucide-react"
+import { Trophy, Zap, Target, TrendingUp, Loader2 } from "lucide-react"
 
 interface SeasonStatProps {
   label: string
@@ -23,8 +24,45 @@ function StatCard({ label, value, subtext, icon }: SeasonStatProps) {
     )
 }
 
+interface StatsData {
+    avgPoints: number
+    highestScore: { value: number; subtext: string }
+    activePlayers: number
+    totalPredictions: number
+}
+
 export function SeasonStats() {
-    // Mock data
+    const [stats, setStats] = useState<StatsData | null>(null)
+    const [loading, setLoading] = useState(true)
+
+    useEffect(() => {
+        const fetchStats = async () => {
+            try {
+                const response = await fetch('/api/leaderboard/stats')
+                const data = await response.json()
+                if (data.success) {
+                    setStats(data.stats)
+                }
+            } catch (error) {
+                console.error("Error fetching season stats:", error)
+            } finally {
+                setLoading(false)
+            }
+        }
+
+        fetchStats()
+    }, [])
+
+    if (loading) {
+        return (
+            <Card className="border-white/10 bg-black/40 backdrop-blur-md">
+                <CardContent className="h-40 flex items-center justify-center">
+                    <Loader2 className="h-8 w-8 text-primary animate-spin" />
+                </CardContent>
+            </Card>
+        )
+    }
+
     return (
         <Card className="border-white/10 bg-black/40 backdrop-blur-md">
             <CardHeader>
@@ -34,27 +72,27 @@ export function SeasonStats() {
                 <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
                     <StatCard 
                         label="Avg Points/Race" 
-                        value="42.5" 
+                        value={stats?.avgPoints || "0"} 
                         subtext="Across all players"
                         icon={<Zap className="h-5 w-5 text-yellow-400" />}
                     />
                     <StatCard 
                         label="Highest Score" 
-                        value="124" 
-                        subtext="Max Verstappen (R5)"
+                        value={stats?.highestScore.value || "0"} 
+                        subtext={stats?.highestScore.subtext || "No records yet"}
                         icon={<Trophy className="h-5 w-5 text-amber-500" />}
                     />
                     <StatCard 
-                        label="Perfect Picks" 
-                        value="12" 
-                        subtext="Total exact podiums"
-                        icon={<Target className="h-5 w-5 text-red-500" />}
+                        label="Active Players" 
+                        value={stats?.activePlayers || "0"} 
+                        subtext="Joined the league"
+                        icon={<TrendingUp className="h-5 w-5 text-green-500" />}
                     />
                     <StatCard 
-                        label="Most Improved" 
-                        value="+5" 
-                        subtext="Lando Norris (Last 3 races)"
-                        icon={<TrendingUp className="h-5 w-5 text-green-500" />}
+                        label="Total Predictions" 
+                        value={stats?.totalPredictions || "0"} 
+                        subtext="Submissions this season"
+                        icon={<Target className="h-5 w-5 text-red-500" />}
                     />
                 </div>
             </CardContent>
