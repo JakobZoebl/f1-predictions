@@ -75,8 +75,21 @@ export function DriverDragDrop({
     [selected, onChange]
   )
 
+  const handleClear = useCallback(() => {
+    onChange(Array(slotCount).fill(null))
+  }, [onChange, slotCount])
+
   return (
-    <div>
+    <div className="relative">
+      <div className="flex justify-end mb-3">
+        <button
+          onClick={handleClear}
+          type="button"
+          className="text-xs font-display font-bold uppercase tracking-wider text-white/60 hover:text-white transition-colors"
+        >
+          Clear
+        </button>
+      </div>
       {/* Slots */}
       <div className={`dnd-slots-container ${twoColumns ? 'two-columns' : ''}`}>
         {Array.from({ length: slotCount }, (_, i) => {

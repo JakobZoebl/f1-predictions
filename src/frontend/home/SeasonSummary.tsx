@@ -84,7 +84,7 @@ export function SeasonSummary({ username, avatarUrl, stats, loading }: SeasonSum
         <div className="summary-stats-grid">
             <StatItem 
                 label="Rank" 
-                value={stats?.rank || "-"} 
+                value={stats?.rank ? stats.rank.toString() : "-"} 
             />
             <StatItem 
                 label="Points" 

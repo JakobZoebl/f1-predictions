@@ -1,10 +1,11 @@
 import { useState, useEffect } from "react"
 import { useAuth } from "@/frontend/auth/AuthContext"
 import { useUserProfile } from "@/lib/hooks/useUserProfile"
+import { useSeasonStats } from "@/lib/hooks/useSeasonStats"
 import { F1Header } from "@/frontend/components/f1-header"
 import { F1Footer } from "@/frontend/components/f1-footer"
 import { FeatureRace } from "@/frontend/components/FeatureRace"
-import { SeasonSummary, type SeasonStats } from "@/frontend/home/SeasonSummary"
+import { SeasonSummary } from "@/frontend/home/SeasonSummary"
 import { MiniLeaderboard, type LeaderboardEntry } from "@/frontend/home/MiniLeaderboard"
 import { Button } from "@/frontend/components/button"
 import { Link } from "react-router-dom"
@@ -20,8 +21,8 @@ export default function Home() {
     const displayUsername = profile?.username || user?.user_metadata?.username || "User"
 
     const [leaderboardData, setLeaderboardData] = useState<LeaderboardEntry[]>([])
-    const [seasonStats, setSeasonStats] = useState<SeasonStats | null>(null)
-    const [statsLoading, setStatsLoading] = useState(true)
+    
+    const { seasonStats, loading: statsLoading } = useSeasonStats()
 
     useEffect(() => {
         const fetchTop5 = async () => {
@@ -57,30 +58,7 @@ export default function Home() {
                 console.error("Error fetching mini leaderboard:", err)
             }
         }
-
-        const fetchSeasonStats = async () => {
-            if (!user) return
-            try {
-                setStatsLoading(true)
-                const { data: { session } } = await supabase.auth.getSession()
-                if (!session) return
-
-                const res = await fetch("/api/profile/season-stats", {
-                    headers: { Authorization: `Bearer ${session.access_token}` },
-                })
-                const data = await res.json()
-                if (data.success) {
-                    setSeasonStats(data.stats)
-                }
-            } catch (err) {
-                console.error("Error fetching season stats:", err)
-            } finally {
-                setStatsLoading(false)
-            }
-        }
-
         fetchTop5()
-        fetchSeasonStats()
     }, [user])
 
   if (loading) {
@@ -120,7 +98,7 @@ export default function Home() {
              <SeasonSummary 
                 username={profile?.username || user?.user_metadata?.username} 
                 avatarUrl={profile?.avatar_url}
-                stats={seasonStats} 
+                stats={seasonStats as any} 
                 loading={statsLoading}
              />
              <MiniLeaderboard data={leaderboardData} currentUserId={user?.id} />

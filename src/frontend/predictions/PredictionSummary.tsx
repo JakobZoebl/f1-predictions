@@ -111,14 +111,21 @@ export function PredictionSummary({
               Auto-Fill
             </button>
           )}
-          <button
-            type="button"
-            className="btn-submit"
-            disabled={completionPct < 100}
-            onClick={onSubmit}
+          <div 
+            className="flex-1 flex"
+            title={completionPct < 100 ? "submission not possible unless 100%" : undefined}
+            style={{ cursor: completionPct < 100 ? 'not-allowed' : 'default' }}
           >
-            Submit Prediction
-          </button>
+            <button
+              type="button"
+              className="btn-submit w-full flex-1"
+              disabled={completionPct < 100}
+              onClick={onSubmit}
+              style={completionPct < 100 ? { pointerEvents: 'none' } : {}}
+            >
+              Submit Prediction
+            </button>
+          </div>
         </div>
       </div>
     </>

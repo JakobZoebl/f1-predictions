@@ -3,6 +3,7 @@
 import { useAuth } from "@/frontend/auth/AuthContext"
 import { useUserProfile } from "@/lib/hooks/useUserProfile"
 import { useCardsStats } from "@/lib/hooks/useCardsStats"
+import { useSeasonStats } from "@/lib/hooks/useSeasonStats"
 import { F1Header } from "@/frontend/components/f1-header"
 import { PageLoader } from "@/frontend/components/PageLoader"
 import { TEAMS, DRIVERS } from "@/lib/f1-presets"
@@ -33,6 +34,9 @@ export default function ProfilePage() {
       : DEFAULT_DRIVER_KEY
 
   const { stats: cardsData, loading: cardsLoading } = useCardsStats(teamKey, driverKey)
+  const { seasonStats, loading: seasonStatsLoading } = useSeasonStats()
+
+  const isPageLoading = profileLoading || seasonStatsLoading
 
   // Format membership date
   const memberSince = profile?.created_at
@@ -46,7 +50,7 @@ export default function ProfilePage() {
   const displayName = profile?.display_name || user?.user_metadata?.display_name || MOCK_PROFILE.user.displayName
   const isAuthenticated = !!user
 
-  if (profileLoading) return <PageLoader />
+  if (isPageLoading) return <PageLoader />
 
   return (
     <main className="profile-main">
@@ -59,8 +63,8 @@ export default function ProfilePage() {
                 username={`@${displayUsername}`}
                 displayName={displayName}
                 memberSince={memberSince}
-                rank={MOCK_PROFILE.user.rank}
-                points={MOCK_PROFILE.user.totalPoints}
+                rank={seasonStats ? (typeof seasonStats.rank === 'number' ? seasonStats.rank : parseInt(seasonStats.rank.replace('#', '')) || 0) : MOCK_PROFILE.user.rank}
+                points={seasonStats?.total_points ?? MOCK_PROFILE.user.totalPoints}
             />
 
             {cardsLoading ? (

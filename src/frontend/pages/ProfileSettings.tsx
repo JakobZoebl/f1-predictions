@@ -1,6 +1,7 @@
 "use client"
 
 import { useState, useEffect } from "react"
+import { useNavigate } from "react-router-dom"
 import { useAuth } from "@/frontend/auth/AuthContext"
 import { useUserProfile, type UserProfile } from "@/lib/hooks/useUserProfile"
 import type { User, Session } from "@supabase/supabase-js"
@@ -65,6 +66,7 @@ function ProfileSettingsContent({
   const [selectedDriver, setSelectedDriver] = useState(profile?.favorite_driver_id || "leclerc")
 
   const { setBackgroundConfig, resetToDefault } = useBackground()
+  const navigate = useNavigate()
 
   // Live background preview based on dropdown selection
   useEffect(() => {
@@ -151,6 +153,7 @@ function ProfileSettingsContent({
   // Sign out
   async function handleSignOut() {
     await supabase.auth.signOut()
+    navigate("/")
   }
 
   return (

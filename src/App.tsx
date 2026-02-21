@@ -17,7 +17,7 @@ import SeasonPredictions from "@/frontend/pages/SeasonPredictions"
 import ProfileSettings from "@/frontend/pages/ProfileSettings"
 import RaceResults from "@/frontend/pages/RaceResults"
 import { BackgroundProvider } from "@/frontend/components/BackgroundContext"
-
+import { ProtectedRoute } from "@/frontend/components/ProtectedRoute"
 
 function App() {
   return (
@@ -33,15 +33,17 @@ function App() {
             
             
             {/* Authenticated routes wrapped with the team/driver background layout */}
-            <Route element={<BackgroundLayout />}>
-              <Route path="/profile" element={<ProfilePage />} />
-              <Route path="/leaderboard" element={<Leaderboard />} />
-              <Route path="/race-predictions" element={<RacePredictions />} />
-              <Route path="/season-predictions" element={<SeasonPredictions />} />
-              <Route path="/season-overview" element={<SeasonOverview />} />
-              <Route path="/home" element={<Home />} />
-              <Route path="/profile-settings" element={<ProfileSettings />} />
-              <Route path="/race-results" element={<RaceResults />} />
+            <Route element={<ProtectedRoute />}>
+              <Route element={<BackgroundLayout />}>
+                <Route path="/profile" element={<ProfilePage />} />
+                <Route path="/leaderboard" element={<Leaderboard />} />
+                <Route path="/race-predictions" element={<RacePredictions />} />
+                <Route path="/season-predictions" element={<SeasonPredictions />} />
+                <Route path="/season-overview" element={<SeasonOverview />} />
+                <Route path="/home" element={<Home />} />
+                <Route path="/profile-settings" element={<ProfileSettings />} />
+                <Route path="/race-results" element={<RaceResults />} />
+              </Route>
             </Route>
           </Routes>
         </BackgroundProvider>
