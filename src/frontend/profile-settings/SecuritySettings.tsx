@@ -100,7 +100,6 @@ export function SecuritySettings({ onUpdatePassword, onSignOut }: SecuritySettin
         </button>
 
         <div className="sign-out-group">
-          <div className="text-xs text-red-300/60 uppercase tracking-widest font-bold mb-1">Session Management</div>
           <button 
             onClick={onSignOut}
             className="sign-out-button"

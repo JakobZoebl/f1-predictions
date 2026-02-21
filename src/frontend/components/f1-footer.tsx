@@ -1,4 +1,3 @@
-import { Link } from "react-router-dom"
 import { useBackground } from "@/frontend/components/BackgroundContext"
 import "@/frontend/styles/F1Footer.css"
 import { hexToHsl } from "@/lib/utils"
@@ -29,11 +28,9 @@ export function F1Footer({ primaryColor }: F1FooterProps) {
       <div className="footer-gradient-line" />
 
       <div className="footer-content">
-        <nav className="footer-nav" aria-label="Footer navigation">
-          <Link to="/impressum" className="footer-link">
-            Impressum
-          </Link>
-        </nav>
+        <p className="footer-disclaimer">
+          This is a non-commercial website and for private use only.
+        </p>
       </div>
     </footer>
   )

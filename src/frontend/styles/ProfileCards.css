@@ -100,7 +100,7 @@
 }
 
 .profile-card-standings-pos {
-  @apply text-[#e10600];
+  @apply text-f1-neon;
 }
 
 .profile-card-stats-summary {

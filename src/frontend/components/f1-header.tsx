@@ -80,8 +80,8 @@ export function F1Header({
           </Link>
         )}
 
-        {/* Center nav links (only for "Home" variant) */}
-        {variant === "Home" && (
+        {/* Center nav links (shown for "Home" variant OR "landing" if authenticated) */}
+        {(variant === "Home" || (variant === "landing" && isAuthenticated)) && (
           <nav className="header-center-nav" aria-label="Main navigation">
             <Link
               to="/home"

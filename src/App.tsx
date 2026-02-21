@@ -9,7 +9,7 @@ import ProfilePage from "@/frontend/pages/ProfilePage"
 import Leaderboard from "@/frontend/pages/Leaderboard"
 import RacePredictions from "@/frontend/pages/RacePredictions"
 import Home from "@/frontend/pages/Home"
-import Impressum from "@/frontend/pages/Impressum"
+
 
 import { BackgroundLayout } from "@/frontend/components/BackgroundLayout"
 import SeasonOverview from "@/frontend/pages/SeasonOverview"
@@ -30,7 +30,7 @@ function App() {
             <Route path="/login" element={<Login />} />
             <Route path="/signup" element={<SignUp />} />
             <Route path="/auth/callback" element={<AuthCallback />} />
-            <Route path="/impressum" element={<Impressum />} />
+            
             
             {/* Authenticated routes wrapped with the team/driver background layout */}
             <Route element={<BackgroundLayout />}>

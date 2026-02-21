@@ -93,7 +93,7 @@
 }
 
 .header-dropdown-menu {
-  @apply absolute left-1/2 -translate-x-1/2 top-full mt-2 w-48 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-[100];
+  @apply absolute left-1/2 -translate-x-1/2 top-full mt-2 w-28 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-[100];
 }
 
 .header-dropdown-content {

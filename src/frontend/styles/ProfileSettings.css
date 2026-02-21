@@ -170,13 +170,13 @@
 
 /* ── Sign Out Section ────────────────────────────── */
 .sign-out-container {
-  @apply mt-8 pt-8 border-t border-white/10 flex flex-col sm:flex-row items-center justify-between gap-4;
+  @apply mt-8 pt-6 border-t border-white/10 flex flex-row items-center justify-between gap-4;
 }
 
 .sign-out-group {
-  @apply flex flex-col gap-2 p-6 rounded-xl bg-red-500/5 border border-red-500/10 w-full transition-all duration-300 hover:bg-red-500/10 hover:border-red-500/20;
+  @apply inline-flex p-1 rounded-lg bg-red-600/20 border border-red-500 transition-all duration-300 hover:bg-red-600/30 hover:border-red-400 shadow-lg shadow-red-500/30;
 }
 
 .sign-out-button {
-  @apply text-red-500 hover:text-red-400 text-sm font-medium flex items-center justify-center gap-2 transition-colors w-full sm:w-auto p-2 rounded-lg hover:bg-white/5;
+  @apply text-red-50 hover:text-white text-xs font-bold flex items-center gap-2 transition-colors px-3 py-1.5 rounded-md hover:bg-white/10;
 }

@@ -18,18 +18,17 @@ export default function Impressum() {
             <h1 className="impressum-title">Impressum</h1>
             
             <div className="impressum-section">
-              <h2>Angaben gemäß § 5 TMG</h2>
               <p>
-                John Doe<br />
-                Musterstraße 1<br />
-                12345 Musterstadt<br />
+                Jakob Zöbl<br />
+                Arnikastraße 7<br />
+                4600 Wels<br />
               </p>
             </div>
 
             <div className="impressum-section">
               <h2>Kontakt</h2>
               <p>
-                Telefon: +49 (0) 123 44 55 66<br />
+                Telefon: +43 (0) 677 639 71 639<br />
                 E-Mail: info@f1-predictions.invalid
               </p>
             </div>

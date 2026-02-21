@@ -44,7 +44,7 @@
 }
 
 .stat-card-value-highlight {
-  @apply text-2xl font-bold text-[#e10600];
+  @apply text-2xl font-bold text-f1-neon;
 }
 
 .stat-mini-cards {
