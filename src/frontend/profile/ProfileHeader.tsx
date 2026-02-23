@@ -4,15 +4,15 @@ interface ProfileHeaderProps {
   username?: string
   displayName?: string
   memberSince?: string
-  rank?: number | string
-  points?: number | string
+  rank?: number
+  points?: number
 }
 
 export function ProfileHeader({
   username = "@username",
   displayName = "Display Name",
   memberSince = "Jan 2026",
-  rank = "-",
+  rank = 0,
   points = 0,
 }: ProfileHeaderProps) {
   return (
@@ -20,7 +20,7 @@ export function ProfileHeader({
       {/* Avatar & Name Group */}
       <div className="profile-header-group">
         <h1 className="profile-header-title">
-          <span className="profile-header-username">{username}</span> • {displayName}
+          <span className="profile-header-username">@{username}</span> • {displayName}
         </h1>
         
         {/* Stats Outline Box */}

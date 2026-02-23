@@ -226,7 +226,7 @@ CREATE TABLE public.points_log (
   user_id UUID REFERENCES public.users(id) ON DELETE CASCADE,
   race_id INTEGER REFERENCES public.races(id) ON DELETE CASCADE,
   season INTEGER NOT NULL REFERENCES public.seasons(year) ON DELETE CASCADE,
-  session_type CHARACTER VARYING, -- 'race', 'sprint'
+  session_type CHARACTER VARYING, -- 'race', 'sprint', 'season'
   total_points INTEGER,
   breakdown JSONB, -- {"driver_points": 43, "constructor_points": 25, "bonus_points": 10}
   created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
@@ -431,7 +431,7 @@ BEGIN
         d1_driver, d2_driver, d3_driver, d4_driver, d5_driver, 
         d6_driver, d7_driver, d8_driver, d9_driver, d10_driver,
         d11_driver, d12_driver, d13_driver, d14_driver, d15_driver,
-        d16_driver, d17_driver, d18_driver, d19_driver, d20_driver,
+        d16_driver, d17_driver, d18_driver, d19_driver, d20_driver, d21_driver, d22_driver,
         c1_constructor, c2_constructor, c3_constructor, c4_constructor, c5_constructor,
         c6_constructor, c7_constructor, c8_constructor, c9_constructor, c10_constructor, c11_constructor
     ) VALUES (
@@ -439,7 +439,7 @@ BEGIN
         d_drivers[1], d_drivers[2], d_drivers[3], d_drivers[4], d_drivers[5],
         d_drivers[6], d_drivers[7], d_drivers[8], d_drivers[9], d_drivers[10],
         d_drivers[11], d_drivers[12], d_drivers[13], d_drivers[14], d_drivers[15],
-        d_drivers[16], d_drivers[17], d_drivers[18], d_drivers[19], d_drivers[20],
+        d_drivers[16], d_drivers[17], d_drivers[18], d_drivers[19], d_drivers[20], d_drivers[21], d_drivers[22],
         c_constructors[1], c_constructors[2], c_constructors[3], c_constructors[4], c_constructors[5],
         c_constructors[6], c_constructors[7], c_constructors[8], c_constructors[9], c_constructors[10], c_constructors[11]
     )
@@ -450,7 +450,7 @@ BEGIN
         d10_driver = EXCLUDED.d10_driver, d11_driver = EXCLUDED.d11_driver, d12_driver = EXCLUDED.d12_driver,
         d13_driver = EXCLUDED.d13_driver, d14_driver = EXCLUDED.d14_driver, d15_driver = EXCLUDED.d15_driver,
         d16_driver = EXCLUDED.d16_driver, d17_driver = EXCLUDED.d17_driver, d18_driver = EXCLUDED.d18_driver,
-        d19_driver = EXCLUDED.d19_driver, d20_driver = EXCLUDED.d20_driver,
+        d19_driver = EXCLUDED.d19_driver, d20_driver = EXCLUDED.d20_driver, d21_driver = EXCLUDED.d21_driver, d22_driver = EXCLUDED.d22_driver,
         c1_constructor = EXCLUDED.c1_constructor, c2_constructor = EXCLUDED.c2_constructor, c3_constructor = EXCLUDED.c3_constructor,
         c4_constructor = EXCLUDED.c4_constructor, c5_constructor = EXCLUDED.c5_constructor, c6_constructor = EXCLUDED.c6_constructor,
         c7_constructor = EXCLUDED.c7_constructor, c8_constructor = EXCLUDED.c8_constructor, c9_constructor = EXCLUDED.c9_constructor,

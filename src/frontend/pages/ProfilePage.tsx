@@ -3,7 +3,7 @@
 import { useAuth } from "@/frontend/auth/AuthContext"
 import { useUserProfile } from "@/lib/hooks/useUserProfile"
 import { useCardsStats } from "@/lib/hooks/useCardsStats"
-import { useSeasonStats } from "@/lib/hooks/useSeasonStats"
+import { useSeasonStats, type SeasonStatsData } from "@/lib/hooks/useSeasonStats"
 import { F1Header } from "@/frontend/components/f1-header"
 import { PageLoader } from "@/frontend/components/PageLoader"
 import { TEAMS, DRIVERS } from "@/lib/f1-presets"
@@ -49,13 +49,11 @@ export default function ProfilePage() {
   const displayName = profile?.display_name || user?.user_metadata?.display_name || "Display Name"
   const isAuthenticated = !!user
 
-  const defaultSeasonStats = {
-    rank: "-",
+  const defaultSeasonStats: SeasonStatsData = {
+    rank: 0,
     total_points: 0,
     avg_points: 0,
-    races_predicted: 0,
-    total_completed_races: 0,
-    last_race: { name: "-", points: "-" },
+    points_behind_leader: 0,
     best_finish: "-",
     worst_finish: "-",
     accuracyBars: {
@@ -80,10 +78,10 @@ export default function ProfilePage() {
       <div className="profile-page-container">
           <>
             <ProfileHeader 
-                username={`@${displayUsername}`}
+                username={displayUsername}
                 displayName={displayName}
                 memberSince={memberSince}
-                rank={displayStats.rank !== "-" ? (typeof displayStats.rank === 'string' ? parseInt(displayStats.rank.replace('#', '')) || 0 : displayStats.rank) : "-"}
+                rank={displayStats.rank}
                 points={displayStats.total_points}
             />
 

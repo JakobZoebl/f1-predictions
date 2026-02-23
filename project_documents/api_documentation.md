@@ -88,6 +88,19 @@ All API endpoints are prefixed with `/api`. When running locally, the base URL i
   }
   ```
 
+### Delete Account
+
+- **URL**: `/api/auth/delete-account`
+- **Method**: `DELETE`
+- **Auth Required**: Yes (Bearer Token)
+- **Success Response (200 OK)**:
+  ```json
+  {
+    "success": true,
+    "message": "Account deleted successfully."
+  }
+  ```
+
 ### Reset Password
 
 - **URL**: `/api/auth/reset-password`
@@ -125,12 +138,14 @@ All API endpoints are prefixed with `/api`. When running locally, the base URL i
 - **Method**: `POST`
 - **Auth Required**: Yes (Bearer Token)
 - **Request Body**:
+
   ```json
+  // For session_type: "race"
   {
-    "session_type": "race" | "sprint" | "season",
-    "race_id": "id" (if race/sprint),
-    "drivers": ["driver_id_1", "driver_id_2", ...],
-    "constructors": ["team_id_1", ...],
+    "session_type": "race",
+    "race_id": "id",
+    "drivers": ["driver_id_1", ..., "driver_id_10"],
+    "constructors": ["team_id_1", ..., "team_id_5"],
     "bonus": {
       "pole_position": "driver_id",
       "fastest_lap": "driver_id",
@@ -139,7 +154,32 @@ All API endpoints are prefixed with `/api`. When running locally, the base URL i
       "red_flag": true/false
     }
   }
+
+  // For session_type: "sprint"
+  {
+    "session_type": "sprint",
+    "race_id": "id",
+    "drivers": ["driver_id_1", ..., "driver_id_8"],
+    "constructors": ["team_id_1", ..., "team_id_5"],
+    "bonus": {
+       ...same as race...
+    }
+  }
+
+  // For session_type: "season"
+  {
+    "session_type": "season",
+    "season": 2026,
+    "drivers": ["driver_id_1", ..., "driver_id_22"],
+    "constructors": ["team_id_1", ..., "team_id_11"],
+    "bonus": {
+      "most_poles": "driver_id",
+      "most_fastest_laps": "driver_id",
+      "most_retirements": "driver_id"
+    }
+  }
   ```
+
 - **Success Response (200 OK)**:
   ```json
   {
@@ -225,12 +265,14 @@ All API endpoints are prefixed with `/api`. When running locally, the base URL i
       "rank": "#1",
       "total_points": 150,
       "avg_points": 25.5,
-      "races_predicted": 6,
-      "total_completed_races": 8,
-      "last_race": { "name": "Monaco GP", "points": 42 },
-      "best_finish": "-",
-      "worst_finish": "-",
-      "accuracyBars": { "exactMatches": 0, "top10": 0, "polePosition": 0, "fastestLap": 0, "safetyCar": 0, "redFlag": 0 }
+      "points_behind_leader": 10,
+      "best_finish": "Monaco GP",
+      "worst_finish": "Bahrain GP",
+      "accuracyBars": {
+        "Driver Predictions": 65,
+        "Constructor Predictions": 25,
+        "Bonus Predictions": 10
+      }
     }
   }
   ```
@@ -250,14 +292,14 @@ All API endpoints are prefixed with `/api`. When running locally, the base URL i
       "constructor": {
         "standingsPos": 1,
         "standingsPoints": 250,
-        "seasonStats": { "races": 8, "wins": 4, "podiums": 6, "dnfs": 0 },
+        "seasonStats": { "wins": 4, "podiums": 6, "poles": 0 },
         "recentResults": ["1st", "2nd", "1st", "3rd", "1st"]
       },
       "driver": {
         "standingsPos": 1,
         "standingsPoints": 120,
-        "seasonStats": { "races": 8, "wins": 3, "podiums": 5, "poles": 2 },
-        "recentResults": ["1st", "2nd", "OUT", "1st", "3rd"]
+        "seasonStats": { "wins": 3, "podiums": 5, "poles": 2 },
+        "recentResults": ["1st", "2nd", "NP", "1st", "3rd"]
       }
     }
   }
@@ -307,6 +349,52 @@ All API endpoints are prefixed with `/api`. When running locally, the base URL i
   }
   ```
 - **Notes**: Same structure as last race results; driver positions are top 8 (sprint scoring). Leaderboard entries are filtered by `session_type: "sprint"`.
+- **Error Responses**: `500` on server error.
+
+### Get Season Results
+
+- **URL**: `/api/results/season`
+- **Method**: `GET`
+- **Auth Required**: Optional (Provide Bearer token to include user prediction comparison and per-user points)
+- **Success Response (200 OK)**:
+  ```json
+  {
+    "success": true,
+    "results": [
+      { "Category": "RESULT", "Position": "1", "Actual": "driver_id", "Predicted": "driver_id", "Points": "250", "Team": "", "Details": "" },
+      { "Category": "CONSTRUCTOR", ... },
+      { "Category": "BONUS", ... },
+      { "Category": "LEADERBOARD", "Position": "1", "Points": "1500", "Team": "username", ... }
+    ],
+    "season": 2026
+  }
+  ```
+- **Error Responses**: `404` if season not found; `500` on server error.
+
+---
+
+## Leaderboard Endpoints
+
+### Get Leaderboard Stats
+
+- **URL**: `/api/leaderboard/stats`
+- **Method**: `GET`
+- **Auth Required**: No
+- **Success Response (200 OK)**:
+  ```json
+  {
+    "success": true,
+    "stats": {
+      "avgPoints": 42.5,
+      "highestScore": {
+        "value": 85,
+        "subtext": "username (R3)"
+      },
+      "activePlayers": 12,
+      "totalPredictions": 156
+    }
+  }
+  ```
 - **Error Responses**: `500` on server error.
 
 ---

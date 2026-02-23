@@ -9,6 +9,8 @@ import { supabase } from "@/lib/supabaseClient"
 import { PageLoader } from "@/frontend/components/PageLoader"
 import { useBackground } from "@/frontend/components/BackgroundContext"
 import { F1Footer } from "@/frontend/components/f1-footer"
+import { RACES } from "@/lib/f1-presets"
+
 
 export default function Leaderboard() {
   const { user } = useAuth()
@@ -81,7 +83,7 @@ export default function Leaderboard() {
           total_points,
           session_type,
           users (username),
-          races (round, name)
+          races (round)
         `)
         .order('created_at', { ascending: true })
 
@@ -99,7 +101,8 @@ export default function Leaderboard() {
           const username = userArr?.username || "Unknown"
           const raceArr = (Array.isArray(log.races) ? log.races[0] : log.races) as Record<string, string | number> | null;
           const round = Number(raceArr?.round) || 0;
-          const raceName = String(raceArr?.name || `Round ${round}`);
+          const presetRace = RACES.find((r) => r.round === round);
+          const raceName = presetRace ? presetRace.name : `Round ${round}`;
           const points = log.total_points || 0
 
           if (!userHistoryMap.has(userId)) {

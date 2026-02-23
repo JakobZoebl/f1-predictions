@@ -289,6 +289,7 @@ def get_last_sprint_results():
         import traceback
         traceback.print_exc()
         return jsonify({"success": False, "error": str(e)}), 500
+        
 @results_bp.route('/api/results/season', methods=['GET'])
 def get_season_results():
     try:

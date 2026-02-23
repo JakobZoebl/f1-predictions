@@ -205,7 +205,7 @@ def get_season_stats():
         )
 
         stats = {
-            "rank": "-",
+            "rank": 0,
             "total_points": 0,
             "avg_points": 0.0,
             "points_behind_leader": 0,
@@ -219,7 +219,7 @@ def get_season_stats():
         }
    
         if lb_res.data:
-            stats["rank"] = f"#{lb_res.data['rank']}" if lb_res.data['rank'] else "-"
+            stats["rank"] = lb_res.data['rank'] if lb_res.data['rank'] else 0
             stats["total_points"] = lb_res.data['total_points'] or 0
             stats["avg_points"] = float(lb_res.data['avg_points_per_race'] or 0)
             
