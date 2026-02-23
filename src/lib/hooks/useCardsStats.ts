@@ -5,13 +5,13 @@ export interface CardsStats {
   constructor: {
     standingsPos: number | string
     standingsPoints: number
-    seasonStats: { races: number; wins: number; podiums: number; dnfs: number }
+    seasonStats: { wins: number; podiums: number; poles: number }
     recentResults: string[]
   }
   driver: {
     standingsPos: number | string
     standingsPoints: number
-    seasonStats: { races: number; wins: number; podiums: number; poles: number }
+    seasonStats: { wins: number; podiums: number; poles: number }
     recentResults: string[]
   }
 }

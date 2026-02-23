@@ -266,9 +266,8 @@ def get_season_stats():
 @profile_bp.route('/api/profile/cards-stats', methods=['GET'])
 @require_auth
 def get_cards_stats():
-    """Fetch driver and constructor stats for profile cards."""
+    """Fetch driver and constructor stats for profile cards including standings and recent results."""
     try:
-        user = g.current_user
         supabase = get_supabase_client()
         
         team_id = request.args.get('team_id')
@@ -302,16 +301,13 @@ def get_cards_stats():
             .execute()
         )
         
-        driver_stats = {"races": 0, "wins": 0, "podiums": 0, "poles": 0}
-        constructor_stats = {"races": 0, "wins": 0, "podiums": 0, "dnfs": 0}
+        driver_stats = {"wins": 0, "podiums": 0, "poles": 0}
+        constructor_stats = {"wins": 0, "podiums": 0, "poles": 0}
         
         driver_recent = []
         constructor_recent = []
         
-        races_count = 0
-        
         for r in results_res.data:
-            races_count += 1
             # Driver logic
             d_pos = "-"
             is_podium = False
@@ -333,7 +329,7 @@ def get_cards_stats():
             elif r.get("p9_driver") == driver_id: d_pos = "9th"
             elif r.get("p10_driver") == driver_id: d_pos = "10th"
             else:
-                d_pos = "OUT" # out of points or dnf
+                d_pos = "NP" # No Points
                 
             if is_podium:
                 driver_stats["podiums"] += 1
@@ -358,6 +354,11 @@ def get_cards_stats():
                 c_pos = "3rd"
             elif r.get("c4_constructor") == team_id: c_pos = "4th"
             elif r.get("c5_constructor") == team_id: c_pos = "5th"
+            elif r.get("c6_constructor") == team_id: c_pos = "6th"
+            elif r.get("c7_constructor") == team_id: c_pos = "7th"
+            elif r.get("c8_constructor") == team_id: c_pos = "8th"
+            elif r.get("c9_constructor") == team_id: c_pos = "9th"
+            elif r.get("c10_constructor") == team_id: c_pos = "10th"
             else:
                 c_pos = "OUT"
                 
@@ -365,15 +366,10 @@ def get_cards_stats():
                 constructor_stats["podiums"] += 1
                 
             constructor_recent.append(c_pos)
-            
-        driver_stats["races"] = races_count
-        constructor_stats["races"] = races_count
         
         # Keep last 5 elements
         driver_recent = driver_recent[-5:]
         constructor_recent = constructor_recent[-5:]
-        
-        # Reverse them? F1 results are typically shown Most Recent first (right to left or left to right? Mockup or F1 site shows Oldest -> Newest usually in tables, but for a summary maybe Most Recent is first. Let's provide it in order (Oldest -> Newest) and frontend can reverse it if needed. The current UI loops through data.driver.recentResults.)
 
         data = {
             "constructor": {

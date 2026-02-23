@@ -63,14 +63,13 @@ export function ProfileCards({ teamKey, driverKey, data }: ProfileCardsProps) {
             </div>
             
             <div className="profile-card-stats-summary">
-                <span>Races: {data?.constructor.seasonStats.races || 0}</span>
                 <span>Wins: {data?.constructor.seasonStats.wins || 0}</span>
                 <span>Podiums: {data?.constructor.seasonStats.podiums || 0}</span>
-                <span>DNFs: {data?.constructor.seasonStats.dnfs || 0}</span>
+                <span>Poles: {data?.constructor.seasonStats.poles || 0}</span>
             </div>
 
             <div className="profile-card-section">
-                <div className="profile-card-section-label">Recent Results</div>
+                <div className="profile-card-section-label">Recent Race Results</div>
                 <div className="profile-card-result-badges">
                     {data?.constructor.recentResults.map((res: string, i: number) => (
                         <span key={i} className="profile-card-result-badge">{res}</span>
@@ -123,7 +122,6 @@ export function ProfileCards({ teamKey, driverKey, data }: ProfileCardsProps) {
             </div>
 
             <div className="profile-card-stats-summary-wrap">
-                <span>Races: {data?.driver.seasonStats.races || 0}</span> • 
                 <span>Wins: {data?.driver.seasonStats.wins || 0}</span> • 
                 <span>Podiums: {data?.driver.seasonStats.podiums || 0}</span> • 
                 <span>Poles: {data?.driver.seasonStats.poles || 0}</span>
