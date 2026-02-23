@@ -7,6 +7,7 @@
 ## PROFILE STATS (User's Personal Page)
 
 ### Overview Stats
+
 - **Total Points** (with trend indicator ↑↓)
 - **Average Points per Race**
 - **Best Race Performance** (race name + points earned)
@@ -17,10 +18,12 @@
 ### Prediction Accuracy Stats
 
 **Correct Top 10 Picks:** X/Y drivers (percentage)
+
 - Example: 8/10 (80%)
 - Count how many predicted drivers actually finished in top 10
 
 **Bonus Prediction Success Rate:**
+
 - Pole Position: X/Y (percentage)
 - Fastest Lap: X/Y (percentage)
 - First Retirement: X/Y (percentage)
@@ -28,18 +31,22 @@
 - Red Flag: X/Y (percentage)
 
 **Current Streak:**
+
 - Count consecutive races with 50+ points scored
 - Display as "🔥 5 race streak" or similar
 
 **Favorite Driver/Constructor Performance:**
+
 - Show how often they picked their favorite driver in top 10
 - Show actual performance of favorite constructor
 - Correlation analysis (optional)
 
 ### Donut Chart: Points Breakdown by Category
+
 **Purpose:** Visual representation of where user's points come from
 
 **Categories:**
+
 1. Driver Positions (top 10 predictions)
 2. Constructor Predictions (top 5)
 3. Pole Position
@@ -47,15 +54,16 @@
 5. Other Bonuses (retirement, safety car, red flag)
 
 **Implementation:**
+
 ```typescript
 // Data structure for Recharts PieChart
 const data = [
-  { name: 'Drivers', value: 234, fill: '#E10600' },
-  { name: 'Constructors', value: 115, fill: '#0600EF' },
-  { name: 'Pole', value: 40, fill: '#FFF200' },
-  { name: 'Fastest Lap', value: 30, fill: '#00D2BE' },
-  { name: 'Other Bonuses', value: 45, fill: '#006F62' }
-]
+  { name: "Drivers", value: 234, fill: "#E10600" },
+  { name: "Constructors", value: 115, fill: "#0600EF" },
+  { name: "Pole", value: 40, fill: "#FFF200" },
+  { name: "Fastest Lap", value: 30, fill: "#00D2BE" },
+  { name: "Other Bonuses", value: 45, fill: "#006F62" },
+];
 
 // Show as percentage of total
 ```
@@ -69,49 +77,55 @@ const data = [
 **Purpose:** Show points progression throughout season for all users
 
 **X-Axis:** Race rounds
+
 - Display as race names (e.g., "Bahrain", "Saudi Arabia", "Australia")
 - Or round numbers (R1, R2, R3...)
 
 **Y-Axis:** Points
+
 - Two options per user:
   1. **Cumulative points** (total points up to that race)
   2. **Points per race** (points earned in just that race)
 - Toggle between views
 
 **Multiple Lines:**
+
 - One line per user (different colors)
 - Color-coded by username or assigned team colors
 - Option to show both cumulative and per-race on same chart
 
 **Hover Tooltips:**
+
 - Username
 - Total points (cumulative)
 - Points for that specific race
 - Rank at that point in the season
 
 **Interactive Features:**
+
 - **Toggle users on/off** (checkboxes in legend)
 - **Zoom/pan** (optional, for long seasons)
 - **Click race point** to see detailed breakdown
 
 **Implementation:**
+
 ```typescript
 // Recharts LineChart data structure
 const chartData = [
   {
-    race: 'Bahrain',
+    race: "Bahrain",
     user1: 87,
     user2: 124,
-    user3: 105
+    user3: 105,
   },
   {
-    race: 'Saudi Arabia',
-    user1: 174,  // cumulative
+    race: "Saudi Arabia",
+    user1: 174, // cumulative
     user2: 248,
-    user3: 210
+    user3: 210,
   },
   // ... more races
-]
+];
 ```
 
 ---
@@ -119,6 +133,7 @@ const chartData = [
 ### Leaderboard Table
 
 **Columns:**
+
 1. **Rank** - Medal icons for top 3 (🥇🥈🥉)
 2. **User** - Username or display name
 3. **Points** - Total points
@@ -127,12 +142,14 @@ const chartData = [
 6. **Last Race** - Points from most recent race
 
 **Features:**
+
 - **Sortable columns** (click header to sort)
 - **Highlight current user's row** (different background color)
 - **Points behind leader** (show gap to #1)
 - **Recent form** (last 3 races average or trend)
 
 **Example:**
+
 ```
 | Rank | User          | Points | Δ    | Avg  | Last |
 |------|---------------|--------|------|------|------|
@@ -147,9 +164,9 @@ const chartData = [
 ### Season Statistics (Global)
 
 **Aggregate Stats:**
+
 - **Average points per race** (across all users)
 - **Highest single race score** (username + race + points)
-- **Perfect predictions** (count of predictions with all exact matches)
 - **Most improved user** (biggest rank jump from start to current)
 - **Consistency leader** (lowest standard deviation in points)
 
@@ -162,19 +179,21 @@ const chartData = [
 **Purpose:** Show what most users predicted
 
 **Display:**
+
 - "80% of users picked Verstappen for pole position"
 - "65% predicted Ferrari as top constructor"
 - "Only 15% predicted a red flag (and they were right!)"
 
 **Implementation:**
+
 ```typescript
 // Calculate mode for each prediction field
 const consensusData = {
   pole_position: { driver: "Max Verstappen", percentage: 80 },
   p1_driver: { driver: "Max Verstappen", percentage: 75 },
   c1_constructor: { team: "Red Bull Racing", percentage: 70 },
-  red_flag: { value: false, percentage: 85 }
-}
+  red_flag: { value: false, percentage: 85 },
+};
 ```
 
 ### Head-to-Head Comparison
@@ -206,11 +225,13 @@ const consensusData = {
 **Purpose:** Identify predictions most affected by unexpected results
 
 **Calculation:**
+
 1. Find result with lowest prediction consensus
 2. Show how many points users lost/gained because of it
 
 **Example:**
 "Biggest Upset: Zhou Guanyu P6 finish
+
 - Only 2% of users predicted this
 - Those who did gained 8 points
 - Top predictors lost average 12 points"
@@ -224,11 +245,13 @@ const consensusData = {
 **Purpose:** Show accuracy across all races and users
 
 **Axes:**
+
 - X: Race rounds
 - Y: Users
 - Color: Accuracy percentage (0-100%)
 
 **Color Scale:**
+
 - Red (0-25%): Poor predictions
 - Orange (25-50%): Below average
 - Yellow (50-75%): Good
@@ -241,6 +264,7 @@ const consensusData = {
 **Chart Type:** Area chart or line chart with moving average
 
 **Shows:**
+
 - Points per race (bars)
 - 3-race moving average (line)
 - Season average (horizontal line)
@@ -250,9 +274,10 @@ const consensusData = {
 ## DATA QUERIES FOR STATS
 
 ### For Profile Stats
+
 ```sql
 -- User's total stats
-SELECT 
+SELECT
   SUM(points) as total_points,
   AVG(points) as avg_points,
   MAX(points) as best_race,
@@ -262,7 +287,7 @@ FROM predictions
 WHERE user_id = $1;
 
 -- Accuracy stats
-SELECT 
+SELECT
   COUNT(CASE WHEN pole_position = results.pole_position THEN 1 END) as pole_correct,
   COUNT(*) as total_predictions
 FROM predictions p
@@ -271,9 +296,10 @@ WHERE p.user_id = $1;
 ```
 
 ### For Leaderboard Chart
+
 ```sql
 -- Points by race for all users
-SELECT 
+SELECT
   u.username,
   r.name as race_name,
   p.points,
@@ -286,9 +312,10 @@ ORDER BY r.round, u.username;
 ```
 
 ### For Consensus Stats
+
 ```sql
 -- Most common prediction for pole position
-SELECT 
+SELECT
   pole_position,
   COUNT(*) as count,
   ROUND(COUNT(*) * 100.0 / (SELECT COUNT(*) FROM predictions WHERE race_id = $1), 1) as percentage
@@ -306,6 +333,7 @@ LIMIT 1;
 **Primary:** Recharts (React-based, easier to use)
 
 **Components to use:**
+
 - `LineChart` - Points progression
 - `PieChart` with `Cell` - Donut chart for breakdown
 - `BarChart` - Points per race
@@ -313,6 +341,7 @@ LIMIT 1;
 - `Legend` - Chart legend with toggle functionality
 
 **Alternative:** D3.js (more powerful, steeper learning curve)
+
 - Only use if Recharts can't handle specific visualization
 
 ---
@@ -320,27 +349,30 @@ LIMIT 1;
 ## COLOR SCHEME FOR CHARTS
 
 **User Lines (Leaderboard Chart):**
+
 - Use distinct, high-contrast colors
 - Avoid similar shades
 - Consider colorblind-friendly palette
 
 **Suggested Colors:**
+
 ```typescript
 const userColors = [
-  '#E10600', // F1 Red
-  '#0600EF', // Blue
-  '#00D2BE', // Teal
-  '#FFF200', // Yellow
-  '#006F62', // Dark Green
-  '#FF8700', // Orange
-  '#DC0000', // Ferrari Red
-  '#47C7FC', // Light Blue
-  '#000000', // Black
-  '#AAAAAA'  // Gray
-]
+  "#E10600", // F1 Red
+  "#0600EF", // Blue
+  "#00D2BE", // Teal
+  "#FFF200", // Yellow
+  "#006F62", // Dark Green
+  "#FF8700", // Orange
+  "#DC0000", // Ferrari Red
+  "#47C7FC", // Light Blue
+  "#000000", // Black
+  "#AAAAAA", // Gray
+];
 ```
 
 **Category Colors (Donut Chart):**
+
 - Match F1 team colors where possible
 - Maintain brand consistency
 
@@ -349,16 +381,19 @@ const userColors = [
 ## RESPONSIVE DESIGN CONSIDERATIONS
 
 **Desktop:**
+
 - Full chart with all users visible
 - Table shows all columns
 - Side-by-side comparisons
 
 **Tablet:**
+
 - Scrollable table (horizontal scroll)
 - Reduced legend, toggle to dropdown
 - Chart maintains full height
 
 **Mobile:**
+
 - Table cards instead of table rows
 - Chart simplified, fewer data points
 - Stack visualizations vertically
@@ -367,6 +402,7 @@ const userColors = [
 ---
 
 ## Use this for:
+
 1. Building profile stats display
 2. Creating leaderboard chart
 3. Implementing data visualizations

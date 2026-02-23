@@ -8,6 +8,7 @@ from flask import Blueprint, request, jsonify, g
 from api._utils.supabase_client import get_supabase_client
 from api._utils.auth_helpers import require_auth
 from api._utils.validators import validate_profile_update
+from api._utils.f1_presets import get_session_name
 
 profile_bp = Blueprint('profile', __name__)
 
@@ -152,7 +153,7 @@ def get_season_stats():
         
         active_season = season_res.data[0]["year"]
 
-        # 2. Fetch data from leaderboard for the active season
+        # 2. Fetch data from leaderboard for the user
         lb_res = (
             supabase.table("leaderboard")
             .select("total_points, avg_points_per_race, rank, races_predicted")
@@ -162,77 +163,105 @@ def get_season_stats():
             .execute()
         )
 
-        # 3. Fetch latest points_log entry for "Last Race" info
-        last_race_res = (
+        # 3. Fetch leader points from leaderboard
+        leader_points_res = (
+            supabase.table("leaderboard")
+            .select("total_points")
+            .eq("season", active_season)
+            .eq("rank", 1)
+            .single()
+            .execute()
+        )
+
+        # 4. Fetch best finish
+        best_finish_res = (
             supabase.table("points_log")
-            .select("total_points, races(name)")
+            .select("total_points, races(round), session_type")
             .eq("user_id", user["id"])
             .eq("season", active_season)
-            .order("created_at", desc=True)
+            .order("total_points", desc=True)
             .limit(1)
             .execute()
         )
 
-        # 4. Fetch total completed (or at least status != 'upcoming') races to show progress
-        total_races_res = (
-            supabase.table("races")
-            .select("id", count="exact")
+        # 5. Fetch worst finish
+        worst_finish_res = (
+            supabase.table("points_log")
+            .select("total_points, races(round), session_type")
+            .eq("user_id", user["id"])
             .eq("season", active_season)
-            .neq("status", "upcoming")
+            .order("total_points", desc=False)
+            .limit(1)
             .execute()
         )
-        total_completed_races = total_races_res.count if total_races_res.count is not None else 0
 
-        # 5. Fetch best finish (highest rank in any race result)
-        # This is slightly tricky as we don't have a 'rank' per race in points_log yet if not implemented,
-        # but the prompt's mockup shows "Best Finish: #2". 
-        # For now, let's assume we fetch the minimum rank from somewhere or return a placeholder if not available.
-        # Actually, let's look for the highest points in a single race as a proxy or just leave it for now.
-        best_finish = "-" 
-        worst_finish = "-"
+        # 6. Fetch points_log breakdown from a user to aggregate them and get the accuracy bar data
+        points_log_res = (
+            supabase.table("points_log")
+            .select("breakdown")
+            .eq("user_id", user["id"])
+            .eq("season", active_season)
+            .execute()
+        )
 
         stats = {
             "rank": "-",
             "total_points": 0,
             "avg_points": 0.0,
-            "races_predicted": 0,
-            "total_completed_races": total_completed_races,
-            "last_race": {
-                "name": "-",
-                "points": "-"
-            },
-            "best_finish": best_finish,
-            "worst_finish": worst_finish,
+            "points_behind_leader": 0,
+            "best_finish": "-",
+            "worst_finish": "-",
             "accuracyBars": {
-                "exactMatches": 0,
-                "top10": 0,
-                "polePosition": 0,
-                "fastestLap": 0,
-                "safetyCar": 0,
-                "redFlag": 0
+                "Driver Predictions": 0,
+                "Constructor Predictions": 0,
+                "Bonus Predictions": 0,
             }
         }
-
+   
         if lb_res.data:
             stats["rank"] = f"#{lb_res.data['rank']}" if lb_res.data['rank'] else "-"
             stats["total_points"] = lb_res.data['total_points'] or 0
             stats["avg_points"] = float(lb_res.data['avg_points_per_race'] or 0)
-            stats["races_predicted"] = lb_res.data['races_predicted'] or 0
+            
+            leader_pts = leader_points_res.data.get('total_points', 0) if (leader_points_res and leader_points_res.data) else 0
+            stats["points_behind_leader"] = max(0, leader_pts - stats["total_points"])
 
-        if last_race_res.data:
-            entry = last_race_res.data[0]
-            race_name = entry.get("races", {}).get("name", "Unknown")
-            stats["last_race"] = {
-                "name": race_name,
-                "points": entry["total_points"]
+        # 7. Safe lookup for best/worst finish names
+        if best_finish_res.data:
+            b_entry = best_finish_res.data[0]
+            b_round = b_entry.get("races", {}).get("round")
+            b_session = b_entry.get("session_type", "race")
+            stats["best_finish"] = get_session_name(b_round, b_session) if b_round else "-"
+
+        if worst_finish_res.data:
+            w_entry = worst_finish_res.data[0]
+            w_round = w_entry.get("races", {}).get("round")
+            w_session = w_entry.get("session_type", "race")
+            stats["worst_finish"] = get_session_name(w_round, w_session) if w_round else "-"
+
+        # 8. Aggregating accuracy bars (percentage of total points per category)
+        total_driver = 0
+        total_constructor = 0
+        total_bonus = 0
+        
+        for item in points_log_res.data:
+            bd = item.get("breakdown") or {}
+            total_driver += bd.get("driver_points", 0)
+            total_constructor += bd.get("constructor_points", 0)
+            total_bonus += bd.get("bonus_points", 0)
+        
+        if stats["total_points"] > 0:
+            stats["accuracyBars"] = {
+                "Driver Predictions": round((total_driver / stats["total_points"]) * 100),
+                "Constructor Predictions": round((total_constructor / stats["total_points"]) * 100),
+                "Bonus Predictions": round((total_bonus / stats["total_points"]) * 100),
             }
-
+            
         return jsonify({"success": True, "stats": stats}), 200
 
     except Exception as e:
         print(f"Error in get_season_stats: {str(e)}")
         return jsonify({"success": False, "error": str(e)}), 500
-
 
 @profile_bp.route('/api/profile/cards-stats', methods=['GET'])
 @require_auth

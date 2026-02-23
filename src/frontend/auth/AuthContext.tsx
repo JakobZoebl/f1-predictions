@@ -21,35 +21,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [session, setSession] = useState<Session | null>(null)
   const [loading, setLoading] = useState(true)
 
-  /**
-   * For OAuth users (Google), ensure a profile row exists in the users table.
-   * If not, create one using the Google display name as username.
-   */
-  async function ensureUserProfile(authUser: User) {
-    try {
-      const { data: existingProfile } = await supabase
-        .from("users")
-        .select("id")
-        .eq("id", authUser.id)
-        .maybeSingle()
-
-      if (!existingProfile) {
-        const googleName = authUser.user_metadata?.full_name || authUser.user_metadata?.name || "User"
-        const baseUsername = googleName.toLowerCase().replace(/[^a-z0-9_-]/g, "_").slice(0, 25)
-        const uniqueUsername = `${baseUsername}_${Date.now().toString(36).slice(-4)}`
-
-        await supabase.from("users").insert({
-          id: authUser.id,
-          username: uniqueUsername,
-          display_name: googleName,
-          favorite_team_id: "redbull",
-          favorite_driver_id: "verstappen",
-        })
-      }
-    } catch {
-      console.warn("Could not ensure user profile, may already exist.")
-    }
-  }
 
   useEffect(() => {
     // Get initial session
@@ -61,20 +32,10 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
     // Listen for auth state changes
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
-      async (event, session) => {
+      async (_event, session) => {
         setSession(session)
         setUser(session?.user ?? null)
         setLoading(false)
-
-        // On first OAuth sign-in, create user profile if it doesn't exist
-        if (event === "SIGNED_IN" && session?.user) {
-          const { user } = session
-          const provider = user.app_metadata?.provider
-
-          if (provider === "google") {
-            await ensureUserProfile(user)
-          }
-        }
       }
     )
 

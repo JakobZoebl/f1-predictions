@@ -3,19 +3,19 @@ import { useAuth } from "@/frontend/auth/AuthContext"
 import { supabase } from "@/lib/supabaseClient"
 
 export interface SeasonStatsData {
-  rank: string | number
+  rank: number
   total_points: number
   avg_points: number
-  races_predicted: number
-  total_completed_races: number
-  last_race: {
-    name: string
-    points: number | string
-  }
-  best_finish: string | number
-  worst_finish: string | number
+  points_behind_leader: number
+  best_finish: string
+  worst_finish: string
   accuracyBars: Record<string, number>
 }
+/*accuracyBars: { //Point breakdown showing which categories contribute to how much of the total points
+Drivers
+Teams
+Bonus
+*/
 
 export function useSeasonStats() {
   const { user } = useAuth()

@@ -156,6 +156,27 @@ function ProfileSettingsContent({
     navigate("/")
   }
 
+  // Delete account
+  async function handleDeleteAccount() {
+    if (!session?.access_token) return
+
+    const res = await fetch("/api/auth/delete-account", {
+      method: "DELETE",
+      headers: {
+        Authorization: `Bearer ${session.access_token}`,
+      },
+    })
+    const data = await res.json()
+
+    if (!data.success) {
+      throw new Error(data.error || "Failed to delete account.")
+    }
+
+    // After backend deletion, sign out locally
+    await supabase.auth.signOut()
+    navigate("/")
+  }
+
   return (
     <>
       <div className="profile-settings-grid">
@@ -178,6 +199,7 @@ function ProfileSettingsContent({
         <SecuritySettings
           onUpdatePassword={handleUpdatePassword}
           onSignOut={handleSignOut}
+          onDeleteAccount={handleDeleteAccount}
         />
       </div>
     </>

@@ -121,28 +121,13 @@ def signup():
 
         user_id = auth_response.user.id
 
-        # Insert user into our public.users table
-        try:
-            profile_result = (
-                supabase.table("users")
-                .insert({
-                    "id": user_id,
-                    "username": username,
-                    "display_name": display_name,
-                    "favorite_team_id": favorite_team_id,
-                    "favorite_driver_id": favorite_driver_id,
-                })
-                .execute()
-            )
-        except Exception as db_err:
-            # If profile creation fails, clean up the auth user
-            print(f"DEBUG: Profile DB error: {str(db_err)}")
-            supabase.auth.admin.delete_user(user_id)
-            return jsonify({"success": False, "error": f"Database error: {str(db_err)}"}), 500
-
-        if not profile_result.data:
-            supabase.auth.admin.delete_user(user_id)
-            return jsonify({"success": False, "error": "Failed to create user profile."}), 500
+        profile_result = (
+            supabase.table("users")
+            .select("*")
+            .eq("id", user_id)
+            .single()
+            .execute()
+        )
 
         return jsonify({
             "success": True,
@@ -156,6 +141,26 @@ def signup():
 
     except Exception as e:
         print(f"DEBUG: Unexpected signup error: {str(e)}")
+        return jsonify({"success": False, "error": f"Server error: {str(e)}"}), 500
+
+
+@auth_bp.route('/api/auth/delete-account', methods=['DELETE'])
+@require_auth
+def delete_account():
+    """
+    Handle user account deletion.
+    """
+    try:
+        user = g.current_user
+        supabase = get_supabase_client()
+        
+        # Delete user from Supabase Auth using Admin API
+        # This will trigger cascading deletes in public.users and other tables
+        supabase.auth.admin.delete_user(user["id"])
+
+        return jsonify({"success": True, "message": "Account deleted successfully."}), 200
+
+    except Exception as e:
         return jsonify({"success": False, "error": f"Server error: {str(e)}"}), 500
 
 

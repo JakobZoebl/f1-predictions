@@ -21,6 +21,7 @@ DROP TABLE IF EXISTS public.seasons CASCADE;
 DROP TABLE IF EXISTS public.users CASCADE;
 
 DROP FUNCTION IF EXISTS public.handle_new_user() CASCADE;
+DROP FUNCTION IF EXISTS public.handle_new_auth_user() CASCADE;
 DROP FUNCTION IF EXISTS public.calculate_f1_points() CASCADE;
 DROP FUNCTION IF EXISTS public.update_season_results_from_standings() CASCADE;
 
@@ -37,7 +38,7 @@ CREATE TABLE public.users (
   favorite_team_id CHARACTER VARYING,
   favorite_driver_id CHARACTER VARYING,
   created_at TIMESTAMP WITHOUT TIME ZONE DEFAULT NOW(),
-  CONSTRAINT users_id_fkey FOREIGN KEY (id) REFERENCES auth.users(id)
+  CONSTRAINT users_id_fkey FOREIGN KEY (id) REFERENCES auth.users(id) ON DELETE CASCADE
 );
 
 -- Table 1.5: seasons
@@ -225,7 +226,7 @@ CREATE TABLE public.points_log (
   user_id UUID REFERENCES public.users(id) ON DELETE CASCADE,
   race_id INTEGER REFERENCES public.races(id) ON DELETE CASCADE,
   season INTEGER NOT NULL REFERENCES public.seasons(year) ON DELETE CASCADE,
-  session_type CHARACTER VARYING, -- 'race', 'sprint', 'season'
+  session_type CHARACTER VARYING, -- 'race', 'sprint'
   total_points INTEGER,
   breakdown JSONB, -- {"driver_points": 43, "constructor_points": 25, "bonus_points": 10}
   created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
@@ -517,6 +518,56 @@ $$ LANGUAGE plpgsql;
 CREATE TRIGGER tr_after_user_insert
     AFTER INSERT ON public.users
     FOR EACH ROW EXECUTE FUNCTION public.handle_new_user();
+
+-- ------------------------------------------------------------------------------
+-- 4.5. AUTH USER HANDLER (Supabase Auth -> public.users)
+-- ------------------------------------------------------------------------------
+
+CREATE OR REPLACE FUNCTION public.handle_new_auth_user()
+RETURNS TRIGGER AS $$
+DECLARE
+  username_val TEXT;
+  display_name_val TEXT;
+  team_id_val TEXT;
+  driver_id_val TEXT;
+BEGIN
+  -- 1. Extract values from user_metadata (used by our Flask API)
+  username_val := NEW.raw_user_meta_data->>'username';
+  display_name_val := NEW.raw_user_meta_data->>'display_name';
+  team_id_val := NEW.raw_user_meta_data->>'favorite_team_id';
+  driver_id_val := NEW.raw_user_meta_data->>'favorite_driver_id';
+
+  -- 2. Fallbacks for OAuth (Google/Discord/etc.)
+  IF display_name_val IS NULL THEN
+    display_name_val := COALESCE(NEW.raw_user_meta_data->>'full_name', NEW.raw_user_meta_data->>'name', 'F1 Fan');
+  END IF;
+
+  IF username_val IS NULL THEN
+    -- Generate username from display name (lowercase and no whitespace)
+    username_val := LOWER(REGEXP_REPLACE(display_name_val, '\s+', '', 'g'));
+    
+    -- Ensure username doesn't exceed 30 chars (per project spec)
+    IF LENGTH(username_val) > 30 THEN
+      username_val := SUBSTR(username_val, 1, 30);
+    END IF;
+  END IF;
+
+  IF team_id_val IS NULL THEN team_id_val := 'redbull'; END IF;
+  IF driver_id_val IS NULL THEN driver_id_val := 'verstappen'; END IF;
+
+  -- 3. Insert into public.users
+  INSERT INTO public.users (id, username, display_name, favorite_team_id, favorite_driver_id)
+  VALUES (NEW.id, username_val, display_name_val, team_id_val, driver_id_val)
+  ON CONFLICT (id) DO NOTHING;
+
+  RETURN NEW;
+END;
+$$ LANGUAGE plpgsql SECURITY DEFINER;
+
+-- Trigger must be on auth.users
+CREATE TRIGGER tr_after_auth_user_insert
+    AFTER INSERT ON auth.users
+    FOR EACH ROW EXECUTE FUNCTION public.handle_new_auth_user();
 
 -- ------------------------------------------------------------------------------
 -- 5. INDEXES

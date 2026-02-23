@@ -30,7 +30,7 @@ export function SeasonStats({ data }: SeasonStatsProps) {
                 <div className="stat-mini-cards">
                      <div className="stat-mini-card">
                         <div className="stat-mini-label">Points Behind Leader</div>
-                        <div className="stat-mini-value">-</div>
+                        <div className="stat-mini-value">{data.points_behind_leader}</div>
                      </div>
                      <div className="stat-mini-card">
                         <div className="stat-mini-label">Avg Points/Race</div>
@@ -52,7 +52,7 @@ export function SeasonStats({ data }: SeasonStatsProps) {
 
             {/* Right Column: Prediction Accuracy Bars */}
             <div className="accuracy-section">
-                <h4 className="accuracy-title">Prediction Accuracy Breakdown</h4>
+                <h4 className="accuracy-title">Points Breakdown</h4>
                 
                 {Object.entries(data.accuracyBars).map(([key, val]) => (
                     <div key={key} className="group">
