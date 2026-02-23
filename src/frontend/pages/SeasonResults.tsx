@@ -16,7 +16,7 @@ import "@/frontend/styles/RacePredictions.css"
 // Max scores for season (must match API)
 const SEASON_DRIVER_MAX = 250 + 180 + 150 + 120 + 100 + 80 + 60 + 40 + 20 + 10 + 12 * 10 // 1130
 const SEASON_CONSTRUCTOR_MAX = 250 + 180 + 150 + 120 + 100 + 6 * 10 // 860
-const SEASON_BONUS_MAX = 25 + 25 + 25 // 75
+const SEASON_BONUS_MAX = 100 +100 +100
 const SEASON_TOTAL_MAX = SEASON_DRIVER_MAX + SEASON_CONSTRUCTOR_MAX + SEASON_BONUS_MAX
 
 export default function SeasonResults() {
