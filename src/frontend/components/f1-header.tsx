@@ -1,6 +1,8 @@
 "use client"
 
-import { ArrowLeft, Settings, ChevronDown } from "lucide-react"
+import { useState } from "react"
+import { createPortal } from "react-dom"
+import { ArrowLeft, Settings, ChevronDown, Menu, X, Home, Trophy, Calendar, Flag, Award, User, LogIn } from "lucide-react"
 import { Link } from "react-router-dom"
 import { cn, hexToHsl, getAdaptiveDeepBackground } from "@/lib/utils"
 import emblem from "@/assets/emblem.png"
@@ -25,6 +27,9 @@ export function F1Header({
   isAuthenticated = false,
   username = "User",
 }: F1HeaderProps) {
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
+  const closeMobileMenu = () => setIsMobileMenuOpen(false)
+  const showMobileNav = variant === "Home" || (variant === "landing" && isAuthenticated)
   
   // Calculate dynamic style if primaryColor is provided
   const headerStyle = primaryColor 
@@ -45,6 +50,7 @@ export function F1Header({
     : {};
 
   return (
+    <>
     <header
       className={cn(
         "header-base",
@@ -212,7 +218,7 @@ export function F1Header({
         )}
 
         {/* Right side - Auth-aware navigation */}
-        <div className="header-right-nav">
+        <div className={cn("header-right-nav", showMobileNav && "header-right-nav-mobile-hidden")}>
           {isAuthenticated ? (
             <>
               <Link 
@@ -240,10 +246,189 @@ export function F1Header({
             </>
           )}
         </div>
+
+        {/* Burger button — only visible below 1024px when nav is applicable */}
+        {showMobileNav && (
+          <button
+            className="header-burger-btn"
+            onClick={() => setIsMobileMenuOpen(true)}
+            aria-label="Open navigation menu"
+          >
+            <Menu className="h-6 w-6" />
+          </button>
+        )}
       </div>
 
       {/* Gradient line */}
       <div className="header-gradient-line" />
     </header>
+
+    {/* ── Mobile Sidebar (portaled to body to escape header's backdrop-filter containing block) ── */}
+    {showMobileNav && isMobileMenuOpen && createPortal(
+      <>
+        {/* Backdrop */}
+        <div className="header-mobile-overlay" onClick={closeMobileMenu} />
+
+        {/* Sidebar */}
+        <aside className="header-mobile-sidebar" aria-label="Mobile navigation">
+          <div className="header-mobile-sidebar-inner">
+            {/* Close */}
+            <button className="header-mobile-close-btn" onClick={closeMobileMenu} aria-label="Close menu">
+              <X className="h-5 w-5" />
+            </button>
+
+            {/* Logo */}
+            <div className="header-mobile-logo">
+              <img src={emblem} alt="F1 Emblem" className="h-8 w-auto" />
+              <span className="header-mobile-logo-text">F1 PREDICTIONS</span>
+            </div>
+
+            {/* Nav Links */}
+            <nav className="flex flex-col gap-1">
+              <Link
+                to="/home"
+                onClick={closeMobileMenu}
+                className={cn(
+                  "header-mobile-nav-link",
+                  activeNav === "Home" ? "header-mobile-nav-link-active" : "header-mobile-nav-link-inactive"
+                )}
+              >
+                <Home className="h-4 w-4" />
+                Home
+              </Link>
+
+              {/* Predictions Group */}
+              <div className="header-mobile-section-title">
+                <Flag className="h-3.5 w-3.5" />
+                Predictions
+              </div>
+              <Link
+                to="/race-predictions"
+                onClick={closeMobileMenu}
+                className={cn(
+                  "header-mobile-sub-link",
+                  activeNav === "RacePredictions" ? "header-mobile-sub-link-active" : "header-mobile-sub-link-inactive"
+                )}
+              >
+                Grand Prix
+              </Link>
+              <Link
+                to="/sprint-predictions"
+                onClick={closeMobileMenu}
+                className={cn(
+                  "header-mobile-sub-link",
+                  activeNav === "SprintPredictions" ? "header-mobile-sub-link-active" : "header-mobile-sub-link-inactive"
+                )}
+              >
+                Sprint
+              </Link>
+              <Link
+                to="/season-predictions"
+                onClick={closeMobileMenu}
+                className={cn(
+                  "header-mobile-sub-link",
+                  activeNav === "SeasonPredictions" ? "header-mobile-sub-link-active" : "header-mobile-sub-link-inactive"
+                )}
+              >
+                Season
+              </Link>
+
+              {/* Calendar */}
+              <Link
+                to="/season-overview"
+                onClick={closeMobileMenu}
+                className={cn(
+                  "header-mobile-nav-link",
+                  activeNav === "Season" ? "header-mobile-nav-link-active" : "header-mobile-nav-link-inactive"
+                )}
+              >
+                <Calendar className="h-4 w-4" />
+                Calendar
+              </Link>
+
+              {/* Results Group */}
+              <div className="header-mobile-section-title">
+                <Trophy className="h-3.5 w-3.5" />
+                Results
+              </div>
+              <Link
+                to="/race-results"
+                onClick={closeMobileMenu}
+                className={cn(
+                  "header-mobile-sub-link",
+                  activeNav === "Results" ? "header-mobile-sub-link-active" : "header-mobile-sub-link-inactive"
+                )}
+              >
+                Grand Prix
+              </Link>
+              <Link
+                to="/sprint-results"
+                onClick={closeMobileMenu}
+                className={cn(
+                  "header-mobile-sub-link",
+                  activeNav === "SprintResults" ? "header-mobile-sub-link-active" : "header-mobile-sub-link-inactive"
+                )}
+              >
+                Sprint
+              </Link>
+              <Link
+                to="/season-results"
+                onClick={closeMobileMenu}
+                className={cn(
+                  "header-mobile-sub-link",
+                  activeNav === "SeasonResults" ? "header-mobile-sub-link-active" : "header-mobile-sub-link-inactive"
+                )}
+              >
+                Season
+              </Link>
+
+              {/* Leaderboard */}
+              <Link
+                to="/leaderboard"
+                onClick={closeMobileMenu}
+                className={cn(
+                  "header-mobile-nav-link",
+                  activeNav === "Leaderboard" ? "header-mobile-nav-link-active" : "header-mobile-nav-link-inactive"
+                )}
+              >
+                <Award className="h-4 w-4" />
+                Leaderboard
+              </Link>
+            </nav>
+
+            {/* Divider */}
+            <div className="header-mobile-divider" />
+
+            {/* Auth Section */}
+            <div className="header-mobile-auth">
+              {isAuthenticated ? (
+                <>
+                  <Link to="/profile" onClick={closeMobileMenu} className="header-mobile-auth-user">
+                    <User className="h-4 w-4" />
+                    @{username}
+                  </Link>
+                  <Link to="/profile-settings" onClick={closeMobileMenu} className="header-mobile-auth-settings">
+                    <Settings className="h-4 w-4" />
+                    Settings
+                  </Link>
+                </>
+              ) : (
+                <>
+                  <Link to="/login" onClick={closeMobileMenu} className="header-mobile-login-btn">
+                    <LogIn className="h-4 w-4 mr-2" />
+                    Login
+                  </Link>
+                  <Link to="/signup" onClick={closeMobileMenu} className="header-mobile-signup-btn">
+                    Sign Up
+                  </Link>
+                </>
+              )}
+            </div>
+          </div>
+        </aside>
+      </>,
+      document.body
+    )}
+    </>
   )
 }

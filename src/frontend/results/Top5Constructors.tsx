@@ -31,6 +31,7 @@ export function Top5Constructors({ results, score = 0, maxScore = 70, title = "T
                 const predictedKey = TEAMS[row.Predicted] ? row.Predicted : findTeam(row.Predicted)
                 const actualTeam = actualKey ? TEAMS[actualKey] : null
                 const predictedTeam = predictedKey ? TEAMS[predictedKey] : null
+                const isExactMatch = (actualKey && actualKey === predictedKey) || row.Actual === row.Predicted
 
                 return (
                     <div
@@ -51,10 +52,10 @@ export function Top5Constructors({ results, score = 0, maxScore = 70, title = "T
                             <div className="driver-info">
                                 <span className="driver-name">{predictedTeam?.name || row.Predicted || '—'}</span>
                             </div>
-                            {pts > 0 && <span className="text-green-500 text-xs ml-1">✔</span>}
+                            {pts > 0 && (isExactMatch ? <span className="text-green-500 text-xs ml-1">✔</span> : <span className="text-yellow-500 text-xs ml-1">~</span>)}
                         </div>
 
-                        <span className={`text-right text-xs font-bold ${pts > 0 ? 'text-green-400' : 'text-red-400/60'}`}>
+                        <span className={`text-right text-xs font-bold ${pts > 0 ? (isExactMatch ? 'text-green-400' : 'text-yellow-400') : 'text-red-400/60'}`}>
                             {pts > 0 ? `+${row.Points}` : '0'}
                         </span>
                     </div>

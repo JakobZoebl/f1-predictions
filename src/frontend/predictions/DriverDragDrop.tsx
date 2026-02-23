@@ -2,6 +2,7 @@
 
 import { useState, useCallback } from "react"
 import { DRIVERS, TEAMS } from "@/lib/f1-presets"
+import { useTouchDragDrop } from "@/lib/hooks/useTouchDragDrop"
 
 const POINTS = [25, 18, 15, 12, 10, 8, 6, 4, 2, 1]
 
@@ -38,15 +39,16 @@ export function DriverDragDrop({
   }, [])
 
   const handleSlotDrop = useCallback(
-    (targetIndex: number) => {
-      if (!draggedDriver) return
+    (targetIndex: number, driverKey?: string) => {
+      const driver = driverKey || draggedDriver
+      if (!driver) return
 
       const newSelected = [...selected]
-      const oldIndex = newSelected.indexOf(draggedDriver)
+      const oldIndex = newSelected.indexOf(driver)
       const targetDriver = newSelected[targetIndex]
 
       // Place dragged driver in target slot
-      newSelected[targetIndex] = draggedDriver
+      newSelected[targetIndex] = driver
 
       // If dragged from another slot, swap by placing the target driver in the old slot
       if (oldIndex !== -1) {
@@ -79,6 +81,17 @@ export function DriverDragDrop({
     onChange(Array(slotCount).fill(null))
   }, [onChange, slotCount])
 
+  // ── Touch drag-and-drop ─────────────────────────────────
+  const { getTouchHandlers, getSlotProps } = useTouchDragDrop({
+    onDragStart: (key) => setDraggedDriver(key),
+    onDragOver: (slotIdx) => setDragOverSlot(slotIdx),
+    onDrop: (slotIdx, key) => handleSlotDrop(slotIdx, key),
+    onDragEnd: () => {
+      setDraggedDriver(null)
+      setDragOverSlot(null)
+    },
+  })
+
   return (
     <div className="relative">
       <div className="flex justify-end mb-3">
@@ -96,6 +109,9 @@ export function DriverDragDrop({
           const driverKey = selected[i]
           const driver = driverKey ? DRIVERS[driverKey] : null
           const team = driver ? TEAMS[driver.team] : null
+
+          // Merge touch handlers for filled slots (they are also draggable)
+          const touchHandlers = driverKey ? getTouchHandlers(driverKey) : {}
 
           return (
             <div
@@ -115,6 +131,8 @@ export function DriverDragDrop({
                 e.preventDefault()
                 handleSlotDrop(i)
               }}
+              {...getSlotProps(i)}
+              {...touchHandlers}
             >
               <span className="dnd-slot-position">P{i + 1}</span>
 
@@ -170,6 +188,7 @@ export function DriverDragDrop({
                   draggable
                   onDragStart={() => handleDragStart(key)}
                   onDragEnd={handleDragEnd}
+                  {...getTouchHandlers(key)}
                 >
                   <div
                     className="team-accent"

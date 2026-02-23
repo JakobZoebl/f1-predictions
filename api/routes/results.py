@@ -289,7 +289,7 @@ def get_last_sprint_results():
         import traceback
         traceback.print_exc()
         return jsonify({"success": False, "error": str(e)}), 500
-        
+
 @results_bp.route('/api/results/season', methods=['GET'])
 def get_season_results():
     try:
@@ -409,19 +409,18 @@ def get_season_results():
             add_row("CONSTRUCTOR", i, act_c, pred_c, pts)
 
         # 3. BONUS (3)
-        # Using values from FE SEASON_BONUS_MAX = 25+25+25
+        # Using values from FE SEASON_BONUS_MAX = 100+100+100
         bonuses = [
-            ("most_poles", 25),
-            ("most_fastest_laps", 25),
-            ("most_first_retirements", 25)
+            ("most_poles", 100),
+            ("most_fastest_laps", 100),
+            ("most_first_retirements", 100)
         ]
         for key, max_pts in bonuses:
             act_b = actual.get(key)
-            pred_b = pred.get(key)
+            pred_key = "most_retirements" if key == "most_first_retirements" else key
+            pred_b = pred.get(pred_key)
             pts = max_pts if (pred_b and pred_b == act_b) else 0
-            # Map key to standard format expected by FE
-            label = key.replace("most_", "").replace("_", " ").title()
-            add_row("BONUS", label, act_b, pred_b, pts)
+            add_row("BONUS", key, act_b, pred_b, pts)
 
         # 4. LEADERBOARD
         # Fetch leaderboard for the whole season

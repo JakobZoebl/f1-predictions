@@ -107,3 +107,161 @@
 .header-dropdown-icon {
   @apply h-4 w-4 transition-transform duration-200 group-hover:rotate-180;
 }
+
+/* ── Burger Button ─────────────────────────────────────── */
+
+.header-burger-btn {
+  @apply relative z-50 flex items-center justify-center w-10 h-10 rounded-lg
+         text-white/80 transition-all duration-200
+         hover:text-white hover:bg-white/10
+         focus:outline-none focus-visible:ring-2 focus-visible:ring-f1-neon;
+  display: none; /* hidden on desktop by default */
+}
+
+/* ── Mobile Overlay ────────────────────────────────────── */
+
+.header-mobile-overlay {
+  @apply fixed inset-0 z-[199] bg-black/60 backdrop-blur-sm;
+  animation: fadeIn 0.25s ease-out;
+}
+
+/* ── Mobile Sidebar ────────────────────────────────────── */
+
+.header-mobile-sidebar {
+  @apply fixed top-0 right-0 z-[200] flex flex-col
+         w-72 h-full
+         bg-[hsl(var(--background))]/95 backdrop-blur-xl
+         border-l border-white/10 shadow-2xl;
+  animation: slideInRight 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.header-mobile-sidebar-inner {
+  @apply flex flex-col h-full overflow-y-auto px-5 pt-5 pb-8;
+}
+
+/* ── Sidebar Close Button ──────────────────────────────── */
+
+.header-mobile-close-btn {
+  @apply self-end flex items-center justify-center w-10 h-10 mb-4
+         rounded-lg text-white/60 transition-all duration-200
+         hover:text-white hover:bg-white/10
+         focus:outline-none focus-visible:ring-2 focus-visible:ring-f1-neon;
+}
+
+/* ── Sidebar Logo ──────────────────────────────────────── */
+
+.header-mobile-logo {
+  @apply flex items-center gap-2 mb-6 px-2;
+}
+
+.header-mobile-logo-text {
+  @apply text-base font-bold tracking-wide text-foreground;
+}
+
+/* ── Sidebar Nav Links ─────────────────────────────────── */
+
+.header-mobile-nav-link {
+  @apply flex items-center gap-3 px-3 py-3 rounded-lg text-sm font-medium
+         transition-all duration-200;
+}
+
+.header-mobile-nav-link-active {
+  @apply text-f1-neon bg-white/5;
+}
+
+.header-mobile-nav-link-inactive {
+  @apply text-white/70 hover:text-white hover:bg-white/5;
+}
+
+/* ── Sidebar Section Titles (Predictions, Results) ────── */
+
+.header-mobile-section-title {
+  @apply flex items-center gap-2 px-3 pt-4 pb-1 text-xs font-semibold
+         uppercase tracking-wider text-white/40;
+}
+
+.header-mobile-sub-link {
+  @apply flex items-center gap-3 pl-7 pr-3 py-2.5 rounded-lg text-sm font-medium
+         transition-all duration-200;
+}
+
+.header-mobile-sub-link-active {
+  @apply text-f1-neon bg-white/5;
+}
+
+.header-mobile-sub-link-inactive {
+  @apply text-white/60 hover:text-white hover:bg-white/5;
+}
+
+/* ── Sidebar Divider ───────────────────────────────────── */
+
+.header-mobile-divider {
+  @apply my-4 h-px bg-gradient-to-r from-transparent via-white/10 to-transparent;
+}
+
+/* ── Sidebar Auth Section ──────────────────────────────── */
+
+.header-mobile-auth {
+  @apply mt-auto flex flex-col gap-3 pt-4;
+}
+
+.header-mobile-auth-user {
+  @apply flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium
+         text-white/70 hover:text-white hover:bg-white/5 transition-all duration-200;
+}
+
+.header-mobile-auth-settings {
+  @apply flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium
+         text-white/50 hover:text-white hover:bg-white/5 transition-all duration-200;
+}
+
+.header-mobile-login-btn {
+  @apply flex items-center justify-center h-11 rounded-xl
+         border border-f1-card-border bg-secondary
+         text-sm font-medium text-foreground
+         transition-colors hover:bg-secondary/80
+         focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-f1-neon;
+}
+
+.header-mobile-signup-btn {
+  @apply flex items-center justify-center h-11 rounded-xl
+         bg-f1-neon text-sm font-bold text-white
+         transition-all hover:brightness-110
+         focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-f1-neon;
+}
+
+/* ── Animations ────────────────────────────────────────── */
+
+@keyframes slideInRight {
+  from {
+    transform: translateX(100%);
+  }
+  to {
+    transform: translateX(0);
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+/* ── Responsive: hide desktop nav, show burger below lg ─ */
+
+@media (max-width: 1023px) {
+  .header-center-nav {
+    display: none !important;
+  }
+
+  .header-right-nav-mobile-hidden {
+    display: none !important;
+  }
+
+  .header-burger-btn {
+    display: flex;
+  }
+}

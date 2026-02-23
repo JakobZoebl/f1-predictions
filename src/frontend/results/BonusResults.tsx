@@ -28,7 +28,11 @@ export function BonusResults({ results, score = 0, maxScore = 41 }: BonusResults
                 <tbody className="text-white divide-y divide-white/5">
                     {results.map((row, idx) => {
                         const pts = parseInt(row.Points)
-                        const isDriverRow = ["pole_position", "fastest_lap", "first_retirement", "most_poles", "most_fastest_laps", "most_retirements"].some(k => row.Position.includes(k))
+                        const isDriverRow = ["pole_position", "fastest_lap", "first_retirement", "most_poles", "most_fastest_laps", "most_first_retirements"].some(k => row.Position.includes(k))
+
+                        const actualKey = isDriverRow ? (DRIVERS[row.Actual] ? row.Actual : findDriver(row.Actual)) : row.Actual
+                        const predictedKey = isDriverRow ? (DRIVERS[row.Predicted] ? row.Predicted : findDriver(row.Predicted)) : row.Predicted
+                        const isExactMatch = (actualKey && actualKey === predictedKey) || row.Actual === row.Predicted
 
                         const renderDriverCell = (name: string, faded: boolean) => {
                             const key = DRIVERS[name] ? name : findDriver(name)
@@ -55,11 +59,14 @@ export function BonusResults({ results, score = 0, maxScore = 41 }: BonusResults
                                 {isDriverRow ? renderDriverCell(row.Actual, false) : row.Actual}
                             </td>
                             <td className="px-2 py-2">
-                                {isDriverRow ? renderDriverCell(row.Predicted, pts === 0) : (
-                                    <span className={pts === 0 ? 'opacity-50' : ''}>{row.Predicted}</span>
-                                )}
+                                <div className="flex items-center gap-1">
+                                    {isDriverRow ? renderDriverCell(row.Predicted, pts === 0) : (
+                                        <span className={pts === 0 ? 'opacity-50' : ''}>{row.Predicted}</span>
+                                    )}
+                                    {pts > 0 && (isExactMatch ? <span className="text-green-500 text-xs ml-1">✔</span> : <span className="text-yellow-500 text-xs ml-1">~</span>)}
+                                </div>
                             </td>
-                            <td className={`px-2 py-2 text-right font-bold ${pts > 0 ? 'text-green-400' : 'text-red-400'}`}>
+                            <td className={`px-2 py-2 text-right font-bold ${pts > 0 ? (isExactMatch ? 'text-green-400' : 'text-yellow-400') : 'text-red-400'}`}>
                                 {pts > 0 ? `+${row.Points}` : '0'}
                             </td>
                         </tr>

@@ -33,6 +33,7 @@ export function Top10Drivers({ results, score = 0, maxScore = 152, title = "Top 
                 const predictedDriver = predictedKey ? DRIVERS[predictedKey] : null
                 const actualTeam = actualDriver ? TEAMS[actualDriver.team] : null
                 const predictedTeam = predictedDriver ? TEAMS[predictedDriver.team] : null
+                const isExactMatch = (actualKey && actualKey === predictedKey) || row.Actual === row.Predicted
 
                 return (
                     <div
@@ -64,11 +65,11 @@ export function Top10Drivers({ results, score = 0, maxScore = 152, title = "Top 
                                 <span className="driver-name">{predictedDriver?.name || row.Predicted || '—'}</span>
                                 {predictedTeam && <span className="driver-team">{predictedTeam.name}</span>}
                             </div>
-                            {pts > 0 && <span className="text-green-500 text-xs ml-1">✔</span>}
+                            {pts > 0 && (isExactMatch ? <span className="text-green-500 text-xs ml-1">✔</span> : <span className="text-yellow-500 text-xs ml-1">~</span>)}
                         </div>
 
                         {/* Points */}
-                        <span className={`text-right text-xs font-bold ${pts > 0 ? 'text-green-400' : 'text-red-400/60'}`}>
+                        <span className={`text-right text-xs font-bold ${pts > 0 ? (isExactMatch ? 'text-green-400' : 'text-yellow-400') : 'text-red-400/60'}`}>
                             {pts > 0 ? `+${row.Points}` : '0'}
                         </span>
                     </div>

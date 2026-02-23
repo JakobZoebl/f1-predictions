@@ -112,6 +112,14 @@
   @apply opacity-50;
 }
 
+/* ── Touch Drag Support ── */
+
+.dnd-pool-item[style*="touch-action"],
+.dnd-slot[style*="touch-action"] {
+  -webkit-user-select: none;
+  user-select: none;
+}
+
 .dnd-pool-item .team-accent {
   @apply w-0.5 h-6 rounded-full flex-shrink-0;
 }

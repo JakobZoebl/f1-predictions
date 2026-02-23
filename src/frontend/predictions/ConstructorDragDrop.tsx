@@ -2,6 +2,7 @@
 
 import { useState, useCallback } from "react"
 import { TEAMS } from "@/lib/f1-presets"
+import { useTouchDragDrop } from "@/lib/hooks/useTouchDragDrop"
 
 const POINTS = [25, 18, 15, 12, 10]
 
@@ -36,15 +37,16 @@ export function ConstructorDragDrop({
   }, [])
 
   const handleSlotDrop = useCallback(
-    (targetIndex: number) => {
-      if (!draggedTeam) return
+    (targetIndex: number, teamKey?: string) => {
+      const team = teamKey || draggedTeam
+      if (!team) return
 
       const newSelected = [...selected]
-      const oldIndex = newSelected.indexOf(draggedTeam)
+      const oldIndex = newSelected.indexOf(team)
       const targetTeam = newSelected[targetIndex]
 
       // Place dragged team in target slot
-      newSelected[targetIndex] = draggedTeam
+      newSelected[targetIndex] = team
 
       // If dragged from another slot, swap
       if (oldIndex !== -1) {
@@ -74,6 +76,17 @@ export function ConstructorDragDrop({
     onChange(Array(slotCount).fill(null))
   }, [onChange, slotCount])
 
+  // ── Touch drag-and-drop ─────────────────────────────────
+  const { getTouchHandlers, getSlotProps } = useTouchDragDrop({
+    onDragStart: (key) => setDraggedTeam(key),
+    onDragOver: (slotIdx) => setDragOverSlot(slotIdx),
+    onDrop: (slotIdx, key) => handleSlotDrop(slotIdx, key),
+    onDragEnd: () => {
+      setDraggedTeam(null)
+      setDragOverSlot(null)
+    },
+  })
+
   return (
     <div className="relative">
       <div className="flex justify-end mb-3">
@@ -90,6 +103,9 @@ export function ConstructorDragDrop({
         {Array.from({ length: slotCount }, (_, i) => {
           const teamKey = selected[i]
           const team = teamKey ? TEAMS[teamKey] : null
+
+          // Merge touch handlers for filled slots (they are also draggable)
+          const touchHandlers = teamKey ? getTouchHandlers(teamKey) : {}
 
           return (
             <div
@@ -109,6 +125,8 @@ export function ConstructorDragDrop({
                 e.preventDefault()
                 handleSlotDrop(i)
               }}
+              {...getSlotProps(i)}
+              {...touchHandlers}
             >
               <span className="dnd-slot-position">P{i + 1}</span>
 
@@ -163,6 +181,7 @@ export function ConstructorDragDrop({
                   draggable
                   onDragStart={() => handleDragStart(key)}
                   onDragEnd={handleDragEnd}
+                  {...getTouchHandlers(key)}
                 >
                   <div
                     className="team-accent"

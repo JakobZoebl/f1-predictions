@@ -23,16 +23,14 @@ function StatItem({ label, value, subElement, footer }: StatItemProps) {
 }
 
 export interface SeasonStats {
-    rank: string
+    rank: number
     total_points: number
     avg_points: number
-    races_predicted: number
-    total_completed_races: number
-    last_race: {
-        name: string
-        points: string | number
-    }
-    best_finish: string
+    races_predicted?: number
+    total_completed_races?: number
+    points_behind_leader?: number
+    worst_finish?: string
+    best_finish?: string
 }
 
 interface SeasonSummaryProps {
@@ -56,7 +54,7 @@ export function SeasonSummary({ username, avatarUrl, stats, loading }: SeasonSum
   }
 
   const predictionsProgress = stats?.total_completed_races 
-      ? (stats.races_predicted / stats.total_completed_races) * 100 
+      ? ((stats.races_predicted || 0) / stats.total_completed_races) * 100 
       : 0
 
   return (
@@ -84,18 +82,19 @@ export function SeasonSummary({ username, avatarUrl, stats, loading }: SeasonSum
         <div className="summary-stats-grid">
             <StatItem 
                 label="Rank" 
-                value={stats?.rank ? stats.rank.toString() : "-"} 
+                value={stats?.rank ? stats.rank.toString() : "0"} 
             />
             <StatItem 
                 label="Points" 
-                value={stats?.total_points ?? "-"} 
+                value={stats?.total_points ?? "0"} 
                 subElement={<span className="points-unit">Points</span>}
-                footer={stats?.avg_points ? `Avg. ${stats.avg_points.toFixed(1)}` : "Avg. -"}
+                footer={stats?.avg_points ? `Avg. ${stats.avg_points.toFixed(1)}` : "Avg. 0"}
             />
             <StatItem 
-                label="Last Race" 
-                value={stats?.last_race?.name || "-"} 
-                footer={stats?.last_race?.points !== "-" ? `(${stats?.last_race.points}pts)` : "(-)"}
+                label="Behind Leader" 
+                value={stats?.points_behind_leader !== undefined ? stats.points_behind_leader : "0"} 
+                subElement={<span className="points-unit">Points</span>}
+                footer={stats?.total_points !== undefined && stats?.points_behind_leader !== undefined ? `Leader: ${stats.total_points + stats.points_behind_leader}` : "Leader: 0"}
             />
         </div>
 
