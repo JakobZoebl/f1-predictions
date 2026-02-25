@@ -4,15 +4,14 @@ import { RACES, type RaceEvent } from "@/lib/f1-presets"
 export function useLastRace(): RaceEvent | null {
   return useMemo(() => {
     if (!RACES || RACES.length === 0) return null
-    // Find the first race in the past
     const now = new Date()
-    const upcoming = RACES.find((r) => {
+    // Filter all races that are in the past, then pick the most recent one
+    const pastRaces = RACES.filter((r) => {
       const timePart = r.time.split(" ")[0]
-      const dateTimeString = `${r.date}T${timePart}:00Z` // Appending Z usually implies UTC, but original code did this. 
-
-      const raceTime = new Date(dateTimeString)
+      const raceTime = new Date(`${r.date}T${timePart}:00Z`)
       return raceTime < now
     })
-    return upcoming || RACES[RACES.length - 1]
+    return pastRaces.length > 0 ? pastRaces[pastRaces.length - 1] : null
   }, [])
 }
+

@@ -48,7 +48,7 @@ export function PointsHistoryChart({ data }: PointsHistoryChartProps) {
     if (!isEmpty) {
       const allHistory = data.flatMap(d => d.history)
       maxPoints = d3.max(allHistory, d => d.cumulativePoints) || 0
-      rounds = Array.from(new Set(allHistory.map(d => d.round))).sort((a, b) => a - b)
+      rounds = Array.from(new Set(allHistory.map(d => Math.floor(d.round)))).sort((a, b) => a - b)
     } else {
       // Default values for empty state
       rounds = [1, 2, 3, 4, 5]
@@ -69,7 +69,7 @@ export function PointsHistoryChart({ data }: PointsHistoryChartProps) {
     // Axes
     const xAxis = (g: d3.Selection<SVGGElement, unknown, null, undefined>) => g
         .attr("transform", `translate(0,${height - margin.bottom})`)
-        .call(d3.axisBottom(x).ticks(rounds.length).tickFormat((d) => `Round ${d}`))
+        .call(d3.axisBottom(x).tickValues(rounds).tickFormat((d) => `Round ${d}`))
         .call((g) => g.select(".domain").attr("stroke", "rgba(255,255,255,0.2)"))
         .call((g) => g.selectAll(".tick line").attr("stroke", "rgba(255,255,255,0.1)"))
         .call((g) => g.selectAll(".tick text").attr("fill", "rgba(255,255,255,0.6)"))
@@ -102,7 +102,7 @@ export function PointsHistoryChart({ data }: PointsHistoryChartProps) {
     const line = d3.line<PointsHistoryData>()
         .x(d => x(d.round))
         .y(d => y(d.cumulativePoints))
-        .curve(d3.curveMonotoneX)
+        .curve(d3.curveLinear)
 
     // Draw lines
     const lineGroup = svg.append("g").attr("class", "lines")
@@ -113,8 +113,15 @@ export function PointsHistoryChart({ data }: PointsHistoryChartProps) {
             .attr("stroke", user.color)
             .attr("stroke-width", 2)
             .attr("d", line)
-            .attr("class", "transition-all duration-300 hover:stroke-[3px]")
+            .attr("class", "transition-all duration-300 cursor-pointer")
             .attr("id", `line-${user.userId.replace(/\s+/g, '-')}`)
+            .on("mouseover", function() {
+                svg.selectAll("path").transition().duration(200).style("opacity", 0.2)
+                d3.select(this).transition().duration(200).style("opacity", 1).attr("stroke-width", 3)
+            })
+            .on("mouseout", function() {
+                svg.selectAll("path").transition().duration(200).style("opacity", 1).attr("stroke-width", 2)
+            })
     })
 
     // Create tooltip
@@ -156,6 +163,7 @@ export function PointsHistoryChart({ data }: PointsHistoryChartProps) {
                     .style("visibility", "visible")
                     .html(`
                         <div style="font-weight: bold; color: ${user.color}; margin-bottom: 2px;">${user.username}</div>
+                        <div style="font-size: 11px; margin-bottom: 4px; color: rgba(255,255,255,0.9);">${d.raceName}</div>
                         <div style="font-size: 14px; font-weight: 800;">${d.cumulativePoints} pts</div>
                         <div style="font-size: 11px; color: rgba(255,255,255,0.8);">+${d.points} pts</div>
                     `)

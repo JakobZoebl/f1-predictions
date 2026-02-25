@@ -109,13 +109,12 @@ export default function SeasonOverview() {
                     )}
 
                     {isResultsAvailable && (
-                      <Link to={isRace ? "/race-results" : "/sprint-results"}>
+                      <Link to={isRace ? `/race-results/${event.id}` : `/sprint-results/${event.id}`}>
                         <Button 
-                          className="season-overview-btn-results"
+                          className="season-overview-btn-predict"
                           style={{ 
-                            borderColor: raceColors.primary,
-                            color: raceColors.primary,
-                            backgroundColor: 'transparent'
+                            backgroundColor: raceColors.primary,
+                            boxShadow: `0 10px 25px -5px ${raceColors.primary}40`
                           }}
                         >
                           View Results

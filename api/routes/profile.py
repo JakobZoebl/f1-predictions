@@ -195,14 +195,25 @@ def get_season_stats():
             .execute()
         )
 
-        # 6. Fetch points_log breakdown from a user to aggregate them and get the accuracy bar data
-        points_log_res = (
-            supabase.table("points_log")
-            .select("breakdown")
-            .eq("user_id", user["id"])
+        # 6a. Fetch total completed races and sprints for this season
+        completed_races_res = (
+            supabase.table("races")
+            .select("id", count="exact")
             .eq("season", active_season)
+            .eq("status", "completed")
             .execute()
         )
+        total_completed_races = completed_races_res.count if completed_races_res.count is not None else 0
+
+        completed_sprints_res = (
+            supabase.table("sprints")
+            .select("id", count="exact")
+            .eq("season", active_season)
+            .eq("status", "completed")
+            .execute()
+        )
+        total_completed_sprints = completed_sprints_res.count if completed_sprints_res.count is not None else 0
+        total_completed_events = total_completed_races + total_completed_sprints
 
         stats = {
             "rank": 0,
@@ -211,6 +222,8 @@ def get_season_stats():
             "points_behind_leader": 0,
             "best_finish": "-",
             "worst_finish": "-",
+            "races_predicted": 0,
+            "total_completed_races": total_completed_events,
             "accuracyBars": {
                 "Driver Predictions": 0,
                 "Constructor Predictions": 0,
@@ -225,6 +238,21 @@ def get_season_stats():
             
             leader_pts = leader_points_res.data.get('total_points', 0) if (leader_points_res and leader_points_res.data) else 0
             stats["points_behind_leader"] = max(0, leader_pts - stats["total_points"])
+
+        # 6b. Fetch points_log breakdown from a user to aggregate them and get the accuracy bar data
+        points_log_res = (
+            supabase.table("points_log")
+            .select("breakdown, session_type")
+            .eq("user_id", user["id"])
+            .eq("season", active_season)
+            .execute()
+        )
+
+        # Calculate races_predicted (which here actually means 'events predicted') based on points_log entries
+        if points_log_res and points_log_res.data:
+            predicted_events = [item for item in points_log_res.data if item.get("session_type") in ("race", "sprint")]
+            stats["races_predicted"] = len(predicted_events)
+
 
         # 7. Safe lookup for best/worst finish names
         if best_finish_res.data:

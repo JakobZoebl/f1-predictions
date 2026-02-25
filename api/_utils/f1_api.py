@@ -21,10 +21,6 @@ JOLPICA_BASE_URL = "https://api.jolpi.ca/ergast/f1"
 # Mapping for specific Ergast driver IDs to our presets.
 DRIVER_MAPPING = {
     "max_verstappen": "verstappen",
-    "kevin_magnussen": "magnussen",
-    "zhou_guanyu": "zhou",
-    "nyck_de_vries": "devries",
-    # Most others end with the last name which matches our presets
 }
 
 # Mapping for Ergast constructor IDs to our presets

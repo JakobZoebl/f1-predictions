@@ -11,6 +11,8 @@ import { BonusResults } from "@/frontend/results/BonusResults"
 import type { RaceResult } from "@/frontend/results/utils"
 import { PageLoader } from "@/frontend/components/PageLoader"
 import { Info } from "lucide-react"
+import { useBackground } from "@/frontend/components/BackgroundContext"
+import { DRIVERS } from "@/lib/f1-presets"
 import "@/frontend/styles/RacePredictions.css"
 
 // Max scores for season (must match API)
@@ -30,6 +32,15 @@ export default function SeasonResults() {
   const [seasonYear, setSeasonYear] = useState<number | null>(null)
   const [loading, setLoading] = useState(true)
 
+  const { setBackgroundConfig, resetToDefault } = useBackground()
+
+  // Reset background configuration on unmount
+  useEffect(() => {
+    return () => {
+      resetToDefault()
+    }
+  }, [resetToDefault])
+
   useEffect(() => {
     const headers: HeadersInit = {}
     if (session?.access_token) {
@@ -44,15 +55,31 @@ export default function SeasonResults() {
           setLoading(false)
           return
         }
-        setResults(data.results || [])
+
+        const parsed = data.results || []
+        setResults(parsed)
         setSeasonYear(data.season ?? null)
+
+        // Find winner to set background
+        const winner = parsed.find((r: RaceResult) => r.Category === "RESULT" && r.Position === "1")
+        if (winner && winner.Actual) {
+          const winnerDriver = DRIVERS[winner.Actual]
+          if (winnerDriver) {
+            setBackgroundConfig({
+              type: "team-driver",
+              driverId: winner.Actual,
+              teamId: winnerDriver.team
+            })
+          }
+        }
+
         setLoading(false)
       })
       .catch((err) => {
         console.error("Error fetching season results:", err)
         setLoading(false)
       })
-  }, [session?.access_token])
+  }, [setBackgroundConfig, session?.access_token])
 
   const drivers = results.filter((r) => r.Category === "RESULT")
   const constructors = results.filter((r) => r.Category === "CONSTRUCTOR")

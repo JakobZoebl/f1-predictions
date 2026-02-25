@@ -38,6 +38,7 @@ export default function Leaderboard() {
                 .from('leaderboard')
                 .select(`
                     rank,
+                    previous_rank,
                     user_id,
                     total_points,
                     users (username, display_name, avatar_url)
@@ -49,14 +50,16 @@ export default function Leaderboard() {
       if (lbData) {
         const formattedLbData: LeaderboardEntry[] = lbData.map(entry => {
           const user = (Array.isArray(entry.users) ? entry.users[0] : entry.users) as Record<string, string> | null;
+          const currentRank = entry.rank || 0;
+          const prevRank = entry.previous_rank || currentRank;
           return {
-            rank: entry.rank || 0,
+            rank: currentRank,
             userId: entry.user_id,
             username: user?.username || 'Unknown',
             displayName: user?.display_name || user?.username || 'Unknown',
             avatarUrl: user?.avatar_url,
             points: entry.total_points || 0,
-            movement: 0, // Placeholder
+            movement: prevRank - currentRank,
           }
         })
         setLeaderboardData(formattedLbData)
@@ -122,7 +125,7 @@ export default function Leaderboard() {
           // We only push to graph if it's not a generic season bonus to avoid messy overlapping for the same round,
           // or we group by round. For simplicity we'll just push sequential events.
           userHistoryMap.get(userId)!.history.push({
-            round,
+            round: log.session_type === 'sprint' ? round - 0.2 : round,
             raceName: log.session_type === 'sprint' ? `${raceName} Sprint` : raceName,
             points,
             cumulativePoints: currentTotal

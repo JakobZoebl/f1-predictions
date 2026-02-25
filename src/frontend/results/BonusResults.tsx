@@ -7,7 +7,7 @@ interface BonusResultsProps {
   maxScore?: number
 }
 
-export function BonusResults({ results, score = 0, maxScore = 41 }: BonusResultsProps) {
+export function BonusResults({ results, score = 0, maxScore = 40 }: BonusResultsProps) {
   return (
     <section className="bg-black/40 backdrop-blur-md border border-white/10 rounded-xl p-6 flex-1 flex flex-col">
         <div className="prediction-section-title">

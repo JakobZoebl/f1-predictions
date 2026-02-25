@@ -241,6 +241,7 @@ CREATE TABLE public.leaderboard (
   races_predicted INTEGER DEFAULT 0,
   avg_points_per_race NUMERIC DEFAULT 0,
   rank INTEGER DEFAULT 0,
+  previous_rank INTEGER DEFAULT 0,
   updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
   PRIMARY KEY (user_id, season)
 );
@@ -388,6 +389,9 @@ BEGIN
     WHERE l.user_id = stats.user_id AND l.season = stats.season;
 
     -- Re-calculate Ranks
+    -- Save current rank as previous_rank before calculating the new ranks
+    UPDATE public.leaderboard SET previous_rank = rank WHERE season = current_season;
+
     UPDATE public.leaderboard l
     SET rank = sub.new_rank
     FROM (
@@ -509,6 +513,9 @@ BEGIN
             WHERE lb.season = active_season
         ) sub
         WHERE l.user_id = sub.user_id AND l.season = sub.season;
+
+        -- For the new user, set their initial previous_rank to be equal to their starting rank
+        UPDATE public.leaderboard SET previous_rank = rank WHERE user_id = NEW.id AND season = active_season;
     END IF;
 
     RETURN NEW;
