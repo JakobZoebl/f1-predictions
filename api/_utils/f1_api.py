@@ -61,9 +61,50 @@ def fetch_with_retry(url: str, retries: int = 3) -> dict:
         except Exception as e:
             if attempt == retries - 1:
                 print(f"Failed to fetch {url}: {e}")
-                return {}
+                return [] if "openf1" in url else {}
             time.sleep(2 ** attempt)
-    return {}
+    return [] if "openf1" in url else {}
+
+def get_openf1_session_key(season: int, round_num: int, session_name: str):
+    races_data = fetch_with_retry(f"https://api.openf1.org/v1/sessions?year={season}&session_name=Race")
+    if not races_data:
+        return None
+    races_data.sort(key=lambda x: x.get("date_start", ""))
+    
+    if round_num > len(races_data):
+        return None
+        
+    meeting_key = races_data[round_num - 1].get("meeting_key")
+    
+    if session_name == "Race":
+        return races_data[round_num - 1].get("session_key")
+    else:
+        sprints_data = fetch_with_retry(f"https://api.openf1.org/v1/sessions?meeting_key={meeting_key}&session_name=Sprint")
+        if sprints_data:
+            return sprints_data[0].get("session_key")
+        return None
+
+def detect_race_interruptions(season: int, round_num: int, is_sprint: bool) -> tuple[bool, bool]:
+    session_name = "Sprint" if is_sprint else "Race"
+    session_key = get_openf1_session_key(season, round_num, session_name)
+    
+    if not session_key:
+        return False, False
+        
+    rc_data = fetch_with_retry(f"https://api.openf1.org/v1/race_control?session_key={session_key}")
+    if not rc_data:
+        return False, False
+        
+    safety_car = False
+    red_flag = False
+    
+    for msg in rc_data:
+        if msg.get("category") == "SafetyCar":
+            safety_car = True
+        if msg.get("flag") == "RED":
+            red_flag = True
+            
+    return safety_car, red_flag
 
 def fetch_race_results(season: int, round_num: int) -> dict:
     url = f"{JOLPICA_BASE_URL}/{season}/{round_num}/results.json"
@@ -129,9 +170,9 @@ def fetch_race_results(season: int, round_num: int) -> dict:
                 extracted["pole_position"] = map_driver_id(res["Driver"]["driverId"])
                 break
                 
-    # Unknowns safely marked false
-    extracted["safety_car"] = False
-    extracted["red_flag"] = False
+    sc, rf = detect_race_interruptions(season, round_num, is_sprint=False)
+    extracted["safety_car"] = sc
+    extracted["red_flag"] = rf
                 
     return extracted
 
@@ -189,7 +230,8 @@ def fetch_sprint_results(season: int, round_num: int) -> dict:
             extracted["pole_position"] = map_driver_id(res["Driver"]["driverId"])
             break
             
-    extracted["safety_car"] = False
-    extracted["red_flag"] = False
+    sc, rf = detect_race_interruptions(season, round_num, is_sprint=True)
+    extracted["safety_car"] = sc
+    extracted["red_flag"] = rf
 
     return extracted
