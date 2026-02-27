@@ -10,7 +10,6 @@ from flask import Flask
 from api.routes.auth import auth_bp
 from api.routes.predictions import predictions_bp
 from api.routes.profile import profile_bp
-from api.routes.admin import admin_bp
 from api.routes.results import results_bp
 from api.routes.leaderboard import leaderboard_bp
 
@@ -20,7 +19,6 @@ app = Flask(__name__)
 app.register_blueprint(auth_bp)
 app.register_blueprint(predictions_bp)
 app.register_blueprint(profile_bp)
-app.register_blueprint(admin_bp)
 app.register_blueprint(results_bp)
 app.register_blueprint(leaderboard_bp)
 

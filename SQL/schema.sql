@@ -24,6 +24,7 @@ DROP FUNCTION IF EXISTS public.handle_new_user() CASCADE;
 DROP FUNCTION IF EXISTS public.handle_new_auth_user() CASCADE;
 DROP FUNCTION IF EXISTS public.calculate_f1_points() CASCADE;
 DROP FUNCTION IF EXISTS public.update_season_results_from_standings() CASCADE;
+DROP FUNCTION IF EXISTS public.recalculate_leaderboard_ranks() CASCADE;
 
 -- ------------------------------------------------------------------------------
 -- 1. BASE TABLES
@@ -525,6 +526,43 @@ $$ LANGUAGE plpgsql;
 CREATE TRIGGER tr_after_user_insert
     AFTER INSERT ON public.users
     FOR EACH ROW EXECUTE FUNCTION public.handle_new_user();
+
+-- ------------------------------------------------------------------------------
+-- 4.2. USER DELETION HANDLER
+-- ------------------------------------------------------------------------------
+
+CREATE OR REPLACE FUNCTION public.recalculate_leaderboard_ranks()
+RETURNS TRIGGER AS $$
+DECLARE
+    active_season INTEGER;
+BEGIN
+    SELECT year INTO active_season FROM public.seasons WHERE is_active = TRUE LIMIT 1;
+
+    IF active_season IS NOT NULL THEN
+        -- Re-calculate ranks for the active season
+        -- First, save the current rank as the previous_rank before calculating the new one
+        UPDATE public.leaderboard SET previous_rank = rank WHERE season = active_season;
+
+        -- Update the rank with the newly recalculated window function rank
+        UPDATE public.leaderboard l
+        SET rank = sub.new_rank
+        FROM (
+            SELECT lb.user_id, lb.season, RANK() OVER (PARTITION BY lb.season ORDER BY lb.total_points DESC, u.username ASC) as new_rank
+            FROM public.leaderboard lb
+            JOIN public.users u ON lb.user_id = u.id
+            WHERE lb.season = active_season
+        ) sub
+        WHERE l.user_id = sub.user_id AND l.season = sub.season;
+    END IF;
+
+    -- Return OLD because it's an AFTER DELETE trigger
+    RETURN OLD;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE TRIGGER tr_after_user_delete
+    AFTER DELETE ON public.users
+    FOR EACH STATEMENT EXECUTE FUNCTION public.recalculate_leaderboard_ranks();
 
 -- ------------------------------------------------------------------------------
 -- 4.5. AUTH USER HANDLER (Supabase Auth -> public.users)
