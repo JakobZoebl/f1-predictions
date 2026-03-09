@@ -22,19 +22,8 @@ load_dotenv(os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file_
 # Import the main app which has all blueprints registered
 from api.index import app
 
-# Keep cron separate functionally but load it locally for dev testing if accessed directly
-from api.cron.fetch_results import app as cron_fetch_app
-
-# Add cron routes onto the main development app manually since it's a separate Vercel function in prod
-for rule in cron_fetch_app.url_map.iter_rules():
-    if rule.endpoint == 'static':
-        continue
-    app.add_url_rule(
-        rule.rule,
-        endpoint=f"cron_{rule.endpoint}",
-        view_func=cron_fetch_app.view_functions[rule.endpoint],
-        methods=rule.methods - {'OPTIONS', 'HEAD'}
-    )
+# Cron routes are now registered as a Blueprint in api/index.py,
+# so they are automatically available on the main app.
 
 if __name__ == '__main__':
     print("\n  F1 Predictions API - Local Dev Server")

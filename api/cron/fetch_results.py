@@ -43,13 +43,13 @@ import datetime
 # Add the parent directory to sys.path to allow imports from api._utils
 sys.path.append(os.path.join(os.path.dirname(__file__), '..', '..'))
 
-from flask import Flask, request, jsonify
+from flask import Blueprint, request, jsonify
 from api._utils.supabase_client import get_supabase_client
 from api._utils.f1_api import fetch_race_results, fetch_sprint_results
 
-app = Flask(__name__)
+cron_bp = Blueprint('cron', __name__)
 
-@app.route('/api/cron/fetch-results', methods=['GET'])
+@cron_bp.route('/api/cron/fetch-results', methods=['GET'])
 def cron_fetch_results():
     """
     Vercel cron job: auto-fetch results after races.
