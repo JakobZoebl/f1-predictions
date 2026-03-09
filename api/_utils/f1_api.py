@@ -235,3 +235,48 @@ def fetch_sprint_results(season: int, round_num: int) -> dict:
     extracted["red_flag"] = rf
 
     return extracted
+
+def fetch_driver_standings(season: int) -> list:
+    """Fetch current driver championship standings from Jolpica."""
+    url = f"{JOLPICA_BASE_URL}/{season}/driverStandings.json"
+    data = fetch_with_retry(url)
+    
+    try:
+        standings = data["MRData"]["StandingsTable"]["StandingsLists"][0]["DriverStandings"]
+    except (KeyError, IndexError):
+        return []
+    
+    result = []
+    for i, entry in enumerate(standings):
+        driver_id = map_driver_id(entry["Driver"]["driverId"])
+        points = float(entry.get("points", 0))
+        # Some drivers have positionText "-" when they have 0 points
+        position = int(entry["position"]) if entry.get("position") and entry.get("positionText", "-") != "-" else i + 1
+        result.append({
+            "driver_id": driver_id,
+            "points": points,
+            "position": position,
+        })
+    return result
+
+def fetch_constructor_standings(season: int) -> list:
+    """Fetch current constructor championship standings from Jolpica."""
+    url = f"{JOLPICA_BASE_URL}/{season}/constructorStandings.json"
+    data = fetch_with_retry(url)
+    
+    try:
+        standings = data["MRData"]["StandingsTable"]["StandingsLists"][0]["ConstructorStandings"]
+    except (KeyError, IndexError):
+        return []
+    
+    result = []
+    for i, entry in enumerate(standings):
+        constructor_id = map_constructor_id(entry["Constructor"]["constructorId"])
+        points = float(entry.get("points", 0))
+        position = int(entry["position"]) if entry.get("position") and entry.get("positionText", "-") != "-" else i + 1
+        result.append({
+            "constructor_id": constructor_id,
+            "points": points,
+            "position": position,
+        })
+    return result

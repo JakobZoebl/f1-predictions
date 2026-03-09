@@ -464,7 +464,7 @@ BEGIN
 
     RETURN NEW;
 END;
-$$ LANGUAGE plpgsql;
+$$ LANGUAGE plpgsql SECURITY DEFINER;
 
 -- ------------------------------------------------------------------------------
 -- 3. TRIGGERS
@@ -668,6 +668,8 @@ DO $$ BEGIN CREATE POLICY "Anyone view sprints" ON public.sprints FOR SELECT USI
 DO $$ BEGIN CREATE POLICY "Anyone view results" ON public.race_results FOR SELECT USING (true); EXCEPTION WHEN duplicate_object THEN NULL; END $$;
 DO $$ BEGIN CREATE POLICY "Anyone view sprint results" ON public.sprint_results FOR SELECT USING (true); EXCEPTION WHEN duplicate_object THEN NULL; END $$;
 DO $$ BEGIN CREATE POLICY "Anyone view season results" ON public.season_results FOR SELECT USING (true); EXCEPTION WHEN duplicate_object THEN NULL; END $$;
+DO $$ BEGIN CREATE POLICY "Service insert season results" ON public.season_results FOR INSERT WITH CHECK (true); EXCEPTION WHEN duplicate_object THEN NULL; END $$;
+DO $$ BEGIN CREATE POLICY "Service update season results" ON public.season_results FOR UPDATE USING (true); EXCEPTION WHEN duplicate_object THEN NULL; END $$;
 DO $$ BEGIN CREATE POLICY "Anyone view driver standings" ON public.driver_standings FOR SELECT USING (true); EXCEPTION WHEN duplicate_object THEN NULL; END $$;
 DO $$ BEGIN CREATE POLICY "Anyone view constructor standings" ON public.constructor_standings FOR SELECT USING (true); EXCEPTION WHEN duplicate_object THEN NULL; END $$;
 DO $$ BEGIN CREATE POLICY "Anyone view leaderboard" ON public.leaderboard FOR SELECT USING (true); EXCEPTION WHEN duplicate_object THEN NULL; END $$;

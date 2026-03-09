@@ -45,7 +45,7 @@ sys.path.append(os.path.join(os.path.dirname(__file__), '..', '..'))
 
 from flask import Blueprint, request, jsonify
 from api._utils.supabase_client import get_supabase_client
-from api._utils.f1_api import fetch_race_results, fetch_sprint_results
+from api._utils.f1_api import fetch_race_results, fetch_sprint_results, fetch_driver_standings, fetch_constructor_standings
 
 cron_bp = Blueprint('cron', __name__)
 
@@ -113,11 +113,39 @@ def cron_fetch_results():
                     processed_races += 1
                 except Exception as e:
                     errors.append(f"Race {round_num} error: {str(e)}")
+
+        # 3. Update championship standings (always runs to keep standings current)
+        standings_updated = False
+        try:
+            season_res = supabase.table("seasons").select("year").eq("is_active", True).limit(1).execute()
+            if season_res.data:
+                active_season = season_res.data[0]["year"]
+                
+                driver_standings = fetch_driver_standings(active_season)
+                if driver_standings:
+                    for ds in driver_standings:
+                        ds["season"] = active_season
+                    supabase.table("driver_standings").upsert(
+                        driver_standings, on_conflict="season,driver_id"
+                    ).execute()
+                
+                constructor_standings = fetch_constructor_standings(active_season)
+                if constructor_standings:
+                    for cs in constructor_standings:
+                        cs["season"] = active_season
+                    supabase.table("constructor_standings").upsert(
+                        constructor_standings, on_conflict="season,constructor_id"
+                    ).execute()
+                
+                standings_updated = bool(driver_standings or constructor_standings)
+        except Exception as e:
+            errors.append(f"Standings update error: {str(e)}")
                     
         return jsonify({
             "success": True, 
             "races_processed": processed_races,
             "sprints_processed": processed_sprints,
+            "standings_updated": standings_updated,
             "errors": errors
         }), 200
 

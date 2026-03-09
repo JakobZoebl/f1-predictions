@@ -92,9 +92,7 @@ export default function SeasonResults() {
 
   const currentUserRow = leaderboardRows.find((r) => r.Team === displayUsername)
   const userRank = currentUserRow ? parseInt(currentUserRow.Position) : undefined
-  const userScore = currentUserRow
-    ? parseInt(currentUserRow.Points)
-    : driverScore + constructorScore + bonusScore
+  const userScore = driverScore + constructorScore + bonusScore
 
   if (loading || profileLoading) return <PageLoader />
 
