@@ -134,8 +134,12 @@ export function FeatureRace({ className, style, renderActions, race, resultsMode
                     </div>
                 </div>
                     
-                {/* Countdown OR Results Score */}
-                {resultsMode ? (
+                {/* Countdown OR Results Score OR Cancelled Badge */}
+                {nextRace.isCancelled ? (
+                    <div className="race-cancelled-badge mb-4">
+                        CANCELLED
+                    </div>
+                ) : resultsMode ? (
                     <div className="race-results-score mb-4">
                         <div className="race-results-score-item">
                             <span className="race-results-score-value" style={{ color: nextRace.colors.primary }}>

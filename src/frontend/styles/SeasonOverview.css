@@ -40,3 +40,17 @@
   border-width: 2px;
   border-style: solid;
 }
+
+.season-overview-cancelled-label {
+  font-weight: 800;
+  font-size: 1.2rem;
+  letter-spacing: 0.1em;
+  color: #ff4b4b;
+  border: 2px solid #ff4b4b;
+  padding: 0.5rem 1.5rem;
+  border-radius: 4px;
+  transform: rotate(-5deg);
+  background: rgba(255, 75, 75, 0.1);
+  box-shadow: 0 0 20px rgba(255, 75, 75, 0.2);
+  text-transform: uppercase;
+}
