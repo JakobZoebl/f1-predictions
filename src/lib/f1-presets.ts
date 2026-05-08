@@ -222,7 +222,8 @@ export interface RaceEvent {
   colors: ColorPair
   trackImage: string
   laps: number
-      cutoff: string // ISO date string
+  cutoff: string // ISO date string
+  isCancelled?: boolean
 }
 
 export const RACES: RaceEvent[] = [
@@ -271,7 +272,7 @@ export const RACES: RaceEvent[] = [
   {
     id: "bahrain",
     name: "Bahrain Grand Prix",
-    round: 4,
+    round: 0,
     date: "2026-04-12",
     time: "16:00 GMT+1",
     circuit: "Bahrain International Circuit",
@@ -281,11 +282,12 @@ export const RACES: RaceEvent[] = [
     trackImage: "bahrain.avif",
     laps: 57, 
     cutoff: "2026-04-11 18:00",
+    isCancelled: true,
   },
   {
     id: "jeddah",
     name: "Saudi Arabian Grand Prix",
-    round: 5,
+    round: 0,
     date: "2026-04-19",
     time: "18:00 GMT+1",
     circuit: "Jeddah Corniche Circuit",
@@ -295,11 +297,12 @@ export const RACES: RaceEvent[] = [
     trackImage: "jeddah.avif",
     laps: 50, 
     cutoff: "2026-04-18 19:00",
+    isCancelled: true,
   },
   {
     id: "miami",
     name: "Miami Grand Prix",
-    round: 6,
+    round: 4,
     date: "2026-05-03",
     time: "21:00 GMT+1",
     circuit: "Miami International Autodrome",
@@ -313,7 +316,7 @@ export const RACES: RaceEvent[] = [
   {
     id: "montreal",
     name: "Canadian Grand Prix",
-    round: 7,
+    round: 5,
     date: "2026-05-24",
     time: "19:00 GMT+1",
     circuit: "Circuit Gilles-Villeneuve",
@@ -327,7 +330,7 @@ export const RACES: RaceEvent[] = [
   {
     id: "monaco",
     name: "Monaco Grand Prix",
-    round: 8,
+    round: 6,
     date: "2026-06-07",
     time: "14:00 GMT+1",
     circuit: "Circuit de Monaco",
@@ -341,7 +344,7 @@ export const RACES: RaceEvent[] = [
   {
     id: "barcelona",
     name: "Spanish Grand Prix (Barcelona)",
-    round: 9,
+    round: 7,
     date: "2026-06-14",
     time: "14:00 GMT+1",
     circuit: "Circuit de Barcelona-Catalunya",
@@ -355,7 +358,7 @@ export const RACES: RaceEvent[] = [
   {
     id: "spielberg",
     name: "Austrian Grand Prix",
-    round: 10,
+    round: 8,
     date: "2026-06-28",
     time: "14:00 GMT+1",
     circuit: "Red Bull Ring",
@@ -369,7 +372,7 @@ export const RACES: RaceEvent[] = [
   {
     id: "silverstone",
     name: "British Grand Prix",
-    round: 11,
+    round: 9,
     date: "2026-07-05",
     time: "15:00 GMT+1",
     circuit: "Silverstone Circuit",
@@ -383,7 +386,7 @@ export const RACES: RaceEvent[] = [
   {
     id: "spa",
     name: "Belgian Grand Prix",
-    round: 12,
+    round: 10,
     date: "2026-07-19",
     time: "14:00 GMT+1",
     circuit: "Circuit de Spa-Francorchamps",
@@ -397,7 +400,7 @@ export const RACES: RaceEvent[] = [
   {
     id: "hungaroring",
     name: "Hungarian Grand Prix",
-    round: 13,
+    round: 11,
     date: "2026-07-26",
     time: "14:00 GMT+1",
     circuit: "Hungaroring",
@@ -411,7 +414,7 @@ export const RACES: RaceEvent[] = [
   {
     id: "zandvoort",
     name: "Dutch Grand Prix",
-    round: 14,
+    round: 12,
     date: "2026-08-23",
     time: "14:00 GMT+1",
     circuit: "Circuit Zandvoort",
@@ -425,7 +428,7 @@ export const RACES: RaceEvent[] = [
   {
     id: "monza",
     name: "Italian Grand Prix",
-    round: 15,
+    round: 13,
     date: "2026-09-06",
     time: "14:00 GMT+1",
     circuit: "Autodromo Nazionale Monza",
@@ -439,7 +442,7 @@ export const RACES: RaceEvent[] = [
   {
     id: "madrid",
     name: "Spanish Grand Prix (Madrid)",
-    round: 16,
+    round: 14,
     date: "2026-09-13",
     time: "14:00 GMT+1",
     circuit: "Madrid Street Circuit",
@@ -453,7 +456,7 @@ export const RACES: RaceEvent[] = [
   {
     id: "baku",
     name: "Azerbaijan Grand Prix",
-    round: 17,
+    round: 15,
     date: "2026-09-27",
     time: "12:00 GMT+1",
     circuit: "Baku City Circuit",
@@ -467,7 +470,7 @@ export const RACES: RaceEvent[] = [
   {
     id: "singapore",
     name: "Singapore Grand Prix",
-    round: 18,
+    round: 16,
     date: "2026-10-11",
     time: "13:00 GMT+1",
     circuit: "Marina Bay Street Circuit",
@@ -481,7 +484,7 @@ export const RACES: RaceEvent[] = [
   {
     id: "austin",
     name: "United States Grand Prix",
-    round: 19,
+    round: 17,
     date: "2026-10-25",
     time: "20:00 GMT+1",
     circuit: "Circuit of the Americas",
@@ -495,7 +498,7 @@ export const RACES: RaceEvent[] = [
   {
     id: "mexico",
     name: "Mexico City Grand Prix",
-    round: 20,
+    round: 18,
     date: "2026-11-01",
     time: "21:00 GMT+1",
     circuit: "Autódromo Hermanos Rodríguez",
@@ -509,7 +512,7 @@ export const RACES: RaceEvent[] = [
   {
     id: "interlagos",
     name: "São Paulo Grand Prix",
-    round: 21,
+    round: 19,
     date: "2026-11-08",
     time: "18:00 GMT+1",
     circuit: "Autódromo de Interlagos",
@@ -523,7 +526,7 @@ export const RACES: RaceEvent[] = [
   {
     id: "vegas",
     name: "Las Vegas Grand Prix",
-    round: 22,
+    round: 20,
     date: "2026-11-21",
     time: "07:00 GMT+1",
     circuit: "Las Vegas Strip Circuit",
@@ -537,7 +540,7 @@ export const RACES: RaceEvent[] = [
   {
     id: "lusail",
     name: "Qatar Grand Prix",
-    round: 23,
+    round: 21,
     date: "2026-11-29",
     time: "16:00 GMT+1",
     circuit: "Lusail International Circuit",
@@ -551,7 +554,7 @@ export const RACES: RaceEvent[] = [
   {
     id: "abudhabi",
     name: "Abu Dhabi Grand Prix",
-    round: 24,
+    round: 22,
     date: "2026-12-06",
     time: "14:00 GMT+1",
     circuit: "Yas Marina Circuit",
@@ -582,7 +585,7 @@ export const SPRINTS: RaceEvent[] = [
   {
     id: "miami-sprint",
     name: "Miami Grand Prix Sprint",
-    round: 6,
+    round: 4,
     date: "2026-05-02",
     time: "21:00 GMT+1",
     circuit: "Miami International Autodrome",
@@ -596,7 +599,7 @@ export const SPRINTS: RaceEvent[] = [
   {
     id: "montreal-sprint",
     name: "Canadian Grand Prix Sprint",
-    round: 7,
+    round: 5,
     date: "2026-05-23",
     time: "19:00 GMT+1",
     circuit: "Circuit Gilles-Villeneuve",
@@ -610,7 +613,7 @@ export const SPRINTS: RaceEvent[] = [
   {
     id: "silverstone-sprint",
     name: "British Grand Prix Sprint",
-    round: 11,
+    round: 9,
     date: "2026-07-04",
     time: "15:00 GMT+1",
     circuit: "Silverstone Circuit",
@@ -624,7 +627,7 @@ export const SPRINTS: RaceEvent[] = [
   {
     id: "zandvoort-sprint",
     name: "Dutch Grand Prix Sprint",
-    round: 14,
+    round: 12,
     date: "2026-08-22",
     time: "14:00 GMT+1",
     circuit: "Circuit Zandvoort",
@@ -638,7 +641,7 @@ export const SPRINTS: RaceEvent[] = [
   {
     id: "singapore-sprint",
     name: "Singapore Grand Prix Sprint",
-    round: 18,
+    round: 16,
     date: "2026-10-10",
     time: "13:00 GMT+1",
     circuit: "Marina Bay Street Circuit",

@@ -80,32 +80,40 @@ export default function SeasonOverview() {
                 renderActions={(raceColors) => (
                   <div className="season-overview-actions">
 
-                    {isOpen && (
-                      <Link to={isRace ? "/race-predictions" : "/sprint-predictions"}>
-                        <Button 
-                          className="season-overview-btn-predict"
-                          style={{ 
-                            backgroundColor: raceColors.primary,
-                            boxShadow: `0 10px 25px -5px ${raceColors.primary}40`
-                          }}
-                        >
-                          Make your predictions
-                        </Button>
-                      </Link>
-                    )}
-                    
-                    {isLocked && (
-                      <Button 
-                        disabled 
-                        className="season-overview-btn-locked"
-                        style={{ 
-                          borderColor: raceColors.primary,
-                          color: raceColors.primary,
-                          opacity: 0.6
-                        }}
-                      >
-                        Locked
-                      </Button>
+                    {event.isCancelled ? (
+                      <div className="season-overview-cancelled-label">
+                        CANCELLED
+                      </div>
+                    ) : (
+                      <>
+                        {isOpen && (
+                          <Link to={isRace ? "/race-predictions" : "/sprint-predictions"}>
+                            <Button 
+                              className="season-overview-btn-predict"
+                              style={{ 
+                                backgroundColor: raceColors.primary,
+                                boxShadow: `0 10px 25px -5px ${raceColors.primary}40`
+                              }}
+                            >
+                              Make your predictions
+                            </Button>
+                          </Link>
+                        )}
+                        
+                        {isLocked && (
+                          <Button 
+                            disabled 
+                            className="season-overview-btn-locked"
+                            style={{ 
+                              borderColor: raceColors.primary,
+                              color: raceColors.primary,
+                              opacity: 0.6
+                            }}
+                          >
+                            Locked
+                          </Button>
+                        )}
+                      </>
                     )}
 
                     {isResultsAvailable && (
