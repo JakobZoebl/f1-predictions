@@ -69,6 +69,7 @@ def get_openf1_session_key(season: int, round_num: int, session_name: str):
     races_data = fetch_with_retry(f"https://api.openf1.org/v1/sessions?year={season}&session_name=Race")
     if not races_data:
         return None
+    races_data = [r for r in races_data if not r.get("is_cancelled")]
     races_data.sort(key=lambda x: x.get("date_start", ""))
     
     if round_num > len(races_data):
