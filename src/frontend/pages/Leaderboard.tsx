@@ -94,9 +94,18 @@ export default function Leaderboard() {
 
       if (ptData) {
         const userHistoryMap = new Map<string, UserPointsHistory>()
+        const rawUserEvents = new Map<
+          string,
+          Array<{
+            round: number
+            sessionType: "race" | "sprint"
+            tickLabel: string
+            raceName: string
+            points: number
+          }>
+        >()
         const colors = ["#ef4444", "#3b82f6", "#10b981", "#f59e0b", "#8b5cf6", "#ec4899", "#14b8a6"]
         let colorIndex = 0
-        const runningTotals = new Map<string, number>()
 
         ptData.forEach(log => {
           const userId = log.user_id
@@ -104,9 +113,13 @@ export default function Leaderboard() {
           const username = userArr?.username || "Unknown"
           const raceArr = (Array.isArray(log.races) ? log.races[0] : log.races) as Record<string, string | number> | null;
           const round = Number(raceArr?.round) || 0;
+          if (round <= 0) return;
+
           const presetRace = RACES.find((r) => r.round === round);
           const raceName = presetRace ? presetRace.name : `Round ${round}`;
           const points = log.total_points || 0
+          const sessionType: "race" | "sprint" = log.session_type === "sprint" ? "sprint" : "race"
+          const tickLabel = sessionType === "sprint" ? `S${round}` : `R${round}`
 
           if (!userHistoryMap.has(userId)) {
             userHistoryMap.set(userId, {
@@ -115,25 +128,43 @@ export default function Leaderboard() {
               color: colors[colorIndex % colors.length],
               history: []
             })
+            rawUserEvents.set(userId, [])
             colorIndex++
-            runningTotals.set(userId, 0)
           }
 
-          const currentTotal = runningTotals.get(userId)! + points
-          runningTotals.set(userId, currentTotal)
-
-          // We only push to graph if it's not a generic season bonus to avoid messy overlapping for the same round,
-          // or we group by round. For simplicity we'll just push sequential events.
-          userHistoryMap.get(userId)!.history.push({
-            round: log.session_type === 'sprint' ? round - 0.2 : round,
-            raceName: log.session_type === 'sprint' ? `${raceName} Sprint` : raceName,
+          rawUserEvents.get(userId)!.push({
+            round,
+            sessionType,
+            tickLabel,
+            raceName: sessionType === "sprint" ? `${raceName} Sprint` : raceName,
             points,
-            cumulativePoints: currentTotal
           })
         })
 
+        // Sort each user's events chronologically (by round, with Sprint before Race)
+        // BEFORE computing cumulativePoints so cumulative scores never decrease.
         const historyArray = Array.from(userHistoryMap.values())
-        historyArray.forEach(u => u.history.sort((a, b) => a.round - b.round))
+        historyArray.forEach(u => {
+          const events = rawUserEvents.get(u.userId) || []
+          events.sort((a, b) => {
+            if (a.round !== b.round) return a.round - b.round
+            if (a.sessionType === b.sessionType) return 0
+            return a.sessionType === "sprint" ? -1 : 1
+          })
+
+          let cumulative = 0
+          u.history = events.map(ev => {
+            cumulative += ev.points
+            return {
+              round: ev.round,
+              sessionType: ev.sessionType,
+              tickLabel: ev.tickLabel,
+              raceName: ev.raceName,
+              points: ev.points,
+              cumulativePoints: cumulative,
+            }
+          })
+        })
         setHistoryData(historyArray)
       }
 
